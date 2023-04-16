@@ -7,9 +7,9 @@
 
 import Foundation
 import Starscream
-import KeyValueCoding
 import SwiftUI
 import SwiftyJSON
+import os
 
 public struct Daemon {
     
@@ -42,16 +42,12 @@ public struct Daemon {
     }
     
     public mutating func start(args: [daemonArguments.RawValue]?) {
-        let daemonPath = Bundle.main.url(forResource: "goxlr-daemon", withExtension: "")
+        
+        let daemonPath = Bundle.module.url(forResource: "goxlr-daemon", withExtension: "")
         daemonProcess.executableURL = daemonPath!
         if args != nil {
             daemonProcess.arguments = args
         }
-        let outputPipe = Pipe()
-        let errorPipe = Pipe()
-
-        daemonProcess.standardOutput = outputPipe
-        daemonProcess.standardError = errorPipe
         self.daemonStatus = .launching
         do {
             try daemonProcess.run()
@@ -62,10 +58,13 @@ public struct Daemon {
         }
         self.daemonStatus = .running
     }
+    
     public mutating func stop() {
         daemonProcess.interrupt()
         self.daemonStatus = .stopped
+        daemonProcess = Process()
     }
+    
     public mutating func restart(args: [daemonArguments.RawValue]?) {
         daemonProcess.interrupt()
         self.daemonStatus = .stopped
@@ -100,24 +99,30 @@ public class DaemonWSocket: WebSocketDelegate {
         socket?.disconnect()
     }
     public func sendCommand(string: String) {
-        socket?.write(string: string, completion: {print("sent command: \(string)")})
+        socket?.write(string: string, completion: {
+            if GoXlr.shared.logLevel == .debug {
+                Logger().debug("Sent command: \(string)")
+            }
+        })
     }
     public func didReceive(event: Starscream.WebSocketEvent, client: Starscream.WebSocketClient) {
         switch event {
         case .connected(let headers):
             self.socketConnexionStatus = .connected
-            print("websocket is connected: \(headers)")
+            Logger().info("Daemon websocket is connected: \(headers)")
             socket?.write(string: "{\"id\": 0, \"data\": \"GetStatus\"}") {}
         case .disconnected(let reason, let code):
             self.socketConnexionStatus = .disconnected
-            print("websocket is disconnected: \(reason) with code: \(code)")
+            Logger().info("Daemon websocket is disconnected: \(reason) with code: \(code)")
         case .text(let string):
             if string.contains("Status") {
-                print("status recived")
+                if GoXlr.shared.logLevel == .debug {
+                    Logger().debug("Recived status: \(string)")
+                }
                 do {
                     GoXlr.shared.status = try JSONDecoder().decode(Status.self, from: string.data(using: .utf8)!)
                 } catch {
-                    print(error)
+                    Logger().error("\(error)")
                 }
                 GoXlr.shared.device = GoXlr.shared.status?.data.status.mixers.first?.key ?? ""
             } else {
@@ -125,18 +130,29 @@ public class DaemonWSocket: WebSocketDelegate {
                     let json = JSON(parseJSON: string)
                     for patch in json["data"]["Patch"].arrayValue {
                         if patch["path"].stringValue.starts(with: "/mixers/") {
-                            let keyPath = patch["path"].stringValue.components(separatedBy: "/").dropFirst(3).joined(separator: ".")
                             let device = patch["path"].stringValue.components(separatedBy: "/")[2]
-                            print(device)
-                            print(keyPath)
-                            print(GoXlr.shared.status)
-                            GoXlr.shared.status!.data.status.mixers[device]!.setValue(patch["value"].object, key: keyPath)
+                            do {
+                                var statusJSON = try JSON(data: try JSONEncoder().encode(GoXlr.shared.status!.data.status.mixers[device]!))
+                                
+                                statusJSON[Array(patch["path"].stringValue.components(separatedBy: "/").dropFirst(3))] = patch["value"]
+                                GoXlr.shared.status!.data.status.mixers[device]! = try JSONDecoder().decode(Mixer.self, from: try statusJSON.rawData())
+                            } catch let error {
+                                Logger().error("\(error)")
+                            }
+                        } else {
+                            do {
+                                var statusJSON = try JSON(data: try JSONEncoder().encode(GoXlr.shared.status!.data.status))
+                                statusJSON[Array(patch["path"].stringValue.components(separatedBy: "/"))] = patch["value"]
+                                GoXlr.shared.status!.data.status = try JSONDecoder().decode(StatusClass.self, from: try statusJSON.rawData())
+                            } catch let error {
+                                Logger().error("\(error)")
+                            }
                         }
                     }
                 }
             }
         case .binary(let data):
-            print("Received data: \(data.count)")
+            Logger().info("Received data: \(data.count)")
         case .ping(_):
             break
         case .pong(_):
@@ -149,7 +165,7 @@ public class DaemonWSocket: WebSocketDelegate {
             self.socketConnexionStatus = .disconnected
         case .error(let error):
             self.socketConnexionStatus = .error
-            print(error ?? "error")
+            Logger().error("\(error)")
         }
     }
 }

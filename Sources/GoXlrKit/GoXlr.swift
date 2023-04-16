@@ -1,8 +1,8 @@
 import Foundation
-import KeyValueCoding
 import Starscream
 import SwiftyJSON
 import RegexBuilder
+
 
 public class GoXlr: ObservableObject {
     
@@ -19,8 +19,20 @@ public class GoXlr: ObservableObject {
     
     public var device = ""
     
+    public var logLevel: GoXlrLogLevel = .info
+    
     public func startObserving() {
-        self.socket.connect()
+        Task {
+            self.daemon.start(args: nil)
+            sleep(2)
+            self.socket.connect()
+        }
+    }
+    public func stopObserving() {
+        Task {
+            self.socket.disconnect()
+            self.daemon.stop()
+        }
     }
     
     public func command(_ command: GoXLRCommand) {
@@ -34,26 +46,12 @@ public class GoXlr: ObservableObject {
             }
         } catch {}
     }
+    
     public init() {}
     
-//    public mutating func getInformation() {
-//        print(self.devices.internalTest.internalValue)
-//        self.replace("newValue", key: "/internalTest/internalValue")
-//        print(self.devices.internalTest.internalValue)
-//    }
-//    public mutating func replace(_ value: Any?, key: String) {
-//        self.devices.setValue(value, key: key.dropFirst(1).replacingOccurrences(of: "/", with: "."))
-//    }
-//    public mutating func value(_ key: String) -> Any? {
-//        return self.devices.value(key: key.dropFirst(1).replacingOccurrences(of: "/", with: "."))
-//    }
+    public enum GoXlrLogLevel {
+        case none
+        case info
+        case debug
+    }
 }
-//
-//public class sharedGoXlrStatus: ObservableObject {
-//    @Published public var status: Status? = nil
-//
-//    func clear() {
-//        self.status = nil
-//
-//    }
-//}

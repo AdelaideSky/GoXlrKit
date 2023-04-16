@@ -9,7 +9,7 @@
 
 import Foundation
 
-public enum ChannelName: String, Codable {
+public enum ChannelName: String, Codable, CaseIterable {
     case Mic,
     LineIn,
     Console,
