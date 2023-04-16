@@ -1,18 +1,23 @@
 // This file was generated from JSON Schema using quicktype, do not modify it directly.
-// To parse the JSON, add this file to your project and do:
 //
-//   public let status = try? newJSONDecoder().decode(Status.self, from: jsonData)
-
+// Status structs.
 import Foundation
 
 public var valueUpdatedByUI = true
+
 // MARK: - Status
+/**
+ Base Status struct. Only used to decode daemon's JSON. Doesn't contain any useful information.
+ */
 public struct Status: Codable {
     public var id: Int
     public var data: DataClass
 }
 
 // MARK: - DataClass
+/**
+ Enclosing struct of the status.
+ */
 public struct DataClass: Codable {
     public var status: StatusClass
 
@@ -22,6 +27,9 @@ public struct DataClass: Codable {
 }
 
 // MARK: - StatusClass
+/**
+ Status struct. Root of the Daemon Status.
+ */
 public struct StatusClass: Codable {
     public var config: Config
     public var mixers: [String:Mixer]

@@ -8,6 +8,9 @@
 import Foundation
 import SwiftUI
 
+/**
+ GoXlr command type, with corresponding parameters.
+ */
 public enum GoXLRCommand: Codable {
     case SetFader(FaderName, ChannelName)
     case SetFaderMuteFunction(FaderName, MuteFunction)

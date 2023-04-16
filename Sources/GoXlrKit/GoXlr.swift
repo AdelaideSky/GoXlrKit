@@ -14,6 +14,14 @@ public class GoXlr: ObservableObject {
     }()
     
     @Published public var status: Status? = nil
+    public var mixer: Mixer? {
+        get {
+            status?.data.status.mixers[device]
+        }
+        set {
+            status?.data.status.mixers[device] = newValue
+        }
+    }
     public var holdUpdates: Bool = false
         
     public var daemon = Daemon()

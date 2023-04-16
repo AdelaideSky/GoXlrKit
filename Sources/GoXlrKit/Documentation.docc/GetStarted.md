@@ -1,21 +1,9 @@
-![GoXlrKit banner](https://user-images.githubusercontent.com/63637808/232327849-513d5586-1beb-412a-a70c-8a9fe6649dd6.png)
+# Get started
 
-# GoXlrKit
+Easily implement GoXlrKit in a SwiftUI app.
 
-GoXlrKit allows accessing to the status of every GoXLR connected, as well as sending commands to the connected GoXLRs. This module also brings controls on the GoXlr-utility itself.
+## Sample code
 
-## Installation
-
-Go in File -> Add packages... and paste the following URL in the search bar:
-```
-https://github.com/Adelenade/GoXlrKit
-```
-
-Don't forget to add inside the Sources/GoXlrKit/Ressources folder a build of the [goxlr utility](https://github.com/GoXLR-on-Linux/goxlr-utility)'s goxlr-daemon and of the goxlr-defaults ! If you don't, every utility-related command will fail (startObserving, daemon.start etc...) and will make your app crash.
-
-## Usage
-
-Here is a little example on how you can use this package:
 ```swift
 import SwiftUI
 import GoXlrKit
@@ -51,5 +39,3 @@ struct ContentView: View {
     }
 }
 ```
-
-*This project is not supported by, or affiliated in any way with, TC-Helicon. For the official GoXLR software, please refer to their website.*
