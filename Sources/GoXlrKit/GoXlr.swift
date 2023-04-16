@@ -3,7 +3,10 @@ import Starscream
 import SwiftyJSON
 import RegexBuilder
 
-
+/**
+ GoXlr class. You can either initialise it or use the `shared` instance.
+ This class conforms to ObservableObject.
+ */
 public class GoXlr: ObservableObject {
     
     public static var shared: GoXlr = {
@@ -21,6 +24,10 @@ public class GoXlr: ObservableObject {
     
     public var logLevel: GoXlrLogLevel = .info
     
+    /**
+     Starts the daemon and connects to its Websocket.
+     *Note: Websocket port is always 14564. The usecase where the daemon websocket isn't at the default port isn't already implemented.*
+     */
     public func startObserving() {
         Task {
             self.daemon.start(args: nil)
@@ -28,6 +35,9 @@ public class GoXlr: ObservableObject {
             self.socket.connect()
         }
     }
+    /**
+     Disconnects from the websocket and shut down the daemon.
+     */
     public func stopObserving() {
         Task {
             self.socket.disconnect()
@@ -35,6 +45,11 @@ public class GoXlr: ObservableObject {
         }
     }
     
+    /**
+     Sends a command to the daemon websocket to the `device` mixer.
+     - Parameters:
+        - command: The command to send, in `GoXLRCommand` type.
+     */
     public func command(_ command: GoXLRCommand) {
         do {
             let command = String(data: try JSONEncoder().encode(command), encoding: .utf8)
