@@ -1,4 +1,13 @@
-![GoXlrKit banner](https://user-images.githubusercontent.com/63637808/232327849-513d5586-1beb-412a-a70c-8a9fe6649dd6.png)
+<div align=center>
+
+#  <img src="https://media.discordapp.net/attachments/1006877993731371019/1097489718662406205/GoXlrKit_banner_1.png?width=2520&height=562" width="2520">
+
+![Contributors](https://img.shields.io/github/contributors/Adelenade/GoXlrKit)
+![OpenIssues](https://img.shields.io/github/issues-raw/Adelenade/GoXlrKit)
+![ClosedIssues](https://img.shields.io/github/issues-closed-raw/Adelenade/GoXlrKit)
+![Discord](https://img.shields.io/discord/1006144319289303140?label=Support%20server)
+![License](https://img.shields.io/github/license/Adelenade/GoXlrKit)
+</div>
 
 # GoXlrKit
 
