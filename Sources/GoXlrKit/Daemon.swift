@@ -90,7 +90,7 @@ public struct Daemon {
         - args: An array of `daemonArguments` passed at launch of the daemon.
      - Note: This function can't restart a daemon not previously launched by the module.
      */
-    public mutating func restart(args: [daemonArguments.RawValue]?) {
+    public mutating func restart(args: [daemonArguments]?) {
         daemonProcess.interrupt()
         self.daemonStatus = .stopped
         daemonProcess = Process()
