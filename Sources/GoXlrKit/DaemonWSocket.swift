@@ -96,7 +96,7 @@ public class DaemonWSocket: WebSocketDelegate {
                 if !self.holdUpdates {
                     let json = JSON(parseJSON: string)
                     for patch in json["data"]["Patch"].arrayValue {
-                        var path = Array(patch["path"].stringValue.components(separatedBy: "/"))
+                        let path = Array(patch["path"].stringValue.components(separatedBy: "/").dropFirst())
                         if patch["op"].stringValue == "replace" {
                             if patch["path"].stringValue.starts(with: "/mixers/") {
                                 let device = patch["path"].stringValue.components(separatedBy: "/")[2]
@@ -104,9 +104,9 @@ public class DaemonWSocket: WebSocketDelegate {
                                     
                                     var statusJSON = try JSON(data: try JSONEncoder().encode(GoXlr.shared.status!.data.status.mixers[device]!))
                                     
-                                    guard statusJSON[Array(path.dropFirst(3))] != patch["value"] else {return}
+                                    guard statusJSON[Array(path.dropFirst(2))] != patch["value"] else {return}
                                     
-                                    statusJSON[path] = patch["value"]
+                                    statusJSON[Array(path.dropFirst(2))] = patch["value"]
                                     GoXlr.shared.status!.data.status.mixers[device]! = try JSONDecoder().decode(Mixer.self, from: try statusJSON.rawData())
                                 } catch let error {
                                     Logger().error("\(error)")
@@ -131,7 +131,7 @@ public class DaemonWSocket: WebSocketDelegate {
                         } else if patch["op"].stringValue == "remove" {
                             do {
                                 var statusJSON = try JSON(data: try JSONEncoder().encode(GoXlr.shared.status!.data.status))
-                                statusJSON[path.dropLast()].dictionaryObject?.removeValue(forKey: patch["value"].stringValue)
+                                statusJSON[path.dropLast()].dictionaryObject?.removeValue(forKey: path.last ?? "")
                                 GoXlr.shared.status!.data.status = try JSONDecoder().decode(StatusClass.self, from: try statusJSON.rawData())
                             } catch let error {
                                 Logger().error("\(error)")
