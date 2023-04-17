@@ -29,7 +29,8 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "GoXlrKit",
-            dependencies: ["Starscream", "SwiftyJSON"]),
+            dependencies: ["Starscream", "SwiftyJSON"],
+            resources: [.copy("Resources/Library")]),
         .target(
             name: "GoXlrKit-Audio",
             dependencies: ["SimplyCoreAudio"])
