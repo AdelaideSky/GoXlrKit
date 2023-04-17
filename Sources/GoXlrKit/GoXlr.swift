@@ -79,6 +79,10 @@ public class GoXlr: ObservableObject {
                         
                         ・ Status object : \(self.status.debugDescription)
                         
+                        ・ Daemon object : \(self.daemon)
+                        
+                        ・ WebSocket object : \(self.socket)
+                        
                         ✧───────────────────────────────────────────────✧
                         """
         let pasteBoard = NSPasteboard.general
