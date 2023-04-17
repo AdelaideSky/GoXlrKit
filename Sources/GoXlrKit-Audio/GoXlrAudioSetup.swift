@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  GoXlrAudioSetup.swift
 //  
 //
 //  Created by Adélaïde Sky on 17/04/2023.
@@ -10,13 +10,13 @@ import SimplyCoreAudio
 import SwiftUI
 import os
 
-public enum GoXlrModel: String {
+public enum GoXlrModel: String, Codable {
     case Mini = "GoXLRMini"
     case Full = "GoXLR"
 }
 
 
-public enum Aggregate: String, CaseIterable {
+public enum Aggregate: String, CaseIterable, Codable {
     case system = "com.adecorp.goxlr.audio-device.system:"
     case game = "com.adecorp.goxlr.audio-device.game:"
     case chat = "com.adecorp.goxlr.audio-device.chat:"
@@ -90,7 +90,7 @@ public class GoXlrAudioSetup {
                 
                 aggregate?.setPreferedChannels(aggregateType)
                 
-                GoXlrAudio.shared.managedAggregates.insert(.init(uid: aggregate!.uid ?? aggregateType.rawValue, name: aggregate!.name, type: aggregateType, deviceModel: model))
+                GoXlrAudio.shared.managedAggregates.insert(.init(aggregate!.uid ?? aggregateType.rawValue, name: aggregate!.name, type: aggregateType, deviceModel: model))
             }
             Logger().debug("Found device \(device.description), configuring aggregates...")
         }

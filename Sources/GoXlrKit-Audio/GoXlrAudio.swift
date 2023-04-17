@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  GoXlrAudio.swift
 //  
 //
 //  Created by Adélaïde Sky on 17/04/2023.
@@ -9,33 +9,11 @@ import Foundation
 import SwiftUI
 import AVFAudio
 import AVFoundation
-import SimplyCoreAudio
 import os
 
-public struct ManagedAggregate: Hashable {
-    var uid: String
-    var name: String
-    var type: Aggregate
-    var deviceModel: GoXlrModel
-    
-    var device: AudioDevice? {
-        return SimplyCoreAudio().allAggregateDevices.first(where: {$0.uid == self.uid})
-    }
-    func delete() {
-        if let deviceID = self.device?.id {
-            let status = SimplyCoreAudio().removeAggregateDevice(id: deviceID)
-            Logger().debug("\(status)")
-        }
-    }
-//    func rename(to: String) {
-//        guard to != self.name else { return }
-//        
-//        if let device = self.device {
-//            device.name = to
-//        }
-//    }
-}
-
+/**
+ GoXlrAudio class. Here you can find
+ */
 public class GoXlrAudio {
     
     public static var shared: GoXlrAudio = {
@@ -44,7 +22,7 @@ public class GoXlrAudio {
     
     public let setUp: GoXlrAudioSetup
     
-    @Published public var managedAggregates: Set<ManagedAggregate> = []
+    @AppStorage("fr.adesky.GoXlrKit.Audio.managedAggregates") public var managedAggregates: Set<ManagedAggregate> = []
     
     public init() {
         self.setUp = .init()
@@ -81,7 +59,7 @@ extension GoXlrAudio {
             captureSession.addOutput(audioOutput)
         } catch {
             // Configuration failed. Handle error.
-            print("Error creating the capture session.")
+            Logger().error("Error creating the capture session.")
             }
         return captureSession
     }
