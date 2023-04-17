@@ -13,12 +13,16 @@ let package = Package(
         .library(
             name: "GoXlrKit",
             targets: ["GoXlrKit"]),
+        .library(
+            name: "GoXlrKit-Audio",
+            targets: ["GoXlrKit-Audio"])
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
         .package(url: "https://github.com/daltoniam/Starscream", branch: "master"),
-        .package(url: "https://github.com/SwiftyJSON/SwiftyJSON", branch: "master")
+        .package(url: "https://github.com/SwiftyJSON/SwiftyJSON", branch: "master"),
+        .package(url: "https://github.com/rnine/SimplyCoreAudio", branch: "develop")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -26,9 +30,9 @@ let package = Package(
         .target(
             name: "GoXlrKit",
             dependencies: ["Starscream", "SwiftyJSON"]),
-        .testTarget(
-            name: "GoXlrKitTests",
-            dependencies: ["GoXlrKit"]),
+        .target(
+            name: "GoXlrKit-Audio",
+            dependencies: ["SimplyCoreAudio"])
     ],
     swiftLanguageVersions: [.v5]
 )

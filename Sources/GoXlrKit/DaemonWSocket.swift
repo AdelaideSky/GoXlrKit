@@ -99,7 +99,10 @@ public class DaemonWSocket: WebSocketDelegate {
                         if patch["path"].stringValue.starts(with: "/mixers/") {
                             let device = patch["path"].stringValue.components(separatedBy: "/")[2]
                             do {
+                                var path = Array(patch["path"].stringValue.components(separatedBy: "/").dropFirst(3))
                                 var statusJSON = try JSON(data: try JSONEncoder().encode(GoXlr.shared.status!.data.status.mixers[device]!))
+                                
+                                guard statusJSON[path] != patch["value"] else {return}
                                 
                                 statusJSON[Array(patch["path"].stringValue.components(separatedBy: "/").dropFirst(3))] = patch["value"]
                                 GoXlr.shared.status!.data.status.mixers[device]! = try JSONDecoder().decode(Mixer.self, from: try statusJSON.rawData())

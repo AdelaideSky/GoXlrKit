@@ -54,8 +54,7 @@ public struct Daemon {
         
         guard daemonPath != nil else {
             self.daemonStatus = .error
-            Logger().error("No daemon executable was found in the Resources of the module.")
-            return
+            fatalError("No daemon executable was found in the Resources of the app. Don't forget to add them !")
         }
         
         daemonProcess.executableURL = daemonPath!
