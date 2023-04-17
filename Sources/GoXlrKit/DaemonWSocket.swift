@@ -96,23 +96,42 @@ public class DaemonWSocket: WebSocketDelegate {
                 if !self.holdUpdates {
                     let json = JSON(parseJSON: string)
                     for patch in json["data"]["Patch"].arrayValue {
-                        if patch["path"].stringValue.starts(with: "/mixers/") {
-                            let device = patch["path"].stringValue.components(separatedBy: "/")[2]
+                        var path = Array(patch["path"].stringValue.components(separatedBy: "/"))
+                        if patch["op"].stringValue == "replace" {
+                            if patch["path"].stringValue.starts(with: "/mixers/") {
+                                let device = patch["path"].stringValue.components(separatedBy: "/")[2]
+                                do {
+                                    
+                                    var statusJSON = try JSON(data: try JSONEncoder().encode(GoXlr.shared.status!.data.status.mixers[device]!))
+                                    
+                                    guard statusJSON[Array(path.dropFirst(3))] != patch["value"] else {return}
+                                    
+                                    statusJSON[path] = patch["value"]
+                                    GoXlr.shared.status!.data.status.mixers[device]! = try JSONDecoder().decode(Mixer.self, from: try statusJSON.rawData())
+                                } catch let error {
+                                    Logger().error("\(error)")
+                                }
+                            } else {
+                                do {
+                                    var statusJSON = try JSON(data: try JSONEncoder().encode(GoXlr.shared.status!.data.status))
+                                    statusJSON[path] = patch["value"]
+                                    GoXlr.shared.status!.data.status = try JSONDecoder().decode(StatusClass.self, from: try statusJSON.rawData())
+                                } catch let error {
+                                    Logger().error("\(error)")
+                                }
+                            }
+                        } else if patch["op"].stringValue == "add" {
                             do {
-                                var path = Array(patch["path"].stringValue.components(separatedBy: "/").dropFirst(3))
-                                var statusJSON = try JSON(data: try JSONEncoder().encode(GoXlr.shared.status!.data.status.mixers[device]!))
-                                
-                                guard statusJSON[path] != patch["value"] else {return}
-                                
-                                statusJSON[Array(patch["path"].stringValue.components(separatedBy: "/").dropFirst(3))] = patch["value"]
-                                GoXlr.shared.status!.data.status.mixers[device]! = try JSONDecoder().decode(Mixer.self, from: try statusJSON.rawData())
+                                var statusJSON = try JSON(data: try JSONEncoder().encode(GoXlr.shared.status!.data.status))
+                                statusJSON[path] = patch["value"]
+                                GoXlr.shared.status!.data.status = try JSONDecoder().decode(StatusClass.self, from: try statusJSON.rawData())
                             } catch let error {
                                 Logger().error("\(error)")
                             }
-                        } else {
+                        } else if patch["op"].stringValue == "remove" {
                             do {
                                 var statusJSON = try JSON(data: try JSONEncoder().encode(GoXlr.shared.status!.data.status))
-                                statusJSON[Array(patch["path"].stringValue.components(separatedBy: "/"))] = patch["value"]
+                                statusJSON[path.dropLast()].dictionaryObject?.removeValue(forKey: patch["value"].stringValue)
                                 GoXlr.shared.status!.data.status = try JSONDecoder().decode(StatusClass.self, from: try statusJSON.rawData())
                             } catch let error {
                                 Logger().error("\(error)")
