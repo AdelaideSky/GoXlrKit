@@ -50,7 +50,7 @@ public struct Daemon {
      */
     public mutating func start(args: [daemonArguments.RawValue]?) {
         
-        let daemonPath = Bundle.module.url(forResource: "goxlr-daemon", withExtension: "")
+        let daemonPath = Bundle.main.url(forResource: "goxlr-daemon", withExtension: "")
         
         guard daemonPath != nil else {
             self.daemonStatus = .error
