@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import Starscream
 import SwiftyJSON
 import RegexBuilder
@@ -68,6 +69,21 @@ public class GoXlr: ObservableObject {
                 self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\"Command\": [\"\(self.device)\", "+commandString+"]}}")
             }
         } catch {}
+    }
+    
+    public func copyDebugInfo() {
+        let returnValue = """
+                        ✧──────────────・「 Debug Info 」・──────────────✧
+                        
+                        ・ Device : \(self.device)
+                        
+                        ・ Status object : \(self.status.debugDescription)
+                        
+                        ✧───────────────────────────────────────────────✧
+                        """
+        let pasteBoard = NSPasteboard.general
+        pasteBoard.clearContents()
+        pasteBoard.setString(returnValue, forType: .string)
     }
     
     public init() {}
