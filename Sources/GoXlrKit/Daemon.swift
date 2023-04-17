@@ -59,6 +59,7 @@ public struct Daemon {
         
         daemonProcess.executableURL = daemonPath!
         if args != nil {
+            daemonProcess.arguments = []
             for arg in args! {
                 daemonProcess.arguments?.append(arg.rawValue)
             }
