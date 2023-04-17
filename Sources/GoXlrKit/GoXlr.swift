@@ -38,7 +38,7 @@ public class GoXlr: ObservableObject {
      */
     public func startObserving() {
         Task {
-            self.daemon.start(args: nil)
+            self.daemon.start(args: [.noMenubarIcon])
             sleep(2)
             self.socket.connect()
         }

@@ -48,7 +48,7 @@ public struct Daemon {
         - args: An array of `daemonArguments` passed at launch of the daemon.
      - Note: If no goxlr-daemon file is found in the package, this function won't do anything.
      */
-    public mutating func start(args: [daemonArguments.RawValue]?) {
+    public mutating func start(args: [daemonArguments]?) {
         
         let daemonPath = Bundle.main.url(forResource: "goxlr-daemon", withExtension: "")
         
@@ -59,7 +59,9 @@ public struct Daemon {
         
         daemonProcess.executableURL = daemonPath!
         if args != nil {
-            daemonProcess.arguments = args
+            for arg in args! {
+                daemonProcess.arguments?.append(arg.rawValue)
+            }
         }
         self.daemonStatus = .launching
         do {
