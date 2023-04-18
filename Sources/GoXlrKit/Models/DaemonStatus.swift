@@ -9,7 +9,7 @@ public var valueUpdatedByUI = true
 /**
  Base Status struct. Only used to decode daemon's JSON. Doesn't contain any useful information.
  */
-public struct Status: Codable {
+public class Status: Codable, ObservableObject {
     public var id: Int
     public var data: DataClass
 }
@@ -18,7 +18,7 @@ public struct Status: Codable {
 /**
  Enclosing struct of the status.
  */
-public struct DataClass: Codable {
+public class DataClass: Codable, ObservableObject {
     public var status: StatusClass
 
     enum CodingKeys: String, CodingKey {
@@ -30,7 +30,7 @@ public struct DataClass: Codable {
 /**
  Status struct. Root of the Daemon Status.
  */
-public struct StatusClass: Codable {
+public class StatusClass: Codable, ObservableObject {
     public var config: Config
     public var mixers: [String:Mixer]
     public var paths: Paths
@@ -38,7 +38,7 @@ public struct StatusClass: Codable {
 }
 
 // MARK: - Config
-public struct Config: Codable {
+public class Config: Codable, ObservableObject {
     public var daemonVersion: String
     public var autostartEnabled: Bool
 
@@ -49,7 +49,7 @@ public struct Config: Codable {
 }
 
 // MARK: - Files
-public struct Files: Codable {
+public class Files: Codable, ObservableObject {
     public var profiles, micProfiles, presets: [String]
     public var samples: [String: String]
     public var icons: [String]
@@ -62,7 +62,7 @@ public struct Files: Codable {
 }
 
 // MARK: - Mixer
-public struct Mixer: Codable {
+public class Mixer: Codable, ObservableObject {
     public var hardware: Hardware
     public var faderStatus: FadersStatus
     public var micStatus: MicStatus
@@ -89,7 +89,7 @@ public struct Mixer: Codable {
     }
 }
 
-public struct ButtonDown: Codable {
+public class ButtonDown: Codable, ObservableObject {
     public var Fader1Mute, Fader2Mute, Fader3Mute, Fader4Mute: Bool
     public var Bleep, Cough: Bool
 
@@ -105,7 +105,7 @@ public struct ButtonDown: Codable {
 }
 
 // MARK: - CoughButton
-public struct CoughButton: Codable {
+public class CoughButton: Codable, ObservableObject {
     public var isToggle: Bool
     public var muteType, state: String
 
@@ -117,7 +117,7 @@ public struct CoughButton: Codable {
 }
 
 // MARK: - Effects
-public struct Effects: Codable {
+public class Effects: Codable, ObservableObject {
     public var isEnabled: Bool
     public var activePreset: String
     public var presetNames: PresetNames
@@ -132,7 +132,7 @@ public struct Effects: Codable {
 }
 
 // MARK: - Current
-public struct CurrentEffectPreset: Codable {
+public class CurrentEffectPreset: Codable, ObservableObject {
     public var reverb: Reverb
     public var echo: EchoClass
     public var pitch: Pitch
@@ -148,7 +148,7 @@ public struct CurrentEffectPreset: Codable {
 }
 
 // MARK: - EchoClass
-public struct EchoClass: Codable {
+public class EchoClass: Codable, ObservableObject {
     public var style: EchoStyle
     public var amount, feedback, tempo, delayLeft: Int
     public var delayRight, feedbackLeft, feedbackRight, feedbackXfbLToR: Int
@@ -166,13 +166,13 @@ public struct EchoClass: Codable {
 }
 
 // MARK: - Gender
-public struct Gender: Codable {
+public class Gender: Codable, ObservableObject {
     public var style: GenderStyle
     public var amount: Int
 }
 
 // MARK: - HardTune
-public struct HardTune: Codable {
+public class HardTune: Codable, ObservableObject {
     public var isEnabled: Bool
     public var style: HardTuneStyle
     public var amount, rate, window: Int
@@ -185,7 +185,7 @@ public struct HardTune: Codable {
 }
 
 // MARK: - Megaphone
-public struct Megaphone: Codable {
+public class Megaphone: Codable, ObservableObject {
     public var isEnabled: Bool
     public var style: MegaphoneStyle
     public var amount, postGain: Int
@@ -198,13 +198,13 @@ public struct Megaphone: Codable {
 }
 
 // MARK: - Pitch
-public struct Pitch: Codable {
+public class Pitch: Codable, ObservableObject {
     public var style: PitchStyle
     public var amount, character: Int
 }
 
 // MARK: - Reverb
-public struct Reverb: Codable {
+public class Reverb: Codable, ObservableObject {
     public var style: ReverbStyle
     public var amount, decay, earlyLevel, tailLevel: Int
     public var preDelay, loColour, hiColour, hiFactor: Int
@@ -225,7 +225,7 @@ public struct Reverb: Codable {
 }
 
 // MARK: - Robot
-public struct Robot: Codable {
+public class Robot: Codable, ObservableObject {
     public var isEnabled: Bool { didSet { GoXlr.shared.command(.SetRobotEnabled(self.isEnabled)) } }
     public var style: RobotStyle { didSet { GoXlr.shared.command(.SetRobotStyle(self.style)) } }
     
@@ -267,7 +267,7 @@ public struct Robot: Codable {
 
 // MARK: - PresetNames
 // WARNING: - Renaming presets only renames ACTIVE preset. Make sure to update names ONLY when the preset is active
-public struct PresetNames: Codable {
+public class PresetNames: Codable, ObservableObject {
     public var preset1: String { didSet { GoXlr.shared.command(.RenameActivePreset(self.preset1)) } }
     public var preset2: String { didSet { GoXlr.shared.command(.RenameActivePreset(self.preset2)) } }
     public var preset3: String { didSet { GoXlr.shared.command(.RenameActivePreset(self.preset3)) } }
@@ -286,7 +286,7 @@ public struct PresetNames: Codable {
 }
 
 // MARK: - FaderStatus
-public struct FadersStatus: Codable {
+public class FadersStatus: Codable, ObservableObject {
     public var a: FaderStatusA
     public var b: FaderStatusB
     public var c: FaderStatusC
@@ -301,7 +301,7 @@ public struct FadersStatus: Codable {
 }
 
 // MARK: - FaderStatus
-public struct FaderStatusA: Codable {
+public class FaderStatusA: Codable, ObservableObject {
     public var channel: ChannelName { didSet { GoXlr.shared.command(.SetFader(.A, self.channel)) } }
     public var muteType: MuteFunction { didSet { GoXlr.shared.command(.SetFaderMuteFunction(.A, self.muteType)) } }
     public var scribble: ScribbleA?
@@ -314,7 +314,7 @@ public struct FaderStatusA: Codable {
         case muteState = "mute_state"
     }
 }
-public struct FaderStatusB: Codable {
+public class FaderStatusB: Codable, ObservableObject {
     public var channel: ChannelName { didSet { GoXlr.shared.command(.SetFader(.B, self.channel)) } }
     public var muteType: MuteFunction { didSet { GoXlr.shared.command(.SetFaderMuteFunction(.B, self.muteType)) } }
     public var scribble: ScribbleB?
@@ -327,7 +327,7 @@ public struct FaderStatusB: Codable {
         case muteState = "mute_state"
     }
 }
-public struct FaderStatusC: Codable {
+public class FaderStatusC: Codable, ObservableObject {
     public var channel: ChannelName { didSet { GoXlr.shared.command(.SetFader(.C, self.channel)) } }
     public var muteType: MuteFunction { didSet { GoXlr.shared.command(.SetFaderMuteFunction(.C, self.muteType)) } }
     public var scribble: ScribbleC?
@@ -340,7 +340,7 @@ public struct FaderStatusC: Codable {
         case muteState = "mute_state"
     }
 }
-public struct FaderStatusD: Codable {
+public class FaderStatusD: Codable, ObservableObject {
     public var channel: ChannelName { didSet { GoXlr.shared.command(.SetFader(.D, self.channel)) } }
     public var muteType: MuteFunction { didSet { GoXlr.shared.command(.SetFaderMuteFunction(.D, self.muteType)) } }
     public var scribble: ScribbleD?
@@ -355,7 +355,7 @@ public struct FaderStatusD: Codable {
 }
 
 // MARK: - Scribble
-public struct ScribbleA: Codable {
+public class ScribbleA: Codable, ObservableObject {
     public var fileName: String { didSet { GoXlr.shared.command(.SetScribbleIcon(.A, self.fileName)) } }
     public var bottomText: String { didSet { GoXlr.shared.command(.SetScribbleText(.A, self.bottomText)) } }
     public var leftText: String? { didSet { if self.leftText != nil { GoXlr.shared.command(.SetScribbleNumber(.A, self.leftText!)) } } }
@@ -368,7 +368,7 @@ public struct ScribbleA: Codable {
         case inverted
     }
 }
-public struct ScribbleB: Codable {
+public class ScribbleB: Codable, ObservableObject {
     public var fileName: String { didSet { GoXlr.shared.command(.SetScribbleIcon(.B, self.fileName)) } }
     public var bottomText: String { didSet { GoXlr.shared.command(.SetScribbleText(.B, self.bottomText)) } }
     public var leftText: String? { didSet { if self.leftText != nil { GoXlr.shared.command(.SetScribbleNumber(.B, self.leftText!)) } } }
@@ -381,7 +381,7 @@ public struct ScribbleB: Codable {
         case inverted
     }
 }
-public struct ScribbleC: Codable {
+public class ScribbleC: Codable, ObservableObject {
     public var fileName: String { didSet { GoXlr.shared.command(.SetScribbleIcon(.C, self.fileName)) } }
     public var bottomText: String { didSet { GoXlr.shared.command(.SetScribbleText(.C, self.bottomText)) } }
     public var leftText: String? { didSet { if self.leftText != nil { GoXlr.shared.command(.SetScribbleNumber(.C, self.leftText!)) } } }
@@ -394,7 +394,7 @@ public struct ScribbleC: Codable {
         case inverted
     }
 }
-public struct ScribbleD: Codable {
+public class ScribbleD: Codable, ObservableObject {
     public var fileName: String { didSet { GoXlr.shared.command(.SetScribbleIcon(.D, self.fileName)) } }
     public var bottomText: String { didSet { GoXlr.shared.command(.SetScribbleText(.D, self.bottomText)) } }
     public var leftText: String? { didSet { if self.leftText != nil { GoXlr.shared.command(.SetScribbleNumber(.D, self.leftText!)) } } }
@@ -409,7 +409,7 @@ public struct ScribbleD: Codable {
 }
 
 // MARK: - Hardware
-public struct Hardware: Codable {
+public class Hardware: Codable, ObservableObject {
     public var versions: Versions
     public var serialNumber, manufacturedDate: String
     public var deviceType: GoXlrModel
@@ -425,7 +425,7 @@ public struct Hardware: Codable {
 }
 
 // MARK: - USBDevice
-public struct USBDevice: Codable {
+public class USBDevice: Codable, ObservableObject {
     public var manufacturerName, productName: String
     public var version: [Int]
     public var busNumber, address: Int
@@ -441,7 +441,7 @@ public struct USBDevice: Codable {
 }
 
 // MARK: - Versions
-public struct Versions: Codable {
+public class Versions: Codable, ObservableObject {
     public var firmware: [Int]
     public var fpgaCount: Int
     public var dice: [Int]
@@ -454,14 +454,14 @@ public struct Versions: Codable {
 }
 
 // MARK: - Levels
-public struct Levels: Codable {
+public class Levels: Codable, ObservableObject {
     public var volumes: Volumes
     public var bleep: Float { didSet { GoXlr.shared.command(.SetSwearButtonVolume(Int(self.bleep))) } }
     public var deess: Float { didSet { GoXlr.shared.command(.SetDeeser(Int(self.deess))) } }
 }
 
 // MARK: - Volumes
-public struct Volumes: Codable {
+public class Volumes: Codable, ObservableObject {
     public var system: Float { didSet { GoXlr.shared.command(.SetVolume(.System, Int(self.system))) } }
     public var mic: Float { didSet { GoXlr.shared.command(.SetVolume(.Mic, Int(self.mic))) } }
     public var lineIn: Float { didSet { GoXlr.shared.command(.SetVolume(.LineIn, Int(self.lineIn))) } }
@@ -490,7 +490,7 @@ public struct Volumes: Codable {
 }
 
 // MARK: - Lighting
-public struct Lighting: Codable {
+public class Lighting: Codable, ObservableObject {
     public var faders: Faders
     public var buttons: [String: ButtonStyle]
     public var simple: Simple
@@ -499,7 +499,7 @@ public struct Lighting: Codable {
 }
 
 // MARK: - Button
-public struct ButtonStyle: Codable {
+public class ButtonStyle: Codable, ObservableObject {
     public var offStyle: ButtonColourOffStyle
     public var colours: Colours
 
@@ -510,7 +510,7 @@ public struct ButtonStyle: Codable {
 }
 
 // MARK: - Colours
-public struct Colours: Codable {
+public class Colours: Codable, ObservableObject {
     public var colourOne: String
     public var colourTwo: String
 
@@ -521,7 +521,7 @@ public struct Colours: Codable {
 }
 
 // MARK: - Encoders
-public struct Encoders: Codable {
+public class Encoders: Codable, ObservableObject {
     public var reverb, echo, pitch, gender: GenderClass?
 
     enum CodingKeys: String, CodingKey {
@@ -533,7 +533,7 @@ public struct Encoders: Codable {
 }
 
 // MARK: - GenderClass
-public struct GenderClass: Codable {
+public class GenderClass: Codable, ObservableObject {
     public var colourOne: String
     public var colourTwo: String
     public var colourThree: String
@@ -546,7 +546,7 @@ public struct GenderClass: Codable {
 }
 
 // MARK: - Faders
-public struct Faders: Codable {
+public class Faders: Codable, ObservableObject {
     public var c, b, a, d: Fader
 
     enum CodingKeys: String, CodingKey {
@@ -558,13 +558,13 @@ public struct Faders: Codable {
 }
 
 // MARK: - FadersA
-public struct Fader: Codable {
+public class Fader: Codable, ObservableObject {
     public var style: String
     public var colours: Colours
 }
 
 // MARK: - LightingSampler
-public struct LightingSampler: Codable {
+public class LightingSampler: Codable, ObservableObject {
     public var samplerSelectA, samplerSelectB, samplerSelectC: SamplerSelect?
 
     enum CodingKeys: String, CodingKey {
@@ -575,7 +575,7 @@ public struct LightingSampler: Codable {
 }
 
 // MARK: - SamplerSelect
-public struct SamplerSelect: Codable {
+public class SamplerSelect: Codable, ObservableObject {
     public var offStyle: ButtonColourOffStyle
     public var colours: GenderClass
 
@@ -586,7 +586,7 @@ public struct SamplerSelect: Codable {
 }
 
 // MARK: - Simple
-public struct Simple: Codable {
+public class Simple: Codable, ObservableObject {
     public var scribble3, scribble4, scribble1, scribble2: Accent?
     public var global, accent: Accent
 
@@ -601,7 +601,7 @@ public struct Simple: Codable {
 }
 
 // MARK: - Accent
-public struct Accent: Codable {
+public class Accent: Codable, ObservableObject {
     public var colourOne: String
 
     enum CodingKeys: String, CodingKey {
@@ -610,7 +610,7 @@ public struct Accent: Codable {
 }
 
 // MARK: - MicStatus
-public struct MicStatus: Codable {
+public class MicStatus: Codable, ObservableObject {
     public var micType: String
     public var micGains: MicGains
     public var equaliser: Equaliser
@@ -629,7 +629,7 @@ public struct MicStatus: Codable {
 }
 
 // MARK: - Compressor
-public struct Compressor: Codable {
+public class Compressor: Codable, ObservableObject {
     public var threshold, ratio, attack, release: Int
     public var makeupGain: Int
 
@@ -640,17 +640,17 @@ public struct Compressor: Codable {
 }
 
 // MARK: - Equaliser
-public struct Equaliser: Codable {
+public class Equaliser: Codable, ObservableObject {
     public var gain, frequency: [String: Double]
 }
 
 // MARK: - EqualiserMini
-public struct EqualiserMini: Codable {
+public class EqualiserMini: Codable, ObservableObject {
     public var gain, frequency: Frequency
 }
 
 // MARK: - Frequency
-public struct Frequency: Codable {
+public class Frequency: Codable, ObservableObject {
     public var equalizer250Hz, equalizer1KHz, equalizer500Hz, equalizer8KHz: Int
     public var equalizer90Hz, equalizer3KHz: Int
 
@@ -665,7 +665,7 @@ public struct Frequency: Codable {
 }
 
 // MARK: - MicGains
-public struct MicGains: Codable {
+public class MicGains: Codable, ObservableObject {
     public var micGainsDynamic, condenser, jack: Int
 
     enum CodingKeys: String, CodingKey {
@@ -676,14 +676,14 @@ public struct MicGains: Codable {
 }
 
 // MARK: - NoiseGate
-public struct NoiseGate: Codable {
+public class NoiseGate: Codable, ObservableObject {
     public var threshold, attack, release: Int
     public var enabled: Bool
     public var attenuation: Int
 }
 
 // MARK: - Router
-public struct Router: Codable {
+public class Router: Codable, ObservableObject {
     public var microphone, chat, music, game: Chat
     public var console, lineIn, system, samples: Chat
 
@@ -700,7 +700,7 @@ public struct Router: Codable {
 }
 
 // MARK: - Chat
-public struct Chat: Codable {
+public class Chat: Codable, ObservableObject {
     public var headphones, broadcastMix, lineOut, chatMic: Bool
     public var sampler: Bool
 
@@ -714,12 +714,12 @@ public struct Chat: Codable {
 }
 
 // MARK: - S210401735CQKSampler
-public struct Sampler: Codable {
+public class Sampler: Codable, ObservableObject {
     public var banks: Banks
 }
 
 // MARK: - Banks
-public struct Banks: Codable {
+public class Banks: Codable, ObservableObject {
     public var C, A, B: Bank
 
     enum CodingKeys: String, CodingKey {
@@ -730,7 +730,7 @@ public struct Banks: Codable {
 }
 
 // MARK: - BanksA
-public struct Bank: Codable {
+public class Bank: Codable, ObservableObject {
     public var BottomLeft, TopLeft, TopRight, BottomRight: SamplerButton
 
     enum CodingKeys: String, CodingKey {
@@ -742,7 +742,7 @@ public struct Bank: Codable {
 }
 
 // MARK: - BottomLeft
-public struct SamplerButton: Codable {
+public class SamplerButton: Codable, ObservableObject {
     public var function: Function
     public var order: Order
     public var samples: [JSONAny]
@@ -763,7 +763,7 @@ public enum Order: String, Codable {
 }
 
 // MARK: - Settings
-public struct Settings: Codable {
+public class Settings: Codable, ObservableObject {
     public var display: Display
     public var muteHoldDuration: Int
     public var vcMuteAlsoMuteCM: Bool
@@ -776,7 +776,7 @@ public struct Settings: Codable {
 }
 
 // MARK: - Display
-public struct Display: Codable {
+public class Display: Codable, ObservableObject {
     public var gate, compressor, equaliser, equaliserFine: String
 
     enum CodingKeys: String, CodingKey {
@@ -786,7 +786,7 @@ public struct Display: Codable {
 }
 
 // MARK: - Paths
-public struct Paths: Codable {
+public class Paths: Codable, ObservableObject {
     public var profileDirectory, micProfileDirectory, samplesDirectory, presetsDirectory: String
     public var iconsDirectory: String
 
@@ -801,7 +801,7 @@ public struct Paths: Codable {
 
 // MARK: - Encode/decode helpers
 
-public class JSONNull: Codable, Hashable {
+public class JSONNull: Codable, ObservableObject, Hashable {
 
     public static func == (lhs: JSONNull, rhs: JSONNull) -> Bool {
         return true
@@ -850,7 +850,7 @@ class JSONCodingKey: CodingKey {
     }
 }
 
-public class JSONAny: Codable {
+public class JSONAny: Codable, ObservableObject {
 
     public let value: Any
 
