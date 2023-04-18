@@ -456,8 +456,8 @@ public struct Versions: Codable {
 // MARK: - Levels
 public struct Levels: Codable {
     public var volumes: Volumes
-    public var bleep: Int { didSet { GoXlr.shared.command(.SetSwearButtonVolume(self.bleep)) } }
-    public var deess: Int { didSet { GoXlr.shared.command(.SetDeeser(self.deess)) } }
+    public var bleep: Float { didSet { GoXlr.shared.command(.SetSwearButtonVolume(Int(self.bleep))) } }
+    public var deess: Float { didSet { GoXlr.shared.command(.SetDeeser(Int(self.deess))) } }
 }
 
 // MARK: - Volumes
