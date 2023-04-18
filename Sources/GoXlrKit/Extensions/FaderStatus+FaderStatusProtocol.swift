@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-protocol Scribble: Codable {
+public protocol Scribble: Codable {
     var fileName: String { get set }
     var bottomText: String { get set }
     var leftText: String? { get set }
@@ -19,7 +19,7 @@ extension ScribbleB: Scribble {}
 extension ScribbleC: Scribble {}
 extension ScribbleD: Scribble {}
 
-protocol FaderStatus: Codable {
+public protocol FaderStatus: Codable {
     associatedtype ScribbleType: Scribble
     var channel: ChannelName { get set }
     var muteType: MuteFunction { get set }
