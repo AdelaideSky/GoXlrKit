@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 extension ChannelName {
-    var icon: String {
+    public var icon: String {
         switch self {
         case .Mic:
             return "mic"

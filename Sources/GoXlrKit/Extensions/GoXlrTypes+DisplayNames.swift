@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 extension ChannelName {
-    var displayName: String {
+    public var displayName: String {
         switch self {
         case .LineIn:
             return "Line-In"
