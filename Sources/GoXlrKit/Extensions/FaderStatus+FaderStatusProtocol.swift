@@ -8,11 +8,23 @@
 import Foundation
 import SwiftUI
 
+protocol Scribble: Codable {
+    var fileName: String { get set }
+    var bottomText: String { get set }
+    var leftText: String? { get set }
+    var inverted: Bool { get set }
+}
+extension ScribbleA: Scribble {}
+extension ScribbleB: Scribble {}
+extension ScribbleC: Scribble {}
+extension ScribbleD: Scribble {}
+
 protocol FaderStatus: Codable {
-    public var channel: ChannelName
-    public var muteType: MuteFunction
-    public var scribble: ScribbleA?
-    public var muteState: MuteState
+    associatedtype ScribbleType: Scribble
+    var channel: ChannelName { get set }
+    var muteType: MuteFunction { get set }
+    var scribble: ScribbleType? { get set }
+    var muteState: MuteState { get set }
 }
 
 extension FaderStatusA: FaderStatus {}
