@@ -11,6 +11,8 @@ import SwiftUI
 extension ChannelName {
     public var displayName: String {
         switch self {
+        case .Chat:
+            return "Voice Chat"
         case .LineIn:
             return "Line-In"
         case .MicMonitor:
