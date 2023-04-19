@@ -42,8 +42,8 @@ struct ContentView: View {
                 Button("Set System volume to 100%") {
                     guard goxlr.device != "" else { return } // check if a GoXlr is connected
                     
-                    goxlr.mixer!.levels.volumes.system = 255 //Set System volume to maximum. Volumes are a Float going from 0 to 255 (The daemon only uses Int values but GoXlrKit provides Float values to allow directly binding to sliders)
-                    //As you can see, you don't need to manually send the commands to the Daemon: the module does it by itself.
+                    goxlr.command(.SetVolume(.System, 255)) //Set System volume to maximum. Volumes are a Float going from 0 to 255 
+                    //By default, the command is sent to the first device connected. 
                 }.disabled(goxlr.status == nil)
                 
             } else {
