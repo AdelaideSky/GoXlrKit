@@ -973,17 +973,17 @@ public class Levels: Codable, ObservableObject {
 
 // MARK: - Volumes
 public class Volumes: Codable, ObservableObject {
-    @Published public var system: Float
-    @Published public var mic: Float
-    @Published public var lineIn: Float
-    @Published public var console: Float
-    @Published public var game: Float
-    @Published public var chat: Float
-    @Published public var sample: Float
-    @Published public var music: Float
-    @Published public var headphones: Float
-    @Published public var micMonitor: Float
-    @Published public var lineOut: Float
+    @Published public var system: Float { didSet { GoXlr.shared.command(.SetVolume(.System, Int(system))) } }
+    @Published public var mic: Float { didSet { GoXlr.shared.command(.SetVolume(.Mic, Int(mic))) } }
+    @Published public var lineIn: Float { didSet { GoXlr.shared.command(.SetVolume(.LineIn, Int(lineIn))) } }
+    @Published public var console: Float { didSet { GoXlr.shared.command(.SetVolume(.Console, Int(console))) } }
+    @Published public var game: Float { didSet { GoXlr.shared.command(.SetVolume(.Game, Int(game))) } }
+    @Published public var chat: Float { didSet { GoXlr.shared.command(.SetVolume(.Chat, Int(chat))) } }
+    @Published public var sample: Float { didSet { GoXlr.shared.command(.SetVolume(.Sample, Int(sample))) } }
+    @Published public var music: Float { didSet { GoXlr.shared.command(.SetVolume(.Music, Int(music))) } }
+    @Published public var headphones: Float { didSet { GoXlr.shared.command(.SetVolume(.Headphones, Int(headphones))) } }
+    @Published public var micMonitor: Float { didSet { GoXlr.shared.command(.SetVolume(.MicMonitor, Int(micMonitor))) } }
+    @Published public var lineOut: Float { didSet { GoXlr.shared.command(.SetVolume(.LineOut, Int(lineOut))) } }
 
     enum CodingKeys: String, CodingKey {
         case mic = "Mic"

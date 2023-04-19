@@ -102,7 +102,7 @@ public class DaemonWSocket: WebSocketDelegate {
                             if patch["op"].stringValue == "replace" {
                                 if patch["path"].stringValue.starts(with: "/mixers/") {
                                     let device = patch["path"].stringValue.components(separatedBy: "/")[2]
-                                    handlePatch(device: device, path: path.dropFirst(2).joined(separator: "/"), value: patch["value"])
+                                    handlePatch(mixer: &GoXlr.shared.status!.data.status.mixers[device]!, path: Array(path.dropFirst(2)), value: patch["value"])
                                 } else {
                                     do {
                                         var statusJSON = try JSON(data: try JSONEncoder().encode(GoXlr.shared.status!.data.status))
