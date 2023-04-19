@@ -752,10 +752,10 @@ public class PresetNames: Codable, ObservableObject {
 
 // MARK: - FaderStatus
 public class FadersStatus: Codable, ObservableObject {
-    @Published public var a: Fader
-    @Published public var b: Fader
-    @Published public var c: Fader
-    @Published public var d: Fader
+    @Published public var a: FaderA
+    @Published public var b: FaderB
+    @Published public var c: FaderC
+    @Published public var d: FaderD
 
     enum CodingKeys: String, CodingKey {
         case a = "A"
@@ -766,10 +766,10 @@ public class FadersStatus: Codable, ObservableObject {
     
     public required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        a = try values.decode(Fader.self, forKey: .a)
-        b = try values.decode(Fader.self, forKey: .b)
-        c = try values.decode(Fader.self, forKey: .c)
-        d = try values.decode(Fader.self, forKey: .d)
+        a = try values.decode(FaderA.self, forKey: .a)
+        b = try values.decode(FaderB.self, forKey: .b)
+        c = try values.decode(FaderC.self, forKey: .c)
+        d = try values.decode(FaderD.self, forKey: .d)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -782,9 +782,99 @@ public class FadersStatus: Codable, ObservableObject {
 }
 
 // MARK: - FaderStatus
-public class Fader: Codable, ObservableObject {
-    @Published public var channel: ChannelName
-    @Published public var muteType: MuteFunction
+public class FaderA: Codable, ObservableObject {
+    @Published public var channel: ChannelName { didSet { GoXlr.shared.command(.SetFader(.A, channel)) } }
+    @Published public var muteType: MuteFunction { didSet { GoXlr.shared.command(.SetFaderMuteFunction(.A, muteType)) } }
+    @Published public var scribble: Scribble?
+    @Published public var muteState: MuteState
+
+    enum CodingKeys: String, CodingKey {
+        case channel
+        case muteType = "mute_type"
+        case scribble
+        case muteState = "mute_state"
+    }
+    
+    public required init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        channel = try values.decode(ChannelName.self, forKey: .channel)
+        muteType = try values.decode(MuteFunction.self, forKey: .muteType)
+        scribble = try values.decode(Scribble?.self, forKey: .scribble)
+        muteState = try values.decode(MuteState.self, forKey: .muteState)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(channel, forKey: .channel)
+        try container.encode(muteType, forKey: .muteType)
+        try container.encode(scribble, forKey: .scribble)
+        try container.encode(muteState, forKey: .muteState)
+    }
+}
+
+public class FaderB: Codable, ObservableObject {
+    @Published public var channel: ChannelName { didSet { GoXlr.shared.command(.SetFader(.B, channel)) } }
+    @Published public var muteType: MuteFunction { didSet { GoXlr.shared.command(.SetFaderMuteFunction(.B, muteType)) } }
+    @Published public var scribble: Scribble?
+    @Published public var muteState: MuteState
+
+    enum CodingKeys: String, CodingKey {
+        case channel
+        case muteType = "mute_type"
+        case scribble
+        case muteState = "mute_state"
+    }
+    
+    public required init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        channel = try values.decode(ChannelName.self, forKey: .channel)
+        muteType = try values.decode(MuteFunction.self, forKey: .muteType)
+        scribble = try values.decode(Scribble?.self, forKey: .scribble)
+        muteState = try values.decode(MuteState.self, forKey: .muteState)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(channel, forKey: .channel)
+        try container.encode(muteType, forKey: .muteType)
+        try container.encode(scribble, forKey: .scribble)
+        try container.encode(muteState, forKey: .muteState)
+    }
+}
+
+public class FaderC: Codable, ObservableObject {
+    @Published public var channel: ChannelName { didSet { GoXlr.shared.command(.SetFader(.C, channel)) } }
+    @Published public var muteType: MuteFunction { didSet { GoXlr.shared.command(.SetFaderMuteFunction(.C, muteType)) } }
+    @Published public var scribble: Scribble?
+    @Published public var muteState: MuteState
+
+    enum CodingKeys: String, CodingKey {
+        case channel
+        case muteType = "mute_type"
+        case scribble
+        case muteState = "mute_state"
+    }
+    
+    public required init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        channel = try values.decode(ChannelName.self, forKey: .channel)
+        muteType = try values.decode(MuteFunction.self, forKey: .muteType)
+        scribble = try values.decode(Scribble?.self, forKey: .scribble)
+        muteState = try values.decode(MuteState.self, forKey: .muteState)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(channel, forKey: .channel)
+        try container.encode(muteType, forKey: .muteType)
+        try container.encode(scribble, forKey: .scribble)
+        try container.encode(muteState, forKey: .muteState)
+    }
+}
+
+public class FaderD: Codable, ObservableObject {
+    @Published public var channel: ChannelName { didSet { GoXlr.shared.command(.SetFader(.D, channel)) } }
+    @Published public var muteType: MuteFunction { didSet { GoXlr.shared.command(.SetFaderMuteFunction(.D, muteType)) } }
     @Published public var scribble: Scribble?
     @Published public var muteState: MuteState
 
