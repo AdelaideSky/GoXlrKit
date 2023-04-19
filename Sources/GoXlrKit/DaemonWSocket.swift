@@ -1,6 +1,6 @@
 //
 //  DaemonWSocket.swift
-//  
+//
 //
 //  Created by Adélaïde Sky on 16/04/2023.
 //
@@ -62,12 +62,13 @@ public class DaemonWSocket: WebSocketDelegate {
             Logger().error("No socket connected to write to.")
             return
         }
-        
-        socket?.write(string: string, completion: {
-            if GoXlr.shared.logLevel == .debug {
-                Logger().debug("Sent command: \(string)")
-            }
-        })
+        DispatchQueue(label: "WebSocketManager").async {
+            self.socket?.write(string: string, completion: {
+                if GoXlr.shared.logLevel == .debug {
+                    Logger().debug("Sent command: \(string)")
+                }
+            })
+        }
     }
     /**
      Function responsible for handliing incoming websocket calls.
@@ -82,36 +83,46 @@ public class DaemonWSocket: WebSocketDelegate {
             self.socketConnexionStatus = .disconnected
             Logger().info("Daemon websocket is disconnected: \(reason) with code: \(code)")
         case .text(let string):
-            if string.contains("Status") {
-                if GoXlr.shared.logLevel == .debug {
-                    Logger().debug("Recived status: \(string)")
-                }
-                do {
-                    GoXlr.shared.status = try JSONDecoder().decode(Status.self, from: string.data(using: .utf8)!)
-                } catch {
-                    Logger().error("\(error)")
-                }
-                GoXlr.shared.device = GoXlr.shared.status?.data.status.mixers.first?.key ?? ""
-            } else {
-                if !self.holdUpdates {
-                    let json = JSON(parseJSON: string)
-                    for patch in json["data"]["Patch"].arrayValue {
-                        let path = Array(patch["path"].stringValue.components(separatedBy: "/").dropFirst())
-                        if patch["op"].stringValue == "replace" {
-                            if patch["path"].stringValue.starts(with: "/mixers/") {
-                                let device = patch["path"].stringValue.components(separatedBy: "/")[2]
-                                do {
-                                    
-                                    var statusJSON = try JSON(data: try JSONEncoder().encode(GoXlr.shared.status!.data.status.mixers[device]!))
-                                    
-                                    guard statusJSON[Array(path.dropFirst(2))] != patch["value"] else {return}
-                                    
-                                    statusJSON[Array(path.dropFirst(2))] = patch["value"]
-                                    GoXlr.shared.status!.data.status.mixers[device]! = try JSONDecoder().decode(Mixer.self, from: try statusJSON.rawData())
-                                } catch let error {
-                                    Logger().error("\(error)")
+            DispatchQueue(label: "WebSocketManager").sync {
+                if string.contains("Status") {
+                    if GoXlr.shared.logLevel == .debug {
+                        Logger().debug("Recived status: \(string)")
+                    }
+                    do {
+                        GoXlr.shared.status = try JSONDecoder().decode(Status.self, from: string.data(using: .utf8)!)
+                    } catch {
+                        Logger().error("\(error)")
+                    }
+                    GoXlr.shared.device = GoXlr.shared.status?.data.status.mixers.first?.key ?? ""
+                } else {
+                    if !self.holdUpdates {
+                        let json = JSON(parseJSON: string)
+                        for patch in json["data"]["Patch"].arrayValue {
+                            let path = Array(patch["path"].stringValue.components(separatedBy: "/").dropFirst())
+                            if patch["op"].stringValue == "replace" {
+                                if patch["path"].stringValue.starts(with: "/mixers/") {
+                                    let device = patch["path"].stringValue.components(separatedBy: "/")[2]
+                                    do {
+                                        
+                                        var statusJSON = try JSON(data: try JSONEncoder().encode(GoXlr.shared.status!.data.status.mixers[device]!))
+                                        
+                                        guard statusJSON[Array(path.dropFirst(2))] != patch["value"] else {return}
+                                        
+                                        statusJSON[Array(path.dropFirst(2))] = patch["value"]
+                                        GoXlr.shared.status!.data.status.mixers[device]! = try JSONDecoder().decode(Mixer.self, from: try statusJSON.rawData())
+                                    } catch let error {
+                                        Logger().error("\(error)")
+                                    }
+                                } else {
+                                    do {
+                                        var statusJSON = try JSON(data: try JSONEncoder().encode(GoXlr.shared.status!.data.status))
+                                        statusJSON[path] = patch["value"]
+                                        GoXlr.shared.status!.data.status = try JSONDecoder().decode(StatusClass.self, from: try statusJSON.rawData())
+                                    } catch let error {
+                                        Logger().error("\(error)")
+                                    }
                                 }
-                            } else {
+                            } else if patch["op"].stringValue == "add" {
                                 do {
                                     var statusJSON = try JSON(data: try JSONEncoder().encode(GoXlr.shared.status!.data.status))
                                     statusJSON[path] = patch["value"]
@@ -119,22 +130,14 @@ public class DaemonWSocket: WebSocketDelegate {
                                 } catch let error {
                                     Logger().error("\(error)")
                                 }
-                            }
-                        } else if patch["op"].stringValue == "add" {
-                            do {
-                                var statusJSON = try JSON(data: try JSONEncoder().encode(GoXlr.shared.status!.data.status))
-                                statusJSON[path] = patch["value"]
-                                GoXlr.shared.status!.data.status = try JSONDecoder().decode(StatusClass.self, from: try statusJSON.rawData())
-                            } catch let error {
-                                Logger().error("\(error)")
-                            }
-                        } else if patch["op"].stringValue == "remove" {
-                            do {
-                                var statusJSON = try JSON(data: try JSONEncoder().encode(GoXlr.shared.status!.data.status))
-                                statusJSON[path.dropLast()].dictionaryObject?.removeValue(forKey: path.last ?? "")
-                                GoXlr.shared.status!.data.status = try JSONDecoder().decode(StatusClass.self, from: try statusJSON.rawData())
-                            } catch let error {
-                                Logger().error("\(error)")
+                            } else if patch["op"].stringValue == "remove" {
+                                do {
+                                    var statusJSON = try JSON(data: try JSONEncoder().encode(GoXlr.shared.status!.data.status))
+                                    statusJSON[path.dropLast()].dictionaryObject?.removeValue(forKey: path.last ?? "")
+                                    GoXlr.shared.status!.data.status = try JSONDecoder().decode(StatusClass.self, from: try statusJSON.rawData())
+                                } catch let error {
+                                    Logger().error("\(error)")
+                                }
                             }
                         }
                     }
