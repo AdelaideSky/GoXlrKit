@@ -85,7 +85,9 @@ public class DaemonWSocket: WebSocketDelegate {
         case .text(let string):
             DispatchQueue(label: "WebSocketManager").sync {
                 if string.contains("Status") {
-                    Logger().debug("Recived status: \(string)")
+                    if GoXlr.shared.logLevel == .debug {
+                        Logger().debug("Recived status: \(string)")
+                    }
                     do {
                         GoXlr.shared.status = try JSONDecoder().decode(Status.self, from: string.data(using: .utf8)!)
                     } catch {
@@ -100,11 +102,7 @@ public class DaemonWSocket: WebSocketDelegate {
                             if patch["op"].stringValue == "replace" {
                                 if patch["path"].stringValue.starts(with: "/mixers/") {
                                     let device = patch["path"].stringValue.components(separatedBy: "/")[2]
-                                    if let path = patchPaths[path.dropFirst(2).joined(separator: "/")] {
-                                        GoXlr.shared.status?.data.status.mixers[device]![keyPath: path.keyPath] = patch["value"][keyPath: path.value]
-                                    } else {
-                                        Logger().error("Not handling patch: \(string)\nThis patch path needs implementation.")
-                                    }
+                                    handlePatch(device: device, path: path.dropFirst(2).joined(separator: "/"), value: patch["value"])
                                 } else {
                                     do {
                                         var statusJSON = try JSON(data: try JSONEncoder().encode(GoXlr.shared.status!.data.status))
