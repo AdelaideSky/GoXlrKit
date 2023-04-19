@@ -424,6 +424,7 @@ public struct Hardware: Codable {
     }
 }
 
+
 // MARK: - USBDevice
 public struct USBDevice: Codable {
     public var manufacturerName, productName: String
