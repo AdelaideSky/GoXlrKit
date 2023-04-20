@@ -65,8 +65,15 @@ public class GoXlr: ObservableObject {
             let firstRegex = #/\"_[0-9]\":/#
             let secondRegex = #/\":{/#
             let thirdRegex = #/}}/#
-            if let commandString = command?.replacing(firstRegex, with: "").replacing(secondRegex, with: "\":[").replacing(thirdRegex, with: "]}") {
-                self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\"Command\": [\"\(self.device)\", "+commandString+"]}}")
+
+            if command?.components(separatedBy: ",").count ?? 0 > 1 {
+                if let commandString = command?.replacing(firstRegex, with: "").replacing(secondRegex, with: "\":[").replacing(thirdRegex, with: "]}") {
+                    self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\"Command\": [\"\(self.device)\", "+commandString+"]}}")
+                }
+            } else {
+                if let commandString = command?.replacing(firstRegex, with: "").replacing(secondRegex, with: "\":").replacing(thirdRegex, with: "}") {
+                    self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\"Command\": [\"\(self.device)\", "+commandString+"]}}")
+                }
             }
         } catch {}
     }
