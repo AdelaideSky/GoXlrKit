@@ -38,8 +38,8 @@ internal func patch<type>(value: Array<type>, add: type, at: Int?) -> Array<type
     return answer
 }
 
-internal func patch<type: Equatable>(value: Array<type>, removeAt: Int) -> Array<type> {
+internal func patch<type: Equatable>(value: Array<type>, removeAt: Int?) -> Array<type> {
     var answer = value
-    answer.remove(at: removeAt)
+    answer.remove(at: removeAt ?? 0)
     return answer
 }
