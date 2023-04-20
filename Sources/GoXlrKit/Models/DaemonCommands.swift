@@ -177,4 +177,17 @@ public enum GoXLRCommand: Codable {
     case SetCoughMuteState(MuteState)
 }
 
-
+extension GoXLRCommand {
+    var commandName: String {
+        switch self {
+        case .SaveActivePreset:
+            return "SaveActivePreset"
+        case .SaveProfile:
+            return "SaveProfile"
+        case .SaveMicProfile:
+            return "SaveMicProfile"
+        default:
+            return ""
+        }
+    }
+}
