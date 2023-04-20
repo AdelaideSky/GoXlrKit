@@ -21,7 +21,18 @@ fileprivate func patch<type: Codable>(value: any Codable, key: String, newValue:
     }
 }
 
-public func handlePatch(mixer: inout Mixer, path: [String], value: JSON) {
+fileprivate func patch<type: Codable>(value: any Codable, key: Int, newValue: JSON) -> type? {
+    do {
+        var json = try JSON(data: try JSONEncoder().encode(value))
+        json[key] = newValue
+        return try JSONDecoder().decode(type.self, from: try json.rawData())
+    } catch let error {
+        Logger().error("Error patching \(key): \(error) Please check the implementation of this path.")
+        return nil
+    }
+}
+
+public func handleMixerPatch(mixer: inout Mixer, path: [String], value: JSON) {
     let key = path.last!
     
     if path.contains(["levels", "volumes"]) {
@@ -39,7 +50,20 @@ public func handlePatch(mixer: inout Mixer, path: [String], value: JSON) {
     } else if path.contains(["fader_status", "D"]) {
         mixer.faderStatus.d = patch(value: mixer.faderStatus.d as any Codable, key: key, newValue: value)!
         
+    } else if path.contains(["mic_profile_name"]) {
+        mixer.micProfileName = value.stringValue
+        
     } else {
-        Logger().log("Path \(path) isn't implemented. Please add its requirements within the module.")
+        Logger().log("Mixer path \(path) isn't implemented. Please add its requirements within the module.")
+    }
+}
+
+public func handleStatusPatch(status: inout StatusClass, path: [String], value: JSON) {
+    let key = path.last!
+    
+    if path.contains(["files", "mic_profiles"]) {
+        status.files.micProfiles = patch(value: status.files.micProfiles, key: Int(key)!, newValue: value)!
+    } else {
+        Logger().log("Status path \(path) isn't implemented. Please add its requirements within the module.")
     }
 }

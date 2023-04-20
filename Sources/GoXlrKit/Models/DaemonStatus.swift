@@ -152,8 +152,8 @@ public class Mixer: Codable, ObservableObject {
     @Published public var sampler: Sampler?
     @Published public var settings: Settings
     @Published public var button_down: ButtonDown
-    @Published public var profileName: String
-    @Published public var micProfileName: String
+    @Published public var profileName: String { didSet { GoXlr.shared.command(.LoadProfile(profileName)) } }
+    @Published public var micProfileName: String { didSet { GoXlr.shared.command(.LoadMicProfile(micProfileName)) } }
 
     enum CodingKeys: String, CodingKey {
         case hardware
