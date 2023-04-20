@@ -107,13 +107,7 @@ public class DaemonWSocket: WebSocketDelegate {
                                     handleStatusPatch(status: &GoXlr.shared.status!.data.status, path: path, value: patch["value"])
                                 }
                             } else if patch["op"].stringValue == "add" {
-                                do {
-                                    var statusJSON = try JSON(data: try JSONEncoder().encode(GoXlr.shared.status!.data.status))
-                                    statusJSON[path] = patch["value"]
-                                    GoXlr.shared.status!.data.status = try JSONDecoder().decode(StatusClass.self, from: try statusJSON.rawData())
-                                } catch let error {
-                                    Logger().error("\(error)")
-                                }
+                                handleAddPatch(status: &GoXlr.shared.status!.data.status, path: path, value: patch["value"])
                             } else if patch["op"].stringValue == "remove" {
                                 do {
                                     var statusJSON = try JSON(data: try JSONEncoder().encode(GoXlr.shared.status!.data.status))

@@ -32,6 +32,12 @@ fileprivate func patch<type: Codable>(value: any Codable, key: Int, newValue: JS
     }
 }
 
+fileprivate func patch<type>(value: Array<type>, add: type) -> Array<type> {
+    var answer = value
+    answer.append(add)
+    return answer
+}
+
 public func handleMixerPatch(mixer: inout Mixer, path: [String], value: JSON) {
     let key = path.last!
     
@@ -65,5 +71,15 @@ public func handleStatusPatch(status: inout StatusClass, path: [String], value: 
         status.files.micProfiles = patch(value: status.files.micProfiles, key: Int(key)!, newValue: value)!
     } else {
         Logger().log("Status path \(path) isn't implemented. Please add its requirements within the module.")
+    }
+}
+
+public func handleAddPatch(status: inout StatusClass, path: [String], value: JSON) {
+    let key = path.last!
+    
+    if path.contains(["files", "mic_profiles"]) {
+        status.files.micProfiles = patch(value: status.files.micProfiles, add: value.stringValue)
+    } else {
+        Logger().log("Add patch path \(path) isn't implemented. Please add its requirements within the module.")
     }
 }
