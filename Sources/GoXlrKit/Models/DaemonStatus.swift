@@ -1599,7 +1599,7 @@ public class MicGains: Codable, ObservableObject {
 
 // MARK: - NoiseGate
 public class NoiseGate: Codable, ObservableObject {
-    @Published public var threshold: Float
+    @Published public var threshold: Float { didSet { GoXlr.shared.command(.SetGateThreshold(Int(min(0, max(-59, threshold))))) } }
     @Published public var attack: Float
     @Published public var release: Float
     @Published public var enabled: Bool
