@@ -109,13 +109,7 @@ public class DaemonWSocket: WebSocketDelegate {
                             } else if patch["op"].stringValue == "add" {
                                 handleAddPatch(status: &GoXlr.shared.status!.data.status, path: path, value: patch["value"])
                             } else if patch["op"].stringValue == "remove" {
-                                do {
-                                    var statusJSON = try JSON(data: try JSONEncoder().encode(GoXlr.shared.status!.data.status))
-                                    statusJSON[path.dropLast()].dictionaryObject?.removeValue(forKey: path.last ?? "")
-                                    GoXlr.shared.status!.data.status = try JSONDecoder().decode(StatusClass.self, from: try statusJSON.rawData())
-                                } catch let error {
-                                    Logger().error("\(error)")
-                                }
+                                handleRemovePatch(status: &GoXlr.shared.status!.data.status, path: path, value: patch["value"])
                             }
                         }
                     }
