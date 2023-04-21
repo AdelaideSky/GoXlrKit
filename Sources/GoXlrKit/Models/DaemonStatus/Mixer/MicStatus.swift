@@ -200,8 +200,8 @@ public class NoiseGate: Codable, ObservableObject {
     public required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         threshold = try values.decode(Float.self, forKey: .threshold)
-        attack = try values.decode(GateTimes.self, forKey: .attack).float
-        release = try values.decode(GateTimes.self, forKey: .attack).float
+        attack = try values.decode(Float.self, forKey: .attack)
+        release = try values.decode(Float.self, forKey: .release)
         enabled = try values.decode(Bool.self, forKey: .enabled)
         attenuation = try values.decode(Float.self, forKey: .attenuation)
     }
