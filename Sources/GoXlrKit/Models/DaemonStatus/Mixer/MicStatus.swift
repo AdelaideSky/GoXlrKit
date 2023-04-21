@@ -189,10 +189,10 @@ public class MicGains: Codable, ObservableObject {
 // MARK: - NoiseGate
 public class NoiseGate: Codable, ObservableObject {
     @Published public var threshold: Float { didSet { GoXlr.shared.command(.SetGateThreshold(Int(min(0, max(-59, threshold))))) } }
-    @Published public var attack: Float
-    @Published public var release: Float
-    @Published public var enabled: Bool
-    @Published public var attenuation: Float
+    @Published public var attack: Float { didSet { GoXlr.shared.command(.SetGateAttack(Int(attack).GetClosestGateTime())) } }
+    @Published public var release: Float { didSet { GoXlr.shared.command(.SetGateRelease(Int(attack).GetClosestGateTime())) } }
+    @Published public var enabled: Bool { didSet { GoXlr.shared.command(.SetGateActive(enabled)) } }
+    @Published public var attenuation: Float { didSet { GoXlr.shared.command(.SetGateAttenuation(Int(min(100, max(0, attenuation))))) } }
     
     enum CodingKeys: String, CodingKey {
         case threshold, attack, release, enabled, attenuation
