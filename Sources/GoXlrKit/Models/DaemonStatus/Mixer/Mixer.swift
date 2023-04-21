@@ -21,14 +21,14 @@ public class Mixer: Codable, ObservableObject {
     @Published public var settings: Settings
     @Published public var button_down: ButtonDown
     @Published public var profileName: String {
-        willSet(newValue) {
-            guard newValue != profileName else { return }
+        didSet {
+            guard profileName != oldValue else { return }
             GoXlr.shared.command(.LoadProfile(profileName))
         }
     }
     @Published public var micProfileName: String {
-        willSet(newValue) {
-            guard newValue != micProfileName else { return }
+        didSet {
+            guard micProfileName != oldValue else { return }
             GoXlr.shared.command(.LoadMicProfile(micProfileName))
         }
     }
