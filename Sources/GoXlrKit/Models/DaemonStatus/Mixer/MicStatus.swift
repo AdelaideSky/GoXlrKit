@@ -80,8 +80,24 @@ public class Compressor: Codable, ObservableObject {
 
 // MARK: - Equaliser
 public class Equaliser: Codable, ObservableObject {
-    @Published public var gain: [String: Double]
-    @Published public var frequency: [String: Double]
+    @Published public var gain: [String: Double]{
+        didSet {
+            for (key, value) in gain {
+                if oldValue[key] != value {
+                    GoXlr.shared.command(.SetEqGain(.init(rawValue: key)!, Int(value)))
+                }
+            }
+        }
+    }
+    @Published public var frequency: [String: Double] {
+        didSet {
+            for (key, value) in frequency {
+                if oldValue[key] != value {
+                    GoXlr.shared.command(.SetEqFreq(.init(rawValue: key)!, Float(value)))
+                }
+            }
+        }
+    }
     
     enum CodingKeys: String, CodingKey {
         case gain, frequency
