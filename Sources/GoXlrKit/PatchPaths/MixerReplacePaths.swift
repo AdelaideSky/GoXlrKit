@@ -37,6 +37,9 @@ public func handleMixerPatch(mixer: inout Mixer, path: [String], value: JSON) {
     } else if path.contains(["mic_status", "equaliser"]) {
         mixer.micStatus.equaliser = patch(value: mixer.micStatus.equaliser, key: key, newValue: value)!
         
+    } else if path.contains(["mic_status", "compressor"]) {
+        mixer.micStatus.compressor = patch(value: mixer.micStatus.compressor, key: key, newValue: value)!
+        
     } else {
         Logger().log("Mixer path \(path) isn't implemented. Please add its requirements within the module.")
     }

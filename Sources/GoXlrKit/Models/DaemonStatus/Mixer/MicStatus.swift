@@ -48,11 +48,11 @@ public class MicStatus: Codable, ObservableObject {
 
 // MARK: - Compressor
 public class Compressor: Codable, ObservableObject {
-    @Published public var threshold: Float
-    @Published public var ratio: Float
-    @Published public var attack: Float
-    @Published public var release: Float
-    @Published public var makeupGain: Float
+    @Published public var threshold: Float { didSet { GoXlr.shared.command(.SetCompressorThreshold(Int(threshold))) } }
+    @Published public var ratio: Float { didSet { GoXlr.shared.command(.SetCompressorRatio(.init(rawValue: Int(ratio))!)) } }
+    @Published public var attack: Float { didSet { GoXlr.shared.command(.SetCompressorAttack(.init(rawValue: Int(attack))!)) } }
+    @Published public var release: Float { didSet { GoXlr.shared.command(.SetCompressorReleaseTime(.init(rawValue: Int(release))!)) } }
+    @Published public var makeupGain: Float { didSet { GoXlr.shared.command(.SetCompressorMakeupGain(Int(makeupGain))) } }
 
     enum CodingKeys: String, CodingKey {
         case threshold, ratio, attack, release

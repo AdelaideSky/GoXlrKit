@@ -374,7 +374,7 @@ of 0.1, and by the end it's hitting increments of 16 and 32.
 These enums are essentially the same maps, and use 'as usize' and strum::iter().nth to convert.
  */
 
-public enum CompressorRatio: String, Codable, CaseIterable {
+public enum CompressorRatio: Int, Codable, CaseIterable {
     case Ratio1_0,
     Ratio1_1,
     Ratio1_2,
@@ -441,7 +441,7 @@ public enum GateTimes: Int, Codable {
     Gate2000ms
 }
 
-public enum CompressorAttackTime: String, Codable {
+public enum CompressorAttackTime: Int, Codable {
     // Note: 0ms is technically 0.001ms
     case Comp0ms,
     Comp2ms,
@@ -465,7 +465,7 @@ public enum CompressorAttackTime: String, Codable {
     Comp40ms
 }
 
-public enum CompressorReleaseTime: String, Codable {
+public enum CompressorReleaseTime: Int, Codable {
     // Note: 0 is technically 15 :)
     case Comp0ms,
     Comp15ms,
