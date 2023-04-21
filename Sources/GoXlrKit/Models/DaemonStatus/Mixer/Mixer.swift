@@ -20,8 +20,18 @@ public class Mixer: Codable, ObservableObject {
     @Published public var sampler: Sampler?
     @Published public var settings: Settings
     @Published public var button_down: ButtonDown
-    @Published public var profileName: String { didSet { GoXlr.shared.command(.LoadProfile(profileName)) } }
-    @Published public var micProfileName: String { didSet { GoXlr.shared.command(.LoadMicProfile(micProfileName)) } }
+    @Published public var profileName: String {
+        willSet(newValue) {
+            guard newValue != profileName else { return }
+            GoXlr.shared.command(.LoadProfile(profileName))
+        }
+    }
+    @Published public var micProfileName: String {
+        willSet(newValue) {
+            guard newValue != micProfileName else { return }
+            GoXlr.shared.command(.LoadMicProfile(micProfileName))
+        }
+    }
 
     enum CodingKeys: String, CodingKey {
         case hardware
