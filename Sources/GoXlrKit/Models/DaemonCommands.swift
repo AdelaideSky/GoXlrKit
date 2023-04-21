@@ -175,6 +175,12 @@ public enum GoXLRCommand: Codable {
     case SetFXEnabled(Bool)
     case SetFaderMuteState(FaderName, MuteState)
     case SetCoughMuteState(MuteState)
+    
+    // Submix Commands
+    case SetSubMixEnabled(Bool)
+    case SetSubMixVolume(ChannelName, Int)
+    case SetSubMixLinked(ChannelName, Bool)
+    case SetSubMixOutputMix(OutputDevice, SubmixAssignation)
 }
 
 extension GoXLRCommand {

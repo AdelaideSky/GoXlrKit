@@ -600,3 +600,8 @@ public enum MuteState: String, Codable {
     MutedToX,
     MutedToAll
 }
+
+public enum SubmixAssignation: String, Codable {
+    case A
+    case B
+}
