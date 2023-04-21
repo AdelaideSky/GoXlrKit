@@ -64,9 +64,7 @@ public class DaemonWSocket: WebSocketDelegate {
         }
         DispatchQueue(label: "WebSocketManager").async {
             self.socket?.write(string: string, completion: {
-                if GoXlr.shared.logLevel == .debug {
-                    Logger().debug("Sent command: \(string)")
-                }
+                Logger().debug("Sent command: \(string)")
             })
         }
     }
