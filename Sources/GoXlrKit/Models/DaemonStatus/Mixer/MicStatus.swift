@@ -84,7 +84,7 @@ public class Equaliser: Codable, ObservableObject {
         didSet {
             for (key, value) in gain {
                 if oldValue[key] != value {
-                    GoXlr.shared.command(.SetEqGain(key, Int(value)))
+                    GoXlr.shared.command(.SetEqGain(.init(rawValue: key)!, Int(value)))
                 }
             }
         }
@@ -93,7 +93,7 @@ public class Equaliser: Codable, ObservableObject {
         didSet {
             for (key, value) in frequency {
                 if oldValue[key] != value {
-                    GoXlr.shared.command(.SetEqFreq(key, Float(value)))
+                    GoXlr.shared.command(.SetEqFreq(.init(rawValue: key)!, Float(value)))
                 }
             }
         }
