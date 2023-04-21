@@ -80,7 +80,7 @@ public class Compressor: Codable, ObservableObject {
 
 // MARK: - Equaliser
 public class Equaliser: Codable, ObservableObject {
-    @Published public var gain: [EqFrequencies: Float]{
+    @Published public var gain: [String: Float]{
         didSet {
             for (key, value) in gain {
                 if oldValue[key] != value {
@@ -89,7 +89,7 @@ public class Equaliser: Codable, ObservableObject {
             }
         }
     }
-    @Published public var frequency: [EqFrequencies: Float] {
+    @Published public var frequency: [String: Float] {
         didSet {
             for (key, value) in frequency {
                 if oldValue[key] != value {
@@ -104,8 +104,8 @@ public class Equaliser: Codable, ObservableObject {
     }
     public required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        gain = try values.decode([EqFrequencies: Float].self, forKey: .gain)
-        frequency = try values.decode([EqFrequencies: Float].self, forKey: .frequency)
+        gain = try values.decode([String: Float].self, forKey: .gain)
+        frequency = try values.decode([String: Float].self, forKey: .frequency)
     }
 
     public func encode(to encoder: Encoder) throws {
