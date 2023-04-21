@@ -374,7 +374,7 @@ of 0.1, and by the end it's hitting increments of 16 and 32.
 These enums are essentially the same maps, and use 'as usize' and strum::iter().nth to convert.
  */
 
-public enum CompressorRatio: String, Codable {
+public enum CompressorRatio: String, Codable, CaseIterable {
     case Ratio1_0,
     Ratio1_1,
     Ratio1_2,
