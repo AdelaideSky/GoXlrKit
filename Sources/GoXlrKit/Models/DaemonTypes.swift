@@ -327,7 +327,7 @@ extension MicrophoneType {
     }
 }
 
-public enum EffectBankPresets: String, Codable {
+public enum EffectBankPresets: String, Codable, CaseIterable {
     case Preset1,
     Preset2,
     Preset3,
