@@ -489,7 +489,7 @@ public enum CompressorReleaseTime: Int, Codable {
     Comp3000ms
 }
 
-public enum ReverbStyle: String, Codable {
+public enum ReverbStyle: String, Codable, CaseIterable {
     case Library,
     DarkBloom,
     MusicClub,
@@ -498,7 +498,7 @@ public enum ReverbStyle: String, Codable {
     HockeyArena
 }
 
-public enum EchoStyle: String, Codable {
+public enum EchoStyle: String, Codable, CaseIterable {
     case Quarter,
     Eighth,
     Triplet,
@@ -507,18 +507,18 @@ public enum EchoStyle: String, Codable {
     MultiTap
 }
 
-public enum PitchStyle: String, Codable {
+public enum PitchStyle: String, Codable, CaseIterable {
     case Narrow,
     Wide
 }
 
-public enum GenderStyle: String, Codable {
+public enum GenderStyle: String, Codable, CaseIterable {
     case Narrow,
     Medium,
     Wide
 }
 
-public enum MegaphoneStyle: String, Codable {
+public enum MegaphoneStyle: String, Codable, CaseIterable {
     case Megaphone,
     Radio,
     OnThePhone,
@@ -528,7 +528,7 @@ public enum MegaphoneStyle: String, Codable {
 }
 
 
-public enum RobotStyle: String, Codable {
+public enum RobotStyle: String, Codable, CaseIterable {
     case Robot1,
     Robot2,
     Robot3
@@ -542,7 +542,7 @@ public enum RobotRange: String, Codable {
 }
 
 
-public enum HardTuneStyle: String, Codable {
+public enum HardTuneStyle: String, Codable, CaseIterable {
     case Natural,
     Medium,
     Hard
