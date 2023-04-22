@@ -56,7 +56,7 @@ public func handleMixerPatch(mixer: inout Mixer, path: [String], value: JSON) {
         mixer.effects!.current.gender = patch(value: mixer.effects!.current.gender, key: key, newValue: value)!
         
     } else if path.contains(["effects", "current", "megaphone"]) {
-        mixer.effects!.current.megaphone = patch(value: mixer.effects!.current.gender, key: key, newValue: value)!
+        mixer.effects!.current.megaphone = patch(value: mixer.effects!.current.megaphone, key: key, newValue: value)!
         
     } else if path.contains(["effects", "current", "robot"]) {
         mixer.effects!.current.robot = patch(value: mixer.effects!.current.robot, key: key, newValue: value)!
