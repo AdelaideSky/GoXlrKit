@@ -40,6 +40,29 @@ public func handleMixerPatch(mixer: inout Mixer, path: [String], value: JSON) {
     } else if path.contains(["mic_status", "compressor"]) {
         mixer.micStatus.compressor = patch(value: mixer.micStatus.compressor, key: key, newValue: value)!
         
+    } else if path.contains(["effects", "preset_names"]) {
+        mixer.effects!.presetNames = patch(value: mixer.effects!.presetNames, key: key, newValue: value)!
+        
+    } else if path.contains(["effects", "current", "reverb"]) {
+        mixer.effects!.current.reverb = patch(value: mixer.effects!.current.reverb, key: key, newValue: value)!
+        
+    } else if path.contains(["effects", "current", "echo"]) {
+        mixer.effects!.current.echo = patch(value: mixer.effects!.current.echo, key: key, newValue: value)!
+        
+    } else if path.contains(["effects", "current", "pitch"]) {
+        mixer.effects!.current.pitch = patch(value: mixer.effects!.current.pitch, key: key, newValue: value)!
+        
+    } else if path.contains(["effects", "current", "gender"]) {
+        mixer.effects!.current.gender = patch(value: mixer.effects!.current.gender, key: key, newValue: value)!
+        
+    } else if path.contains(["effects", "current", "megaphone"]) {
+        mixer.effects!.current.megaphone = patch(value: mixer.effects!.current.gender, key: key, newValue: value)!
+        
+    } else if path.contains(["effects", "current", "robot"]) {
+        mixer.effects!.current.robot = patch(value: mixer.effects!.current.robot, key: key, newValue: value)!
+        
+    } else if path.contains(["effects", "current", "hard_tune"]) {
+        mixer.effects!.current.hardTune = patch(value: mixer.effects!.current.hardTune, key: key, newValue: value)!
     } else {
         Logger().log("Mixer path \(path) isn't implemented. Please add its requirements within the module.")
     }
