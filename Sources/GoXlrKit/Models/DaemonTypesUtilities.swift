@@ -29,3 +29,16 @@ extension CompressorRatio {
         return listRatios[self.rawValue]
     }
 }
+extension CompressorAttackTime {
+    public var display: String {
+        let listTimes = ["0.001", "2", "3", "4", "5", "6", "7", "8", "9", "10", "12", "14", "16", "18", "20", "23", "26", "30", "35", "40"]
+        return listTimes[self.rawValue]
+    }
+}
+
+extension CompressorReleaseTime {
+    public var display: String {
+        let listTimes = ["0", "15", "25", "35", "45", "55", "65", "75", "85", "100", "115", "140", "170", "230", "340", "680", "1000", "1500", "2000", "3000"]
+        return listTimes[self.rawValue]
+    }
+}
