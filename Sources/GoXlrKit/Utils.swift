@@ -43,8 +43,8 @@ public struct GoXlrUtils {
     func unregisterLaunchOnConnectAgent() {
         Task {
             do {
-                try SMAppService.agent(plistName: "com.adesky.autolaunch.plist").unregister()
-                try SMAppService.agent(plistName: "com.adesky.autolaunch.mini.plist").unregister()
+                try SMAppService.agent(plistName: "fr.adesky.goxlr.autolaunch.plist").unregister()
+                try SMAppService.agent(plistName: "fr.adesky.goxlr.autolaunch.mini.plist").unregister()
             } catch let error {
                 print(error)
             }
