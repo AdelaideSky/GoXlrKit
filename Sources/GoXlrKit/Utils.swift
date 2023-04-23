@@ -13,8 +13,8 @@ public struct GoXlrUtils {
     public func registerInitAgents() {
         Task {
             do {
-                try SMAppService.daemon(plistName: "com.adesky.goxlr.plist").register()
-                try SMAppService.daemon(plistName: "com.adesky.goxlr.mini.plist").register()
+                try SMAppService.daemon(plistName: "fr.adesky.goxlr.plist").register()
+                try SMAppService.daemon(plistName: "fr.adesky.goxlr.mini.plist").register()
             } catch let error {
                 print(error)
             }
@@ -32,8 +32,8 @@ public struct GoXlrUtils {
     func registerLaunchOnConnectAgent() {
         Task {
             do {
-                try SMAppService.agent(plistName: "com.adesky.autolaunch.plist").register()
-                try SMAppService.agent(plistName: "com.adesky.autolaunch.mini.plist").register()
+                try SMAppService.agent(plistName: "fr.adesky.goxlr.autolaunch.plist").register()
+                try SMAppService.agent(plistName: "fr.adesky.goxlr.autolaunch.mini.plist").register()
             } catch let error {
                 print(error)
             }
