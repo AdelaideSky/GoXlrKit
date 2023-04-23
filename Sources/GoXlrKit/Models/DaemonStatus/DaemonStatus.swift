@@ -86,7 +86,7 @@ public class StatusClass: Codable, ObservableObject {
 public class Config: Codable, ObservableObject {
     @Published public var daemonVersion: String
     @Published public var autostartEnabled: Bool
-    @Published public var ttsEnabled: Bool
+    @Published public var ttsEnabled: Bool { didSet { GoXlr.shared.command(.SetTTSEnabled(ttsEnabled)) } }
 
     enum CodingKeys: String, CodingKey {
         case daemonVersion = "daemon_version"

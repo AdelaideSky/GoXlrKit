@@ -165,6 +165,7 @@ public enum GoXLRCommand: Codable {
     // General Settings
     case SetMuteHoldDuration(Int)
     case SetVCMuteAlsoMuteCM(Bool)
+    case SetTTSEnabled(Bool)
 
     // These control the current GoXLR 'State'..
     case SetActiveEffectPreset(EffectBankPresets)
