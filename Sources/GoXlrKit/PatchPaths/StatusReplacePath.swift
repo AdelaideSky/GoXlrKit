@@ -23,7 +23,7 @@ public func handleStatusPatch(status: inout StatusClass, path: [String], value: 
         status.files.presets = patch(value: status.files.presets, key: Int(key)!, newValue: value)!
         
     } else if path.contains(["config"]) {
-        status.config = patch(value: status.config, key: Int(key)!, newValue: value)!
+        status.config = patch(value: status.config, key: key, newValue: value)!
         
     } else {
         Logger().log("Status path \(path) isn't implemented. Please add its requirements within the module.")
