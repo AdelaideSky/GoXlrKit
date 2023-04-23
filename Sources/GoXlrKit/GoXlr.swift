@@ -82,6 +82,22 @@ public class GoXlr: ObservableObject {
         } catch {}
     }
     
+    public func command(_ command: DaemonCommand) {
+        do {
+            let commandString = String(data: try JSONEncoder().encode(command), encoding: .utf8)
+            let firstRegex = #/\"_[0-9]\":/#
+            let secondRegex = #/\":{/#
+            let thirdRegex = #/}}/#
+
+            if commandString?.components(separatedBy: ",").count ?? 0 > 1 {
+                if let commandString = commandString?.replacing(firstRegex, with: "").replacing(secondRegex, with: "\":[").replacing(thirdRegex, with: "]}") {
+                    self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\(commandString)}}")
+                }
+            }
+            
+        } catch {}
+    }
+    
     public func copyDebugInfo() {
         let returnValue = """
                         ✧──────────────・「 Debug Info 」・──────────────✧

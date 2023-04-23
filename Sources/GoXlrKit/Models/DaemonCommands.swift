@@ -165,7 +165,6 @@ public enum GoXLRCommand: Codable {
     // General Settings
     case SetMuteHoldDuration(Int)
     case SetVCMuteAlsoMuteCM(Bool)
-    case SetTTSEnabled(Bool)
 
     // These control the current GoXLR 'State'..
     case SetActiveEffectPreset(EffectBankPresets)
@@ -182,6 +181,12 @@ public enum GoXLRCommand: Codable {
     case SetSubMixVolume(ChannelName, Int)
     case SetSubMixLinked(ChannelName, Bool)
     case SetSubMixOutputMix(OutputDevice, SubmixAssignation)
+}
+/**
+ Daemon command type, with corresponding parameters.
+ */
+public enum DaemonCommand: Codable {
+    case SetTTSEnabled(Bool)
 }
 
 extension GoXLRCommand {
