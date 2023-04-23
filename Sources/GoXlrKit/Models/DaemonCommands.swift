@@ -182,12 +182,6 @@ public enum GoXLRCommand: Codable {
     case SetSubMixLinked(ChannelName, Bool)
     case SetSubMixOutputMix(OutputDevice, SubmixAssignation)
 }
-/**
- Daemon command type, with corresponding parameters.
- */
-public enum DaemonCommand: Codable {
-    case SetTTSEnabled(Bool)
-}
 
 extension GoXLRCommand {
     var commandName: String {
@@ -198,6 +192,24 @@ extension GoXLRCommand {
             return "SaveProfile"
         case .SaveMicProfile:
             return "SaveMicProfile"
+        default:
+            return ""
+        }
+    }
+}
+
+/**
+ Daemon command type, with corresponding parameters.
+ */
+public enum DaemonCommand: Codable {
+    case SetTTSEnabled(Bool)
+}
+
+extension DaemonCommand {
+    var commandName: String {
+        switch self {
+        case .SetTTSEnabled:
+            return "SaveActivePreset"
         default:
             return ""
         }
