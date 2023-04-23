@@ -86,22 +86,26 @@ public class StatusClass: Codable, ObservableObject {
 public class Config: Codable, ObservableObject {
     @Published public var daemonVersion: String
     @Published public var autostartEnabled: Bool
+    @Published public var ttsEnabled: Bool
 
     enum CodingKeys: String, CodingKey {
         case daemonVersion = "daemon_version"
         case autostartEnabled = "autostart_enabled"
+        case ttsEnabled = "tts_enabled"
     }
     
     public required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         daemonVersion = try values.decode(String.self, forKey: .daemonVersion)
         autostartEnabled = try values.decode(Bool.self, forKey: .autostartEnabled)
+        ttsEnabled = try values.decode(Bool.self, forKey: .ttsEnabled)
     }
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(daemonVersion, forKey: .daemonVersion)
         try container.encode(autostartEnabled, forKey: .autostartEnabled)
+        try container.encode(ttsEnabled, forKey: .ttsEnabled)
     }
 }
 
