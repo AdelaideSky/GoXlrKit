@@ -209,7 +209,7 @@ extension DaemonCommand {
     var commandName: String {
         switch self {
         case .SetTTSEnabled:
-            return "SaveActivePreset"
+            return "SetTTSEnabled"
         default:
             return ""
         }
