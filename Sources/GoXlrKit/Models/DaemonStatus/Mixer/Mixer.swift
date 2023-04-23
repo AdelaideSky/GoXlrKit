@@ -53,8 +53,13 @@ public class Mixer: Codable, ObservableObject {
         router = try values.decode(Router.self, forKey: .router)
         coughButton = try values.decode(CoughButton.self, forKey: .coughButton)
         lighting = try values.decode(Lighting.self, forKey: .lighting)
-        effects = try values.decode(Effects?.self, forKey: .effects)
-        sampler = try values.decode(Sampler.self, forKey: .sampler)
+        do {
+            effects = try values.decode(Effects?.self, forKey: .effects)
+            sampler = try values.decode(Sampler?.self, forKey: .sampler)
+        } catch {
+            effects = nil
+            sampler = nil
+        }
         settings = try values.decode(Settings.self, forKey: .settings)
         button_down = try values.decode(ButtonDown.self, forKey: .button_down)
         profileName = try values.decode(String.self, forKey: .profileName)
@@ -316,8 +321,8 @@ public class Lighting: Codable, ObservableObject {
     @Published public var faders: FaderColors
     @Published public var buttons: [String: ButtonStyle]
     @Published public var simple: Simple
-    @Published public var sampler: LightingSampler
-    @Published public var encoders: Encoders
+    @Published public var sampler: LightingSampler?
+    @Published public var encoders: Encoders?
 
     enum CodingKeys: String, CodingKey {
         case faders
@@ -332,8 +337,14 @@ public class Lighting: Codable, ObservableObject {
         faders = try values.decode(FaderColors.self, forKey: .faders)
         buttons = try values.decode([String: ButtonStyle].self, forKey: .buttons)
         simple = try values.decode(Simple.self, forKey: .simple)
-        sampler = try values.decode(LightingSampler.self, forKey: .sampler)
-        encoders = try values.decode(Encoders.self, forKey: .encoders)
+        do {
+            sampler = try values.decode(LightingSampler?.self, forKey: .sampler)
+            encoders = try values.decode(Encoders?.self, forKey: .encoders)
+        } catch {
+            sampler = nil
+            encoders = nil
+        }
+        
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -571,10 +582,17 @@ public class Simple: Codable, ObservableObject {
     
     public required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        scribble1 = try values.decode(Accent?.self, forKey: .scribble1)
-        scribble2 = try values.decode(Accent?.self, forKey: .scribble2)
-        scribble3 = try values.decode(Accent?.self, forKey: .scribble3)
-        scribble4 = try values.decode(Accent?.self, forKey: .scribble4)
+        do {
+            scribble1 = try values.decode(Accent?.self, forKey: .scribble1)
+            scribble2 = try values.decode(Accent?.self, forKey: .scribble2)
+            scribble3 = try values.decode(Accent?.self, forKey: .scribble3)
+            scribble4 = try values.decode(Accent?.self, forKey: .scribble4)
+        } catch  {
+            scribble1 = nil
+            scribble2 = nil
+            scribble3 = nil
+            scribble4 = nil
+        }
         global = try values.decode(Accent.self, forKey: .global)
         accent = try values.decode(Accent.self, forKey: .accent)
     }
