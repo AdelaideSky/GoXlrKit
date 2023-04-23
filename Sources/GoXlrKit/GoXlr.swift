@@ -29,7 +29,7 @@ public class GoXlr: ObservableObject {
     
     public var socket = DaemonWSocket()
     
-    public var device = ""
+    @Published public var device = ""
     
     public var logLevel: GoXlrLogLevel = .info
     
