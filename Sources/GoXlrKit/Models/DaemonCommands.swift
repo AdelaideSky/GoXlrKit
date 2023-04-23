@@ -141,6 +141,7 @@ public enum GoXLRCommand: Codable {
     case PlaySampleByIndex(SampleBank, SampleButtons, Int)
     case PlayNextSample(SampleBank, SampleButtons)
     case StopSamplePlayback(SampleBank, SampleButtons)
+    case SetSamplerPreBufferDuration(Int)
 
     // Scribbles
     case SetScribbleIcon(FaderName, String)

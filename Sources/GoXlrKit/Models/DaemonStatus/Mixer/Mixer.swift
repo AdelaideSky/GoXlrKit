@@ -711,19 +711,23 @@ public class Chat: Codable, ObservableObject {
 // MARK: - S210401735CQKSampler
 public class Sampler: Codable, ObservableObject {
     @Published public var banks: Banks
+    @Published public var recordBuffer: Int { didSet { GoXlr.shared.command(.SetSamplerPreBufferDuration(recordBuffer)) } }
 
     enum CodingKeys: String, CodingKey {
         case banks
+        case recordBuffer = "record_buffer"
     }
 
     public required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         banks = try values.decode(Banks.self, forKey: .banks)
+        recordBuffer = try values.decode(Int.self, forKey: .recordBuffer)
     }
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(banks, forKey: .banks)
+        try container.encode(recordBuffer, forKey: .recordBuffer)
     }
 }
 
@@ -818,8 +822,8 @@ public class SamplerButton: Codable, ObservableObject {
 // MARK: - Settings
 public class Settings: Codable, ObservableObject {
     @Published public var display: Display
-    @Published public var muteHoldDuration: Int
-    @Published public var vcMuteAlsoMuteCM: Bool
+    @Published public var muteHoldDuration: Int { didSet { GoXlr.shared.command(.SetMuteHoldDuration(muteHoldDuration)) } }
+    @Published public var vcMuteAlsoMuteCM: Bool { didSet { GoXlr.shared.command(.SetVCMuteAlsoMuteCM(vcMuteAlsoMuteCM)) } }
 
     enum CodingKeys: String, CodingKey {
         case display
