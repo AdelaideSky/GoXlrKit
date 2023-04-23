@@ -84,6 +84,33 @@ public func handleMixerPatch(mixer: inout Mixer, path: [String], value: JSON) {
                 mixer.effects!.current.hardTune = patch(value: mixer.effects!.current.hardTune, key: key, newValue: value)!
             }
         }
+    } else if path.contains(["router"]) {
+        
+        if path.contains(["Microphone"]) {
+            mixer.router.microphone = patch(value: mixer.router.microphone, key: key, newValue: value)!
+            
+        } else if path.contains(["Chat"]) {
+            mixer.router.chat = patch(value: mixer.router.chat, key: key, newValue: value)!
+            
+        } else if path.contains(["Music"]) {
+            mixer.router.music = patch(value: mixer.router.music, key: key, newValue: value)!
+            
+        } else if path.contains(["Game"]) {
+            mixer.router.game = patch(value: mixer.router.game, key: key, newValue: value)!
+            
+        } else if path.contains(["Console"]) {
+            mixer.router.console = patch(value: mixer.router.console, key: key, newValue: value)!
+            
+        } else if path.contains(["LineIn"]) {
+            mixer.router.lineIn = patch(value: mixer.router.lineIn, key: key, newValue: value)!
+            
+        } else if path.contains(["System"]) {
+            mixer.router.system = patch(value: mixer.router.system, key: key, newValue: value)!
+            
+        } else if path.contains(["Samples"]) {
+            mixer.router.samples = patch(value: mixer.router.samples, key: key, newValue: value)!
+            
+        }
         
     } else if path.contains(["sampler"]) {
         if path.contains(["record_buffer"]) {
