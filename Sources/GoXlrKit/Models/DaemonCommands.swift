@@ -208,8 +208,6 @@ public enum DaemonCommand: Codable {
 extension DaemonCommand {
     var commandName: String {
         switch self {
-        case .SetTTSEnabled:
-            return "SetTTSEnabled"
         default:
             return ""
         }
