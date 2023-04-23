@@ -33,6 +33,8 @@ public class GoXlr: ObservableObject {
     
     public var logLevel: GoXlrLogLevel = .info
     
+    public var utils = GoXlrUtils()
+    
     /**
      Starts the daemon and connects to its Websocket.
      *Note: Websocket port is always 14564. The usecase where the daemon websocket isn't at the default port isn't already implemented.*
