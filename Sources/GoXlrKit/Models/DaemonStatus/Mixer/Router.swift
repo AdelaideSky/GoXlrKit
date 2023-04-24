@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 protocol RouterInputs {
     var headphones: Bool { get set }
@@ -26,56 +27,67 @@ public class Router: Codable, ObservableObject {
     @Published public var system: System
     @Published public var samples: RoutingSamples
     
-    public var everyHeadphones: [WritableKeyPath<Router, Bool>] = [
-        \.microphone.headphones,
-         \.chat.headphones,
-         \.music.headphones,
-         \.game.headphones,
-         \.console.headphones,
-         \.lineIn.headphones,
-         \.system.headphones,
-         \.samples.headphones
-    ]
-    public var everyBroadcastMix: [WritableKeyPath<Router, Bool>] = [
-        \.microphone.broadcastMix,
-         \.chat.broadcastMix,
-         \.music.broadcastMix,
-         \.game.broadcastMix,
-         \.console.broadcastMix,
-         \.lineIn.broadcastMix,
-         \.system.broadcastMix,
-         \.samples.broadcastMix
-    ]
-    public var everyLineOut: [WritableKeyPath<Router, Bool>] = [
-        \.microphone.lineOut,
-         \.chat.lineOut,
-         \.music.lineOut,
-         \.game.lineOut,
-         \.console.lineOut,
-         \.lineIn.lineOut,
-         \.system.lineOut,
-         \.samples.lineOut
-    ]
-    public var everyChatMic: [WritableKeyPath<Router, Bool>] = [
-        \.microphone.chatMic,
-         \.chat.chatMic,
-         \.music.chatMic,
-         \.game.chatMic,
-         \.console.chatMic,
-         \.lineIn.chatMic,
-         \.system.chatMic,
-         \.samples.chatMic
-    ]
-    public var everySampler: [WritableKeyPath<Router, Bool>] = [
-        \.microphone.sampler,
-         \.chat.sampler,
-         \.music.sampler,
-         \.game.sampler,
-         \.console.sampler,
-         \.lineIn.sampler,
-         \.system.sampler,
-         \.samples.sampler
-    ]
+    public var everyHeadphones: [Binding<Bool>] {
+        return [
+            Binding(get: { self.microphone.headphones }, set: { self.microphone.headphones = $0 }),
+            Binding(get: { self.chat.headphones }, set: { self.chat.headphones = $0 }),
+            Binding(get: { self.music.headphones }, set: { self.music.headphones = $0 }),
+            Binding(get: { self.game.headphones }, set: { self.game.headphones = $0 }),
+            Binding(get: { self.console.headphones }, set: { self.console.headphones = $0 }),
+            Binding(get: { self.lineIn.headphones }, set: { self.lineIn.headphones = $0 }),
+            Binding(get: { self.system.headphones }, set: { self.system.headphones = $0 }),
+            Binding(get: { self.samples.headphones }, set: { self.samples.headphones = $0 }),
+        ]
+    }
+    public var everyBroadcastMix: [Binding<Bool>] {
+        return [
+            Binding(get: { self.microphone.broadcastMix }, set: { self.microphone.broadcastMix = $0 }),
+            Binding(get: { self.chat.broadcastMix }, set: { self.chat.broadcastMix = $0 }),
+            Binding(get: { self.music.broadcastMix }, set: { self.music.broadcastMix = $0 }),
+            Binding(get: { self.game.broadcastMix }, set: { self.game.broadcastMix = $0 }),
+            Binding(get: { self.console.broadcastMix }, set: { self.console.broadcastMix = $0 }),
+            Binding(get: { self.lineIn.broadcastMix }, set: { self.lineIn.broadcastMix = $0 }),
+            Binding(get: { self.system.broadcastMix }, set: { self.system.broadcastMix = $0 }),
+            Binding(get: { self.samples.broadcastMix }, set: { self.samples.broadcastMix = $0 }),
+        ]
+    }
+    public var everyLineOut: [Binding<Bool>] {
+        return [
+            Binding(get: { self.microphone.lineOut }, set: { self.microphone.lineOut = $0 }),
+            Binding(get: { self.chat.lineOut }, set: { self.chat.lineOut = $0 }),
+            Binding(get: { self.music.lineOut }, set: { self.music.lineOut = $0 }),
+            Binding(get: { self.game.lineOut }, set: { self.game.lineOut = $0 }),
+            Binding(get: { self.console.lineOut }, set: { self.console.lineOut = $0 }),
+            Binding(get: { self.lineIn.lineOut }, set: { self.lineIn.lineOut = $0 }),
+            Binding(get: { self.system.lineOut }, set: { self.system.lineOut = $0 }),
+            Binding(get: { self.samples.lineOut }, set: { self.samples.lineOut = $0 }),
+        ]
+    }
+    public var everyChatMic: [Binding<Bool>] {
+        return [
+            Binding(get: { self.microphone.chatMic }, set: { self.microphone.chatMic = $0 }),
+            Binding(get: { self.chat.chatMic }, set: { self.chat.chatMic = $0 }),
+            Binding(get: { self.music.chatMic }, set: { self.music.chatMic = $0 }),
+            Binding(get: { self.game.chatMic }, set: { self.game.chatMic = $0 }),
+            Binding(get: { self.console.chatMic }, set: { self.console.chatMic = $0 }),
+            Binding(get: { self.lineIn.chatMic }, set: { self.lineIn.chatMic = $0 }),
+            Binding(get: { self.system.chatMic }, set: { self.system.chatMic = $0 }),
+            Binding(get: { self.samples.chatMic }, set: { self.samples.chatMic = $0 }),
+        ]
+    }
+    
+    public var everySampler: [Binding<Bool>] {
+        return [
+            Binding(get: { self.microphone.sampler }, set: { self.microphone.sampler = $0 }),
+            Binding(get: { self.chat.sampler }, set: { self.chat.sampler = $0 }),
+            Binding(get: { self.music.sampler }, set: { self.music.sampler = $0 }),
+            Binding(get: { self.game.sampler }, set: { self.game.sampler = $0 }),
+            Binding(get: { self.console.sampler }, set: { self.console.sampler = $0 }),
+            Binding(get: { self.lineIn.sampler }, set: { self.lineIn.sampler = $0 }),
+            Binding(get: { self.system.sampler }, set: { self.system.sampler = $0 }),
+            Binding(get: { self.samples.sampler }, set: { self.samples.sampler = $0 }),
+        ]
+    }
 
     enum CodingKeys: String, CodingKey {
         case microphone = "Microphone"
