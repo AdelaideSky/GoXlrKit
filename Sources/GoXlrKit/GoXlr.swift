@@ -70,7 +70,7 @@ public class GoXlr: ObservableObject {
             
             switch command {
             case .SetRouter(let inputDevice, let outputDevice, let state):
-                self.socket.sendCommand(string: "{\"id\": 0, data: {Command: [\"\(self.device)\", {SetRouter: [\"\(inputDevice.rawValue)\", \"\(outputDevice.rawValue)\", \(state)]}]}}")
+                self.socket.sendCommand(string: "{\"id\": 0, data: {Command: [\"\(self.device)\", {\"SetRouter\": [\"\(inputDevice.rawValue)\", \"\(outputDevice.rawValue)\", \(state)]}]}}")
                 return
             default:
                 break
