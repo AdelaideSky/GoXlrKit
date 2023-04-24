@@ -7,6 +7,14 @@
 
 import Foundation
 
+protocol RouterInputs {
+    var headphones: Bool { get set }
+    var broadcastMix: Bool { get set }
+    var lineOut: Bool  { get set }
+    var chatMic: Bool  { get set }
+    var sampler: Bool  { get set }
+}
+
 // MARK: - Router
 public class Router: Codable, ObservableObject {
     @Published public var microphone: Microphone
@@ -17,6 +25,57 @@ public class Router: Codable, ObservableObject {
     @Published public var lineIn: LineIn
     @Published public var system: System
     @Published public var samples: RoutingSamples
+    
+    public var everyHeadphones: [WritableKeyPath<Router, Bool>] = [
+        \.microphone.headphones,
+         \.chat.headphones,
+         \.music.headphones,
+         \.game.headphones,
+         \.console.headphones,
+         \.lineIn.headphones,
+         \.system.headphones,
+         \.samples.headphones
+    ]
+    public var everyBroadcastMix: [WritableKeyPath<Router, Bool>] = [
+        \.microphone.broadcastMix,
+         \.chat.broadcastMix,
+         \.music.broadcastMix,
+         \.game.broadcastMix,
+         \.console.broadcastMix,
+         \.lineIn.broadcastMix,
+         \.system.broadcastMix,
+         \.samples.broadcastMix
+    ]
+    public var everyLineOut: [WritableKeyPath<Router, Bool>] = [
+        \.microphone.lineOut,
+         \.chat.lineOut,
+         \.music.lineOut,
+         \.game.lineOut,
+         \.console.lineOut,
+         \.lineIn.lineOut,
+         \.system.lineOut,
+         \.samples.lineOut
+    ]
+    public var everyChatMic: [WritableKeyPath<Router, Bool>] = [
+        \.microphone.chatMic,
+         \.chat.chatMic,
+         \.music.chatMic,
+         \.game.chatMic,
+         \.console.chatMic,
+         \.lineIn.chatMic,
+         \.system.chatMic,
+         \.samples.chatMic
+    ]
+    public var everySampler: [WritableKeyPath<Router, Bool>] = [
+        \.microphone.sampler,
+         \.chat.sampler,
+         \.music.sampler,
+         \.game.sampler,
+         \.console.sampler,
+         \.lineIn.sampler,
+         \.system.sampler,
+         \.samples.sampler
+    ]
 
     enum CodingKeys: String, CodingKey {
         case microphone = "Microphone"
@@ -53,7 +112,7 @@ public class Router: Codable, ObservableObject {
     }
 }
 
-public class Microphone: Codable, ObservableObject {
+public class Microphone: Codable, ObservableObject, RouterInputs {
     @Published public var headphones: Bool { didSet { GoXlr.shared.command(.SetRouter(.Microphone, .Headphones, headphones)) } }
     @Published public var broadcastMix: Bool { didSet { GoXlr.shared.command(.SetRouter(.Microphone, .BroadcastMix, broadcastMix)) } }
     @Published public var lineOut: Bool { didSet { GoXlr.shared.command(.SetRouter(.Microphone, .LineOut, lineOut)) } }
@@ -87,7 +146,7 @@ public class Microphone: Codable, ObservableObject {
     }
 }
 
-public class Chat: Codable, ObservableObject {
+public class Chat: Codable, ObservableObject, RouterInputs {
     @Published public var headphones: Bool { didSet { GoXlr.shared.command(.SetRouter(.Chat, .Headphones, headphones)) } }
     @Published public var broadcastMix: Bool { didSet { GoXlr.shared.command(.SetRouter(.Chat, .BroadcastMix, broadcastMix)) } }
     @Published public var lineOut: Bool { didSet { GoXlr.shared.command(.SetRouter(.Chat, .LineOut, lineOut)) } }
@@ -121,7 +180,7 @@ public class Chat: Codable, ObservableObject {
     }
 }
 
-public class Music: Codable, ObservableObject {
+public class Music: Codable, ObservableObject, RouterInputs {
     @Published public var headphones: Bool { didSet { GoXlr.shared.command(.SetRouter(.Music, .Headphones, headphones)) } }
     @Published public var broadcastMix: Bool { didSet { GoXlr.shared.command(.SetRouter(.Music, .BroadcastMix, broadcastMix)) } }
     @Published public var lineOut: Bool { didSet { GoXlr.shared.command(.SetRouter(.Music, .LineOut, lineOut)) } }
@@ -155,7 +214,7 @@ public class Music: Codable, ObservableObject {
     }
 }
 
-public class Game: Codable, ObservableObject {
+public class Game: Codable, ObservableObject, RouterInputs {
     @Published public var headphones: Bool { didSet { GoXlr.shared.command(.SetRouter(.Game, .Headphones, headphones)) } }
     @Published public var broadcastMix: Bool { didSet { GoXlr.shared.command(.SetRouter(.Game, .BroadcastMix, broadcastMix)) } }
     @Published public var lineOut: Bool { didSet { GoXlr.shared.command(.SetRouter(.Game, .LineOut, lineOut)) } }
@@ -189,7 +248,7 @@ public class Game: Codable, ObservableObject {
     }
 }
 
-public class Console: Codable, ObservableObject {
+public class Console: Codable, ObservableObject, RouterInputs {
     @Published public var headphones: Bool { didSet { GoXlr.shared.command(.SetRouter(.Console, .Headphones, headphones)) } }
     @Published public var broadcastMix: Bool { didSet { GoXlr.shared.command(.SetRouter(.Console, .BroadcastMix, broadcastMix)) } }
     @Published public var lineOut: Bool { didSet { GoXlr.shared.command(.SetRouter(.Console, .LineOut, lineOut)) } }
@@ -223,7 +282,7 @@ public class Console: Codable, ObservableObject {
     }
 }
 
-public class LineIn: Codable, ObservableObject {
+public class LineIn: Codable, ObservableObject, RouterInputs {
     @Published public var headphones: Bool { didSet { GoXlr.shared.command(.SetRouter(.LineIn, .Headphones, headphones)) } }
     @Published public var broadcastMix: Bool { didSet { GoXlr.shared.command(.SetRouter(.LineIn, .BroadcastMix, broadcastMix)) } }
     @Published public var lineOut: Bool { didSet { GoXlr.shared.command(.SetRouter(.LineIn, .LineOut, lineOut)) } }
@@ -257,7 +316,7 @@ public class LineIn: Codable, ObservableObject {
     }
 }
 
-public class System: Codable, ObservableObject {
+public class System: Codable, ObservableObject, RouterInputs {
     @Published public var headphones: Bool { didSet { GoXlr.shared.command(.SetRouter(.System, .Headphones, headphones)) } }
     @Published public var broadcastMix: Bool { didSet { GoXlr.shared.command(.SetRouter(.System, .BroadcastMix, broadcastMix)) } }
     @Published public var lineOut: Bool { didSet { GoXlr.shared.command(.SetRouter(.System, .LineOut, lineOut)) } }
@@ -291,7 +350,7 @@ public class System: Codable, ObservableObject {
     }
 }
 
-public class RoutingSamples: Codable, ObservableObject {
+public class RoutingSamples: Codable, ObservableObject, RouterInputs {
     @Published public var headphones: Bool { didSet { GoXlr.shared.command(.SetRouter(.Samples, .Headphones, headphones)) } }
     @Published public var broadcastMix: Bool { didSet { GoXlr.shared.command(.SetRouter(.Samples, .BroadcastMix, broadcastMix)) } }
     @Published public var lineOut: Bool { didSet { GoXlr.shared.command(.SetRouter(.Samples, .LineOut, lineOut)) } }
