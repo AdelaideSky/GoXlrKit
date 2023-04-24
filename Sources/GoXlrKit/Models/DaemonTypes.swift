@@ -272,7 +272,7 @@ public enum SamplerColourTargets: String, Codable {
 }
 
 
-public enum EncoderColourTargets: Codable {
+public enum EncoderColourTargets: String, Codable {
     case Reverb,
     Pitch,
     Echo,

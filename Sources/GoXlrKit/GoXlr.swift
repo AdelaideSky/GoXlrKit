@@ -72,6 +72,9 @@ public class GoXlr: ObservableObject {
             case .SetRouter(let inputDevice, let outputDevice, let state):
                 self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\"Command\": [\"\(self.device)\", {\"SetRouter\": [\"\(inputDevice.rawValue)\", \"\(outputDevice.rawValue)\", \(state)]}]}}")
                 return
+//            case .SetEncoderColour(let target, let colL, let colR, let colK):
+//                self.socket.sendCommand(string: "{\"id\":0,\"data\":{\"Command\":[\"\(self.device)\",{\"SetEncoderColour\":[\"\(target.rawValue)\",\"000000\",\"00FFFF\",\"FFE7F5\"]}]}}")
+//                return
 //            case .SetFaderColours(let channel, let colA, let colB):
 //                self.socket.sendCommand(string: "{\"id\":1,\"data\":{\"Command\":[\"\(self.device)\",{\"SetFaderColours\":[\"\(channel.rawValue)\",\"\(colA)\",\"\(colB)\"]}]}}")
             default:
