@@ -43,7 +43,7 @@ public enum EncoderName: Double, Codable {
     Echo = 0x03
 }
 
-public enum OutputDevice: String, Codable {
+public enum OutputDevice: String, Codable, CaseIterable {
     case Headphones,
     BroadcastMix,
     LineOut,
@@ -52,7 +52,7 @@ public enum OutputDevice: String, Codable {
 }
 
 
-public enum InputDevice: String, Codable {
+public enum InputDevice: String, Codable, CaseIterable {
     case Microphone,
     Chat,
     Music,
