@@ -13,8 +13,14 @@ import os
 public func handleMixerPatch(mixer: inout Mixer, path: [String], value: JSON) {
     let key = path.last!
     
-    if path.contains(["levels", "volumes"]) {
-        mixer.levels.volumes = patch(value: mixer.levels.volumes as any Codable, key: key, newValue: value)!
+    if path.contains(["levels"]) {
+        
+        if path.contains(["volumes"]) {
+            mixer.levels.volumes = patch(value: mixer.levels.volumes as any Codable, key: key, newValue: value)!
+            
+        } else {
+            mixer.levels = patch(value: mixer.levels as any Codable, key: key, newValue: value)!
+        }
         
     } else if path.contains(["fader_status"]) {
         
