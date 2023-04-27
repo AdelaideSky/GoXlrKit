@@ -50,7 +50,22 @@ public enum OutputDevice: String, Codable, CaseIterable {
     ChatMic,
     Sampler
 }
-
+extension OutputDevice {
+    var icon: String {
+        switch self {
+        case .Headphones:
+            return "headphones"
+        case .BroadcastMix:
+            return "waveform"
+        case .LineOut:
+            return "chevron.right.to.line"
+        case .ChatMic:
+            return "message.and.waveform"
+        case .Sampler:
+            return "speaker.wave.2.bubble.left"
+        }
+    }
+}
 
 public enum InputDevice: String, Codable, CaseIterable {
     case Microphone,
@@ -61,6 +76,28 @@ public enum InputDevice: String, Codable, CaseIterable {
     LineIn,
     System,
     Samples
+}
+extension InputDevice {
+    var icon: String {
+        switch self {
+        case .Microphone:
+            return "mic"
+        case .Chat:
+            return "speaker.wave.2.bubble.left"
+        case .Music:
+            return "music.note"
+        case .Game:
+            return "gamecontroller"
+        case .Console:
+            return "rectangle.on.rectangle"
+        case .LineIn:
+            return "chevron.backward.to.line"
+        case .System:
+            return "menubar.dock.rectangle"
+        case .Samples:
+            return "speaker.wave.2.bubble.left"
+        }
+    }
 }
 
 
