@@ -95,7 +95,7 @@ public class DaemonWSocket: WebSocketDelegate {
                     }
                     GoXlr.shared.device = GoXlr.shared.status?.data.status.mixers.first?.key ?? ""
                 } else {
-                    if !self.holdUpdates {
+                    if !self.holdUpdates && GoXlr.shared.status != nil {
                         let json = JSON(parseJSON: string)
                         for patch in json["data"]["Patch"].arrayValue {
                             let path = Array(patch["path"].stringValue.components(separatedBy: "/").dropFirst())
