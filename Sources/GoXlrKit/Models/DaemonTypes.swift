@@ -51,7 +51,7 @@ public enum OutputDevice: String, Codable, CaseIterable {
     Sampler
 }
 extension OutputDevice {
-    var icon: String {
+    public var icon: String {
         switch self {
         case .Headphones:
             return "headphones"
@@ -78,7 +78,7 @@ public enum InputDevice: String, Codable, CaseIterable {
     Samples
 }
 extension InputDevice {
-    var icon: String {
+    public var icon: String {
         switch self {
         case .Microphone:
             return "mic"
