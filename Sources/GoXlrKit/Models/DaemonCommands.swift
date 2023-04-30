@@ -182,6 +182,7 @@ public enum GoXLRCommand: Codable {
     case SetSubMixVolume(ChannelName, Int)
     case SetSubMixLinked(ChannelName, Bool)
     case SetSubMixOutputMix(OutputDevice, SubmixAssignation)
+    case SetShutdownCommands([GoXLRCommand])
 }
 
 extension GoXLRCommand {
