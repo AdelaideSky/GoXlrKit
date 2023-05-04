@@ -23,14 +23,13 @@ let package = Package(
         .package(url: "https://github.com/daltoniam/Starscream", branch: "master"),
         .package(url: "https://github.com/SwiftyJSON/SwiftyJSON", branch: "master"),
         .package(url: "https://github.com/rnine/SimplyCoreAudio", branch: "develop"),
-        .package(url: "https://github.com/ikhvorost/KeyValueCoding", branch: "main")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "GoXlrKit",
-            dependencies: ["Starscream", "SwiftyJSON", "KeyValueCoding"],
+            dependencies: ["Starscream", "SwiftyJSON"],
             resources: [.copy("Resources/Library")]),
         .target(
             name: "GoXlrKit-Audio",
