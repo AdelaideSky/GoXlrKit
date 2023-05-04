@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftyJSON
 
 // MARK: - Mixer
 public class Mixer: Codable, ObservableObject {
@@ -20,7 +21,6 @@ public class Mixer: Codable, ObservableObject {
     @Published public var sampler: Sampler?
     @Published public var settings: Settings
     @Published public var button_down: ButtonDown
-    @Published public var shutdownCommands: [GoXLRCommand] { didSet { GoXlr.shared.command(.SetShutdownCommands(shutdownCommands)) } }
     @Published public var profileName: String {
         didSet {
             guard profileName != oldValue else { return }
@@ -42,7 +42,6 @@ public class Mixer: Codable, ObservableObject {
         case coughButton = "cough_button"
         case lighting, effects, sampler, settings
         case button_down = "button_down"
-        case shutdownCommands = "shutdown_commands"
         case profileName = "profile_name"
         case micProfileName = "mic_profile_name"
     }
@@ -64,7 +63,6 @@ public class Mixer: Codable, ObservableObject {
         }
         settings = try values.decode(Settings.self, forKey: .settings)
         button_down = try values.decode(ButtonDown.self, forKey: .button_down)
-        shutdownCommands = try values.decode([GoXLRCommand].self, forKey: .shutdownCommands)
         profileName = try values.decode(String.self, forKey: .profileName)
         micProfileName = try values.decode(String.self, forKey: .micProfileName)
     }
@@ -82,7 +80,6 @@ public class Mixer: Codable, ObservableObject {
         try container.encode(sampler, forKey: .sampler)
         try container.encode(settings, forKey: .settings)
         try container.encode(button_down, forKey: .button_down)
-        try container.encode(shutdownCommands, forKey: .shutdownCommands)
         try container.encode(profileName, forKey: .profileName)
         try container.encode(micProfileName, forKey: .micProfileName)
     }
