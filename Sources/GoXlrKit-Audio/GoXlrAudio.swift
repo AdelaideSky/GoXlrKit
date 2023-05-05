@@ -14,7 +14,7 @@ import os
 /**
  GoXlrAudio class. Here you can find
  */
-public class GoXlrAudio {
+public class GoXlrAudio: ObservableObject {
     
     public static var shared: GoXlrAudio = {
         return GoXlrAudio()
