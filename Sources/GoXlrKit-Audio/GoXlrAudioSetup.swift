@@ -88,9 +88,13 @@ public class GoXlrAudioSetup {
                     break
                 }
                 
-                aggregate?.setPreferedChannels(aggregateType)
+                if aggregate!.setPreferedChannels(aggregateType) {
+                    GoXlrAudio.shared.managedAggregates.insert(.init(aggregate!.uid ?? aggregateType.rawValue, name: aggregate!.name, type: aggregateType, deviceModel: model, scope: .input))
+                } else {
+                    GoXlrAudio.shared.managedAggregates.insert(.init(aggregate!.uid ?? aggregateType.rawValue, name: aggregate!.name, type: aggregateType, deviceModel: model, scope: .output))
+                }
                 
-                GoXlrAudio.shared.managedAggregates.insert(.init(aggregate!.uid ?? aggregateType.rawValue, name: aggregate!.name, type: aggregateType, deviceModel: model))
+                
             }
             Logger().debug("Found device \(device.description), configuring aggregates...")
         }
@@ -98,12 +102,8 @@ public class GoXlrAudioSetup {
 }
 
 extension AudioDevice {
-    func setPreferedChannels(_ type: Aggregate) {
-        if type.isOutput {
-            self.setPreferredChannelsForStereo(channels: StereoPair(left: 0, right: 0), scope: .input)
-        } else {
-            self.setPreferredChannelsForStereo(channels: StereoPair(left: 0, right: 0), scope: .output)
-        }
+    func setPreferedChannels(_ type: Aggregate) -> Bool {
+        // bool is true: input, false: output
         switch type {
         case .system:
             self.setPreferredChannelsForStereo(channels: StereoPair(left: 1, right: 2), scope: .output)
@@ -121,6 +121,13 @@ extension AudioDevice {
             self.setPreferredChannelsForStereo(channels: StereoPair(left: 3, right: 4), scope: .input)
         case .sample2:
             self.setPreferredChannelsForStereo(channels: StereoPair(left: 5, right: 6), scope: .input)
+        }
+        if type.isOutput {
+            self.setPreferredChannelsForStereo(channels: StereoPair(left: 0, right: 0), scope: .input)
+            return false
+        } else {
+            self.setPreferredChannelsForStereo(channels: StereoPair(left: 0, right: 0), scope: .output)
+            return true
         }
     }
 }

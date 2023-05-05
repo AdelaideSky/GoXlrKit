@@ -19,6 +19,7 @@ public struct ManagedAggregate: Hashable, Codable, RawRepresentable, Identifiabl
     public var name: String
     public var type: Aggregate
     public var deviceModel: GoXlrModel
+    public var scope: GoXlrADScope
     
     public var device: AudioDevice? {
         return SimplyCoreAudio().allAggregateDevices.first(where: {$0.uid == self.id})
@@ -34,11 +35,12 @@ public struct ManagedAggregate: Hashable, Codable, RawRepresentable, Identifiabl
         }
     }
     
-    public init(_ uid: String, name: String, type: Aggregate, deviceModel: GoXlrModel) {
+    public init(_ uid: String, name: String, type: Aggregate, deviceModel: GoXlrModel, scope: GoXlrADScope) {
         self.id = uid
         self.name = name
         self.type = type
         self.deviceModel = deviceModel
+        self.scope = scope
     }
     
     public init?(rawValue: String) {
@@ -62,11 +64,16 @@ public struct ManagedAggregate: Hashable, Codable, RawRepresentable, Identifiabl
         }
         return result
     }
+    
+    public enum GoXlrADScope: String, Codable {
+        case input
+        case output
+    }
 }
 
 extension ManagedAggregate {
     enum CodingKeys: String, CodingKey {
-        case id, name, type, deviceModel
+        case id, name, type, deviceModel, scope
       }
 
     public init(from decoder: Decoder) throws {
@@ -75,6 +82,7 @@ extension ManagedAggregate {
         name = try values.decode(String.self, forKey: .name)
         type = try values.decode(Aggregate.self, forKey: .type)
         deviceModel = try values.decode(GoXlrModel.self, forKey: .deviceModel)
+        scope = try values.decode(GoXlrADScope.self, forKey: .scope)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -83,6 +91,7 @@ extension ManagedAggregate {
         try container.encode(name, forKey: .name)
         try container.encode(type, forKey: .type)
         try container.encode(deviceModel, forKey: .deviceModel)
+        try container.encode(scope, forKey: .scope)
     }
 }
 
