@@ -13,15 +13,15 @@ import os
 /**
  A managed aggregate. Represent a aggregate created by the module's functions.
  */
-public struct ManagedAggregate: Hashable, Codable, RawRepresentable {
+public struct ManagedAggregate: Hashable, Codable, RawRepresentable, Identifiable {
     
-    public var uid: String
+    public var id: String
     public var name: String
     public var type: Aggregate
     public var deviceModel: GoXlrModel
     
     public var device: AudioDevice? {
-        return SimplyCoreAudio().allAggregateDevices.first(where: {$0.uid == self.uid})
+        return SimplyCoreAudio().allAggregateDevices.first(where: {$0.uid == self.id})
     }
     
     /**
@@ -35,7 +35,7 @@ public struct ManagedAggregate: Hashable, Codable, RawRepresentable {
     }
     
     public init(_ uid: String, name: String, type: Aggregate, deviceModel: GoXlrModel) {
-        self.uid = uid
+        self.id = uid
         self.name = name
         self.type = type
         self.deviceModel = deviceModel
@@ -66,12 +66,12 @@ public struct ManagedAggregate: Hashable, Codable, RawRepresentable {
 
 extension ManagedAggregate {
     enum CodingKeys: String, CodingKey {
-        case uid, name, type, deviceModel
+        case id, name, type, deviceModel
       }
 
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        uid = try values.decode(String.self, forKey: .uid)
+        id = try values.decode(String.self, forKey: .id)
         name = try values.decode(String.self, forKey: .name)
         type = try values.decode(Aggregate.self, forKey: .type)
         deviceModel = try values.decode(GoXlrModel.self, forKey: .deviceModel)
@@ -79,7 +79,7 @@ extension ManagedAggregate {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(uid, forKey: .uid)
+        try container.encode(id, forKey: .id)
         try container.encode(name, forKey: .name)
         try container.encode(type, forKey: .type)
         try container.encode(deviceModel, forKey: .deviceModel)
