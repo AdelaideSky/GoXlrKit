@@ -66,8 +66,8 @@ public struct ManagedAggregate: Hashable, Codable, RawRepresentable, Identifiabl
     }
     
     public enum GoXlrADScope: String, Codable {
-        case input
-        case output
+        case input = "Input"
+        case output = "Output"
     }
 }
 
