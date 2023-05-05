@@ -15,19 +15,19 @@ import os
  */
 public struct ManagedAggregate: Hashable, Codable, RawRepresentable {
     
-    var uid: String
-    var name: String
-    var type: Aggregate
-    var deviceModel: GoXlrModel
+    public var uid: String
+    public var name: String
+    public var type: Aggregate
+    public var deviceModel: GoXlrModel
     
-    var device: AudioDevice? {
+    public var device: AudioDevice? {
         return SimplyCoreAudio().allAggregateDevices.first(where: {$0.uid == self.uid})
     }
     
     /**
      Deletes the aggregate.
      */
-    func delete() {
+    public func delete() {
         if let deviceID = self.device?.id {
             let status = SimplyCoreAudio().removeAggregateDevice(id: deviceID)
             Logger().debug("\(status)")
