@@ -24,6 +24,9 @@ public func handleAddPatch(status: inout StatusClass, path: [String], value: JSO
         
     } else if path.contains(["mixers"]) {
         status.mixers[key] = try! JSONDecoder().decode(Mixer.self, from: try value.rawData())
+        if GoXlr.shared.device == "" {
+            GoXlr.shared.device = key
+        }
         
     } else {
         Logger().log("Add patch path \(path) isn't implemented. Please add its requirements within the module.")
