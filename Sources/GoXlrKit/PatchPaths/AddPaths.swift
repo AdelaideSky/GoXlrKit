@@ -23,7 +23,7 @@ public func handleAddPatch(status: inout StatusClass, path: [String], value: JSO
         status.files.presets = patch(value: status.files.presets, add: value.stringValue, at: Int(key))
         
     } else if path.contains(["mixers"]) {
-        status.mixers = patch(value: status.mixers, key: key, newValue: value)!
+        status.mixers[key] = try! JSONDecoder().decode(Mixer.self, from: try value.rawData())
         
     } else {
         Logger().log("Add patch path \(path) isn't implemented. Please add its requirements within the module.")
