@@ -25,6 +25,9 @@ public func handleStatusPatch(status: inout StatusClass, path: [String], value: 
     } else if path.contains(["config"]) {
         status.config = patch(value: status.config, key: key, newValue: value)!
         
+    } else if path.contains(["mixers"]) {
+        status.mixers = patch(value: status.mixers, key: key, newValue: value)!
+        
     } else {
         Logger().log("Status path \(path) isn't implemented. Please add its requirements within the module.")
     }
