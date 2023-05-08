@@ -100,7 +100,7 @@ public class DaemonWSocket: WebSocketDelegate {
                         for patch in json["data"]["Patch"].arrayValue {
                             let path = Array(patch["path"].stringValue.components(separatedBy: "/").dropFirst())
                             if patch["op"].stringValue == "replace" {
-                                if patch["path"].stringValue.starts(with: "/mixers/") {
+                                if patch["path"].stringValue.starts(with: "/mixers/") && path.count > 3 {
                                     let device = patch["path"].stringValue.components(separatedBy: "/")[2]
                                     handleMixerPatch(mixer: &GoXlr.shared.status!.data.status.mixers[device]!, path: Array(path.dropFirst(2)), value: patch["value"])
                                 } else {
