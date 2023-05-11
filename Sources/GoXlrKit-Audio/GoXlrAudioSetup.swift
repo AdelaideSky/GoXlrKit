@@ -41,7 +41,7 @@ extension Aggregate {
         case .broadcastMix:
             return "Broadcast Mic"
         case .chatMic:
-            return "Chat Mix"
+            return "Chat Mic"
         case .sample1:
             return "Sample"
         case .sample2:
