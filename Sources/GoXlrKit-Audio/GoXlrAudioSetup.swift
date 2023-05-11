@@ -22,7 +22,7 @@ public enum Aggregate: String, CaseIterable, Codable {
     case chat = "com.adecorp.goxlr.audio-device.chat:"
     case music = "com.adecorp.goxlr.audio-device.music:"
     case broadcastMix = "com.adecorp.goxlr.audio-device.broadcastmix:"
-    case chatMix = "com.adecorp.goxlr.audio-device.chatmix:"
+    case chatMic = "com.adecorp.goxlr.audio-device.chatmix:"
     
     case sample1 = "com.adecorp.goxlr.audio-device.sample1:"
     case sample2 = "com.adecorp.goxlr.audio-device.sample2:"
@@ -39,13 +39,13 @@ extension Aggregate {
         case .music:
             return "Music"
         case .broadcastMix:
-            return "Broadcast Mix"
-        case .chatMix:
+            return "Broadcast Mic"
+        case .chatMic:
             return "Chat Mix"
         case .sample1:
             return "Sample"
         case .sample2:
-            return "Sample"
+            return "Sample Source"
         }
     }
     
@@ -53,7 +53,7 @@ extension Aggregate {
         switch self {
         case .broadcastMix:
             return false
-        case .chatMix:
+        case .chatMic:
             return false
         case .sample2:
             return false
@@ -117,7 +117,7 @@ extension AudioDevice {
             self.setPreferredChannelsForStereo(channels: StereoPair(left: 9, right: 10), scope: .output)
         case .broadcastMix:
             self.setPreferredChannelsForStereo(channels: StereoPair(left: 1, right: 2), scope: .input)
-        case .chatMix:
+        case .chatMic:
             self.setPreferredChannelsForStereo(channels: StereoPair(left: 3, right: 4), scope: .input)
         case .sample2:
             self.setPreferredChannelsForStereo(channels: StereoPair(left: 5, right: 6), scope: .input)
