@@ -24,8 +24,8 @@ public enum Aggregate: String, CaseIterable, Codable {
     case broadcastMix = "com.adecorp.goxlr.audio-device.broadcastmix:"
     case chatMic = "com.adecorp.goxlr.audio-device.chatmix:"
     
-    case sample1 = "com.adecorp.goxlr.audio-device.sample1:"
-    case sample2 = "com.adecorp.goxlr.audio-device.sample2:"
+    case sample = "com.adecorp.goxlr.audio-device.sample:"
+    case sampler = "com.adecorp.goxlr.audio-device.sampler:"
 }
 extension Aggregate {
     var displayName: String {
@@ -42,10 +42,10 @@ extension Aggregate {
             return "Broadcast Mic"
         case .chatMic:
             return "Chat Mic"
-        case .sample1:
+        case .sample:
             return "Sample"
-        case .sample2:
-            return "Sample Source"
+        case .sampler:
+            return "Sampler"
         }
     }
     
@@ -55,7 +55,7 @@ extension Aggregate {
             return false
         case .chatMic:
             return false
-        case .sample2:
+        case .sampler:
             return false
         default:
             return true
@@ -75,7 +75,7 @@ public class GoXlrAudioSetup {
             Logger().info("Started the creation of GoXLR aggregate devices.")
             
             for aggregateType in Aggregate.allCases {
-                guard model != .Mini || (aggregateType != .sample1 || aggregateType != .sample2) else { break }
+                guard model != .Mini || (aggregateType != .sample || aggregateType != .sampler) else { break }
                 
                 let uid = aggregateType.rawValue+serial
                 
@@ -113,13 +113,13 @@ extension AudioDevice {
             self.setPreferredChannelsForStereo(channels: StereoPair(left: 5, right: 6), scope: .output)
         case .music:
             self.setPreferredChannelsForStereo(channels: StereoPair(left: 7, right: 8), scope: .output)
-        case .sample1:
+        case .sample:
             self.setPreferredChannelsForStereo(channels: StereoPair(left: 9, right: 10), scope: .output)
         case .broadcastMix:
             self.setPreferredChannelsForStereo(channels: StereoPair(left: 1, right: 2), scope: .input)
         case .chatMic:
             self.setPreferredChannelsForStereo(channels: StereoPair(left: 3, right: 4), scope: .input)
-        case .sample2:
+        case .sampler:
             self.setPreferredChannelsForStereo(channels: StereoPair(left: 5, right: 6), scope: .input)
         }
         if type.isOutput {
