@@ -122,12 +122,23 @@ public class GoXlr: ObservableObject {
     }
     
     public func copyDebugInfo() {
+        var statusObject: String {
+            do {
+                if let returnString = String(data: try JSONEncoder().encode(self.status), encoding: .utf8) {
+                    return returnString
+                } else {
+                    return "Error translating JSON data to string, description: \(self.status.debugDescription)"
+                }
+            } catch let error {
+                return "Couldn't JSONEncode with error: \(error)"
+            }
+        }
         let returnValue = """
                         ✧──────────────・「 Debug Info 」・──────────────✧
                         
                         ・ Device : \(self.device)
                         
-                        ・ Status object : \(self.status.debugDescription)
+                        ・ Status object : \(statusObject)
                         
                         ・ Daemon object : \(self.daemon)
                         
