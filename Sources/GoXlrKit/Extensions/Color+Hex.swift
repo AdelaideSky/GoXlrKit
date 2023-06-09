@@ -34,84 +34,38 @@ extension Color {
         )
     }
 }
+extension CGColor {
+    func hex() -> String? {
+        guard let components = self.components else {
+            return nil
+        }
+        
+        let red = Int(components[0] * 255)
+        let green = Int(components[1] * 255)
+        let blue = Int(components[2] * 255)
+        
+        let hex = String(format: "#%02X%02X%02X", red, green, blue)
+        return hex
+    }
+}
 extension Color: Codable {
     public func encode(to encoder: Encoder) throws {
         guard let cgColor = self.cgColor else {
             throw CodingError.wrongColor
         }
         var container = encoder.singleValueContainer()
-        try container.encode(CodableColor(cgColor: cgColor))
+        try container.encode(cgColor.hex())
         
     }
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
-        let codableColor = try container.decode(CodableColor.self)
-        self = Color(cgColor: codableColor.cgColor)
+        let stringHex = try container.decode(String.self)
+        self = Color(hex: stringHex)
     }
     
 }
-struct CodableColor: Codable {
-    let cgColor: CGColor
-    
-    enum CodingKeys: String, CodingKey {
-        case colorSpace
-        case components
-    }
-    
-    init(cgColor: CGColor) {
-        self.cgColor = cgColor
-    }
-    
-    init(from decoder: Decoder) throws {
-        let container = try decoder
-            .container(keyedBy: CodingKeys.self)
-        let colorSpace = try container
-            .decode(String.self, forKey: .colorSpace)
-        let components = try container
-            .decode([CGFloat].self, forKey: .components)
-        
-        guard
-            let cgColorSpace = CGColorSpace(name: colorSpace as CFString),
-            let cgColor = CGColor(
-                colorSpace: cgColorSpace, components: components
-            )
-        else {
-            throw CodingError.wrongData
-        }
-        
-        self.cgColor = cgColor
-    }
-    
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        guard
-            let colorSpace = cgColor.colorSpace?.name,
-            let components = cgColor.components
-        else {
-            throw CodingError.wrongData
-        }
-              
-        try container.encode(colorSpace as String, forKey: .colorSpace)
-        try container.encode(components, forKey: .components)
-    }
-}
-
 enum CodingError: Error {
     case wrongColor
     case wrongData
-}
-
-func encodeColor(color: Color) throws -> Data {
-    guard let cgColor = color.cgColor else {
-        throw CodingError.wrongColor
-    }
-    return try JSONEncoder()
-        .encode(CodableColor(cgColor: cgColor))
-}
-
-func decodeColor(from data: Data) throws -> Color {
-    let codableColor = try JSONDecoder()
-        .decode(CodableColor.self, from: data)
-    return Color(cgColor: codableColor.cgColor)
 }
