@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftyJSON
+import SwiftUI
 
 // MARK: - Mixer
 public class Mixer: Codable, ObservableObject {
@@ -384,8 +385,8 @@ public class ButtonStyle: Codable, ObservableObject {
 
 // MARK: - Colours
 public class Colours: Codable, ObservableObject {
-    @Published public var colourOne: String
-    @Published public var colourTwo: String
+    @Published public var colourOne: Color
+    @Published public var colourTwo: Color
 
     enum CodingKeys: String, CodingKey {
         case colourOne = "colour_one"
@@ -393,8 +394,8 @@ public class Colours: Codable, ObservableObject {
     }
     public required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        colourOne = try values.decode(String.self, forKey: .colourOne)
-        colourTwo = try values.decode(String.self, forKey: .colourTwo)
+        colourOne = try values.decode(Color.self, forKey: .colourOne)
+        colourTwo = try values.decode(Color.self, forKey: .colourTwo)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -437,9 +438,9 @@ public class Encoders: Codable, ObservableObject {
 
 // MARK: - GenderClass
 public class GenderClass: Codable, ObservableObject {
-    @Published public var colourOne: String
-    @Published public var colourTwo: String
-    @Published public var colourThree: String
+    @Published public var colourOne: Color
+    @Published public var colourTwo: Color
+    @Published public var colourThree: Color
 
     enum CodingKeys: String, CodingKey {
         case colourOne = "colour_one"
@@ -449,9 +450,9 @@ public class GenderClass: Codable, ObservableObject {
     
     public required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        colourOne = try values.decode(String.self, forKey: .colourOne)
-        colourTwo = try values.decode(String.self, forKey: .colourTwo)
-        colourThree = try values.decode(String.self, forKey: .colourThree)
+        colourOne = try values.decode(Color.self, forKey: .colourOne)
+        colourTwo = try values.decode(Color.self, forKey: .colourTwo)
+        colourThree = try values.decode(Color.self, forKey: .colourThree)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -611,7 +612,7 @@ public class Simple: Codable, ObservableObject {
 
 // MARK: - Accent
 public class Accent: Codable, ObservableObject {
-    @Published public var colourOne: String
+    @Published public var colourOne: Color
 
     enum CodingKeys: String, CodingKey {
         case colourOne = "colour_one"
@@ -619,7 +620,7 @@ public class Accent: Codable, ObservableObject {
     
     public required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        colourOne = try values.decode(String.self, forKey: .colourOne)
+        colourOne = try values.decode(Color.self, forKey: .colourOne)
     }
 
     public func encode(to encoder: Encoder) throws {
