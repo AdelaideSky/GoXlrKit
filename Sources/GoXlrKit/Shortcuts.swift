@@ -25,6 +25,9 @@ fileprivate func shell(_ command: String) -> String {
 }
 
 public struct Shortcuts {
+    
+    public init() {}
+    
     public func get() -> [String] {
         return shell("shortcuts list").components(separatedBy: "\n")
     }
