@@ -715,7 +715,7 @@ public class Bank: Codable, ObservableObject {
 public class SamplerButton: Codable, ObservableObject {
     @Published public var function: SamplePlaybackMode
     @Published public var order: SamplePlayOrder
-    @Published public var samples: [JSONAny]
+    @Published public var samples: [String]
     @Published public var is_playing: Bool
 
     enum CodingKeys: String, CodingKey {
@@ -727,7 +727,7 @@ public class SamplerButton: Codable, ObservableObject {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.function = try container.decode(SamplePlaybackMode.self, forKey: .function)
         self.order = try container.decode(SamplePlayOrder.self, forKey: .order)
-        self.samples = try container.decode([JSONAny].self, forKey: .samples)
+        self.samples = try container.decode([String].self, forKey: .samples)
         self.is_playing = try container.decode(Bool.self, forKey: .is_playing)
     }
 
