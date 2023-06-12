@@ -197,7 +197,15 @@ public func handleMixerPatch(mixer: inout Mixer, path: [String], value: JSON) {
             }
         }
         
-    } else {
-        Logger().log("Mixer path \(path) isn't implemented. Please add its requirements within the module.")
+    } else if path.contains(["button_down"]) {
+        mixer.button_down = patch(value: mixer.button_down, key: key, newValue: value)!
+        if GoXlr.shared.observationStore != nil {
+            if let shortcut = GoXlr.shared.observationStore!.wrappedValue[key] {
+                Shortcuts().run(shortcut)
+            }
+        }
+
+   } else {
+        Logger().log("Mixer path \(path.debugDescription) isn't implemented. Please add its requirements within the module.")
     }
 }
