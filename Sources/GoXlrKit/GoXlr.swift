@@ -67,6 +67,7 @@ public class GoXlr: ObservableObject {
             let firstRegex = #/\"_[0-9]\":/#
             let secondRegex = #/\":{/#
             let thirdRegex = #/}}/#
+            let finalRegex = #/\{"\w+":\{/#
             
             switch command {
             case .SetRouter(let inputDevice, let outputDevice, let state):
@@ -82,9 +83,34 @@ public class GoXlr: ObservableObject {
             }
 
             if commandString?.components(separatedBy: ",").count ?? 0 > 1 {
-                if let commandString = commandString?.replacing(firstRegex, with: "").replacing(secondRegex, with: "\":[").replacing(thirdRegex, with: "]}") {
-                    self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\"Command\": [\"\(self.device)\", "+commandString+"]}}")
+                var answer = "\(commandString!.firstMatch(of: finalRegex)!.0)".dropLast()+"["
+                if commandString!.contains("_0") {
+                    answer += (commandString?.split(separator: ",").first(where: { $0.contains("_0") }))!
+                        .replacing(firstRegex, with: "")
+                        .replacing(thirdRegex, with: "")
+                        .replacing(finalRegex, with: "")
+                    if commandString!.contains("_1") {
+                        answer += ","+(commandString?.split(separator: ",").first(where: { $0.contains("_1") }))!
+                            .replacing(firstRegex, with: "")
+                            .replacing(thirdRegex, with: "")
+                            .replacing(finalRegex, with: "")
+                        if commandString!.contains("_2") {
+                            answer += ","+(commandString?.split(separator: ",").first(where: { $0.contains("_2") }))!
+                                .replacing(firstRegex, with: "")
+                                .replacing(thirdRegex, with: "")
+                                .replacing(finalRegex, with: "")
+                            if commandString!.contains("_3") {
+                                answer += ","+(commandString?.split(separator: ",").first(where: { $0.contains("_3") }))!
+                                    .replacing(firstRegex, with: "")
+                                    .replacing(thirdRegex, with: "")
+                                    .replacing(finalRegex, with: "")
+                            }
+                        }
+                    }
                 }
+                answer+="]}"
+
+                self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\"Command\": [\"\(self.device)\", "+answer+"]}}")
             } else {
                 if command.commandName == "" {
                     if let commandString = commandString?.replacing(firstRegex, with: "").replacing(secondRegex, with: "\":").replacing(thirdRegex, with: "}") {
