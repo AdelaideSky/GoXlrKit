@@ -199,7 +199,7 @@ public func handleMixerPatch(mixer: inout Mixer, path: [String], value: JSON) {
         
     } else if path.contains(["button_down"]) {
         mixer.button_down = patch(value: mixer.button_down, key: key, newValue: value)!
-        if GoXlr.shared.observationStore != nil {
+        if GoXlr.shared.observationStore != nil && value.boolValue {
             if let shortcut = GoXlr.shared.observationStore!.wrappedValue[key] {
                 Shortcuts().run(shortcut)
             }
