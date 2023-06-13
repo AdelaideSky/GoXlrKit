@@ -55,13 +55,8 @@ public class Mixer: Codable, ObservableObject {
         router = try values.decode(Router.self, forKey: .router)
         coughButton = try values.decode(CoughButton.self, forKey: .coughButton)
         lighting = try values.decode(Lighting.self, forKey: .lighting)
-        do {
-            effects = try values.decodeIfPresent(Effects.self, forKey: .effects)
-            sampler = try values.decodeIfPresent(Sampler.self, forKey: .sampler)
-        } catch {
-            effects = nil
-            sampler = nil
-        }
+        effects = try values.decodeIfPresent(Effects.self, forKey: .effects)
+        sampler = try values.decodeIfPresent(Sampler.self, forKey: .sampler)
         settings = try values.decode(Settings.self, forKey: .settings)
         button_down = try values.decode(ButtonDown.self, forKey: .button_down)
         profileName = try values.decode(String.self, forKey: .profileName)
@@ -715,7 +710,7 @@ public class Bank: Codable, ObservableObject {
 public class SamplerButton: Codable, ObservableObject {
     @Published public var function: SamplePlaybackMode
     @Published public var order: SamplePlayOrder
-    @Published public var samples: [String]
+    @Published public var samples: [Sample]
     @Published public var is_playing: Bool
 
     enum CodingKeys: String, CodingKey {
@@ -727,7 +722,7 @@ public class SamplerButton: Codable, ObservableObject {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.function = try container.decode(SamplePlaybackMode.self, forKey: .function)
         self.order = try container.decode(SamplePlayOrder.self, forKey: .order)
-        self.samples = try container.decode([String].self, forKey: .samples)
+        self.samples = try container.decode([Sample].self, forKey: .samples)
         self.is_playing = try container.decode(Bool.self, forKey: .is_playing)
     }
 
@@ -737,6 +732,33 @@ public class SamplerButton: Codable, ObservableObject {
         try container.encode(self.order, forKey: .order)
         try container.encode(self.samples, forKey: .samples)
         try container.encode(self.is_playing, forKey: .is_playing)
+    }
+}
+
+// MARK: - Sample
+public class Sample: Codable, ObservableObject {
+    @Published public var name: String
+    @Published public var startPct: Float
+    @Published public var stopPct: Float
+
+    enum CodingKeys: String, CodingKey {
+        case name
+        case startPct = "start_pct"
+        case stopPct = "stop_pct"
+    }
+    
+    public required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.startPct = try container.decode(Float.self, forKey: .startPct)
+        self.stopPct = try container.decode(Float.self, forKey: .stopPct)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(self.name, forKey: .name)
+        try container.encode(self.startPct, forKey: .startPct)
+        try container.encode(self.stopPct, forKey: .stopPct)
     }
 }
 
