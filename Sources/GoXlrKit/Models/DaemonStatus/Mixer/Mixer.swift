@@ -56,8 +56,8 @@ public class Mixer: Codable, ObservableObject {
         coughButton = try values.decode(CoughButton.self, forKey: .coughButton)
         lighting = try values.decode(Lighting.self, forKey: .lighting)
         do {
-            effects = try values.decode(Effects?.self, forKey: .effects)
-            sampler = try values.decode(Sampler?.self, forKey: .sampler)
+            effects = try values.decodeIfPresent(Effects.self, forKey: .effects)
+            sampler = try values.decodeIfPresent(Sampler.self, forKey: .sampler)
         } catch {
             effects = nil
             sampler = nil
