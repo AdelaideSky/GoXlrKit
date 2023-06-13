@@ -32,6 +32,6 @@ public struct Shortcuts {
         return shell("shortcuts list").components(separatedBy: "\n")
     }
     public func run(_ shortcut: String) {
-        _ = shell("shortcuts run \(shortcut)")
+        _ = shell("shortcuts run \"\(shortcut)\"")
     }
 }
