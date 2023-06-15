@@ -177,26 +177,26 @@ public class Frequency: Codable, ObservableObject {
 
 // MARK: - MicGains
 public class MicGains: Codable, ObservableObject {
-    @Published public var micGainsDynamic: Float
-    @Published public var condenser: Float
-    @Published public var jack: Float
+    @Published public var dynamic: Float { didSet { GoXlr.shared.command(.SetMicrophoneGain(.Dynamic, Int(dynamic))) } }
+    @Published public var condenser: Float { didSet { GoXlr.shared.command(.SetMicrophoneGain(.Condenser, Int(condenser))) } }
+    @Published public var jack: Float { didSet { GoXlr.shared.command(.SetMicrophoneGain(.Jack, Int(jack))) } }
 
     enum CodingKeys: String, CodingKey {
-        case micGainsDynamic = "Dynamic"
+        case dynamic = "Dynamic"
         case condenser = "Condenser"
         case jack = "Jack"
     }
     
     public required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        micGainsDynamic = try values.decode(Float.self, forKey: .micGainsDynamic)
+        dynamic = try values.decode(Float.self, forKey: .dynamic)
         condenser = try values.decode(Float.self, forKey: .condenser)
         jack = try values.decode(Float.self, forKey: .jack)
     }
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(micGainsDynamic, forKey: .micGainsDynamic)
+        try container.encode(dynamic, forKey: .dynamic)
         try container.encode(condenser, forKey: .condenser)
         try container.encode(jack, forKey: .jack)
     }
