@@ -204,12 +204,23 @@ extension GoXLRCommand {
  Daemon command type, with corresponding parameters.
  */
 public enum DaemonCommand: Codable {
+    case Ping
+    case OpenUi
+    case GetStatus
+    case StopDaemon
+    case GetHttpState
+//    case OpenPath(PathTypes)
+    case SetShowTrayIcon(Bool)
     case SetTTSEnabled(Bool)
+    case SetAutoStartEnabled(Bool)
+//    case RecoverDefaults(PathTypes)
 }
 
 extension DaemonCommand {
     var commandName: String {
         switch self {
+        case .StopDaemon:
+            return "StopDaemon"
         default:
             return ""
         }

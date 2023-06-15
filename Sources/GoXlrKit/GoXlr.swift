@@ -51,11 +51,11 @@ public class GoXlr: ObservableObject {
     }
     /**
      Disconnects from the websocket and shut down the daemon.
+      Alternative for command(.StopDaemon)
      */
     public func stopObserving() {
         Task {
-            self.socket.disconnect()
-            self.daemon.stop()
+            self.command(.StopDaemon)
         }
     }
     
@@ -143,7 +143,7 @@ public class GoXlr: ObservableObject {
                         self.socket.sendCommand(string: "{\"id\": 0, \"data\": "+commandString+"}")
                     }
                 } else {
-                    self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\""+command.commandName+"\":[]}}")
+                    self.socket.sendCommand(string: "{\"id\": 0, \"data\": \""+command.commandName+"\"}")
                 }
             }
             
@@ -200,7 +200,7 @@ public class GoXlr: ObservableObject {
             do {
                 try fileManager.copyItem(at: url, to: filePath.appendingPathComponent("\(url.lastPathComponent)"))
             } catch (let error) {
-                print("error on copying file")
+                print("error on copying file: \(error)")
             }
         }
     }
