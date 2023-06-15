@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - MicStatus
 public class MicStatus: Codable, ObservableObject {
-    @Published public var micType: String
+    @Published public var micType: MicrophoneType { didSet { GoXlr.shared.command(.SetMicrophoneType(micType)) } }
     @Published public var micGains: MicGains
     @Published public var equaliser: Equaliser
     @Published public var equaliserMini: EqualiserMini
@@ -27,7 +27,7 @@ public class MicStatus: Codable, ObservableObject {
     
     public required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        micType = try values.decode(String.self, forKey: .micType)
+        micType = try values.decode(MicrophoneType.self, forKey: .micType)
         micGains = try values.decode(MicGains.self, forKey: .micGains)
         equaliser = try values.decode(Equaliser.self, forKey: .equaliser)
         equaliserMini = try values.decode(EqualiserMini.self, forKey: .equaliserMini)

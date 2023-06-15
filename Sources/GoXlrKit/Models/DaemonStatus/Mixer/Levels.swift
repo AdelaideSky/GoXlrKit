@@ -11,8 +11,8 @@ import Foundation
 public class Levels: Codable, ObservableObject {
     @Published public var submixSupported: Bool
     @Published public var volumes: Volumes
-    @Published public var bleep: Float
-    @Published public var deess: Float
+    @Published public var bleep: Float { didSet { GoXlr.shared.command(.SetSwearButtonVolume(Int(bleep))) }}
+    @Published public var deess: Float { didSet { GoXlr.shared.command(.SetDeeser(Int(deess))) }}
     @Published public var submix: Submix?
     
     enum CodingKeys: String, CodingKey {
