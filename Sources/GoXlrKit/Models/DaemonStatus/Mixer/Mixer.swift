@@ -736,7 +736,7 @@ public class SamplerButton: Codable, ObservableObject {
 }
 
 // MARK: - Sample
-public class Sample: Codable, ObservableObject {
+public class Sample: Codable, ObservableObject, Hashable {
     @Published public var name: String
     @Published public var startPct: Float
     @Published public var stopPct: Float
