@@ -206,6 +206,8 @@ public func handleMixerPatch(mixer: inout Mixer, path: [String], value: JSON) {
         }
 
    } else {
-        Logger().log("Mixer path \(path.debugDescription) isn't implemented. Please add its requirements within the module.")
+       if GoXlr.shared.logLevel == .info || GoXlr.shared.logLevel == .debug {
+           Logger().info("Mixer path \(path.debugDescription) isn't implemented. Please add its requirements within the module.")
+       }
     }
 }

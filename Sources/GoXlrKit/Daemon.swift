@@ -57,6 +57,10 @@ public struct Daemon {
             fatalError("No daemon executable was found in the Resources of the app. Don't forget to add them !")
         }
         
+        if GoXlr.shared.logLevel == .debug {
+            Logger().debug("Launching daemon with parameters: \((args ?? []).debugDescription)")
+        }
+        
         daemonProcess.executableURL = daemonPath!
         if args != nil {
             daemonProcess.arguments = []
@@ -68,9 +72,12 @@ public struct Daemon {
         do {
             try daemonProcess.run()
         } catch {
-            print(error)
+            Logger().error("Failed to launch daemon: \(error)")
             self.daemonStatus = .error
             return
+        }
+        if GoXlr.shared.logLevel == .debug {
+            Logger().debug("Daemon launched successfully.")
         }
         self.daemonStatus = .running
     }

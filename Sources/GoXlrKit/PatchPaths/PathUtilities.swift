@@ -33,12 +33,18 @@ internal func patch<type: Codable>(value: any Codable, key: Int, newValue: JSON)
 }
 
 internal func patch<type>(value: Array<type>, add: type, at: Int?) -> Array<type> {
+    if at == nil {
+        Logger().error("Error adding item to \(value.debugDescription): no offset. Please check the implementation of this path.")
+    }
     var answer = value
     answer.insert(add, at: at ?? 0)
     return answer
 }
 
 internal func patch<type: Equatable>(value: Array<type>, removeAt: Int?) -> Array<type> {
+    if removeAt == nil {
+        Logger().error("Error removing item to \(value.debugDescription): no offset. Please check the implementation of this path.")
+    }
     var answer = value
     answer.remove(at: removeAt ?? 0)
     return answer

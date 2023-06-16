@@ -29,6 +29,8 @@ public func handleStatusPatch(status: inout StatusClass, path: [String], value: 
         status.mixers = patch(value: status.mixers, key: key, newValue: value)!
         
     } else {
-        Logger().log("Status path \(path) isn't implemented. Please add its requirements within the module.")
+        if GoXlr.shared.logLevel == .info || GoXlr.shared.logLevel == .debug {
+            Logger().log("Status path \(path.debugDescription) isn't implemented. Please add its requirements within the module.")
+        }
     }
 }

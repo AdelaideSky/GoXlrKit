@@ -23,6 +23,8 @@ public func handleRemovePatch(status: inout StatusClass, path: [String], value: 
         status.files.presets = patch(value: status.files.presets, removeAt: Int(key))
         
     } else {
-        Logger().log("Remove patch path \(path) isn't implemented. Please add its requirements within the module.")
+        if GoXlr.shared.logLevel == .info || GoXlr.shared.logLevel == .debug {
+            Logger().info("Remove patch path \(path.debugDescription) isn't implemented. Please add its requirements within the module.")
+        }
     }
 }

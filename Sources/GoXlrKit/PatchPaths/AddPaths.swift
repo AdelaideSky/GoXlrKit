@@ -42,6 +42,9 @@ public func handleAddPatch(status: inout StatusClass, path: [String], value: JSO
         }
         
     } else {
-        Logger().log("Add patch path \(path) isn't implemented. Please add its requirements within the module.")
+        if GoXlr.shared.logLevel == .info || GoXlr.shared.logLevel == .debug {
+            Logger().info("Add patch path \(path.debugDescription) isn't implemented. Please add its requirements within the module.")
+        }
+        
     }
 }
