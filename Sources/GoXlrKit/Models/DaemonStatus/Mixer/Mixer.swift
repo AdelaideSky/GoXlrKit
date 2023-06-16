@@ -662,9 +662,21 @@ public class Banks: Codable, ObservableObject {
     
     public required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        A = try values.decode(Bank.self, forKey: .A)
-        B = try values.decode(Bank.self, forKey: .B)
-        C = try values.decode(Bank.self, forKey: .C)
+        let a = try values.decode(Bank.self, forKey: .A)
+        a.bank = .A
+        a.assignSubValues()
+        A = a
+        
+        let b = try values.decode(Bank.self, forKey: .B)
+        b.bank = .B
+        b.assignSubValues()
+        B = b
+        
+        let c = try values.decode(Bank.self, forKey: .C)
+        c.bank = .C
+        c.assignSubValues()
+        C = c
+        
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -682,6 +694,8 @@ public class Bank: Codable, ObservableObject {
     @Published public var TopRight: SamplerButton
     @Published public var BottomRight: SamplerButton
     
+    fileprivate var bank: SampleBank = .A
+    
     enum CodingKeys: String, CodingKey {
         case BottomLeft = "BottomLeft"
         case TopLeft = "TopLeft"
@@ -696,6 +710,17 @@ public class Bank: Codable, ObservableObject {
         TopRight = try container.decode(SamplerButton.self, forKey: .TopRight)
         BottomRight = try container.decode(SamplerButton.self, forKey: .BottomRight)
     }
+    
+    fileprivate func assignSubValues() {
+        self.BottomLeft.button = .BottomLeft
+        self.BottomLeft.bank = self.bank
+        self.TopLeft.button = .TopLeft
+        self.TopLeft.bank = self.bank
+        self.TopRight.button = .TopRight
+        self.TopRight.bank = self.bank
+        self.BottomRight.button = .BottomRight
+        self.BottomRight.bank = self.bank
+    }
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
@@ -708,11 +733,24 @@ public class Bank: Codable, ObservableObject {
 
 // MARK: - BottomLeft
 public class SamplerButton: Codable, ObservableObject {
-    @Published public var function: SamplePlaybackMode
-    @Published public var order: SamplePlayOrder
+    @Published public var function: SamplePlaybackMode { didSet { GoXlr.shared.command(.SetSamplerFunction(bank, button, function)) } }
+    @Published public var order: SamplePlayOrder { didSet { GoXlr.shared.command(.SetSamplerOrder(bank, button, order)) } }
     @Published public var samples: [Sample]
-    @Published public var is_playing: Bool
+//    {
+//        didSet {
+//            for index in 0...samples.count-1 {
+//                guard index < samples.count-1 else {}
+//                if oldValue[index] != samples[index] {
+//                    GoXlr.shared.command(.Sample)
+//                }
+//            }
+//        }
+//    }
+    @Published public var is_playing: Bool { didSet { GoXlr.shared.command(is_playing ? .PlayNextSample(bank, button) : .StopSamplePlayback(bank, button)) } }
 
+    fileprivate var bank: SampleBank = .A
+    fileprivate var button: SampleButtons = .TopLeft
+    
     enum CodingKeys: String, CodingKey {
         case function, order, samples
         case is_playing = "is_playing"
@@ -725,6 +763,14 @@ public class SamplerButton: Codable, ObservableObject {
         self.samples = try container.decode([Sample].self, forKey: .samples)
         self.is_playing = try container.decode(Bool.self, forKey: .is_playing)
     }
+    
+    fileprivate func assignSubValues() {
+        for index in 0...self.samples.count-1 {
+            self.samples[index].bank = self.bank
+            self.samples[index].button = self.button
+            self.samples[index].index = index
+        }
+    }
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
@@ -736,15 +782,35 @@ public class SamplerButton: Codable, ObservableObject {
 }
 
 // MARK: - Sample
-public class Sample: Codable, ObservableObject {
+public class Sample: Codable, ObservableObject, Equatable {
+    
+    public static func == (lhs: Sample, rhs: Sample) -> Bool {
+        lhs.name == rhs.name && lhs.startPct == rhs.startPct && lhs.stopPct == rhs.stopPct
+    }
+    
     @Published public var name: String
-    @Published public var startPct: Float
-    @Published public var stopPct: Float
+    @Published public var startPct: Float { didSet { GoXlr.shared.command(.SetSampleStartPercent(bank, button, index, startPct)) } }
+    @Published public var stopPct: Float { didSet { GoXlr.shared.command(.SetSampleStopPercent(bank, button, index, stopPct)) } }
 
+    fileprivate var bank: SampleBank = .A
+    fileprivate var button: SampleButtons = .TopLeft
+    
+    public var index: Int = 0
+    
     enum CodingKeys: String, CodingKey {
         case name
         case startPct = "start_pct"
         case stopPct = "stop_pct"
+    }
+    
+    public init(_ name: String) {
+        self.name = name
+        self.startPct = 0
+        self.stopPct = 100
+    }
+    
+    public func play() {
+        GoXlr.shared.command(.PlaySampleByIndex(bank, button, index))
     }
     
     public required init(from decoder: Decoder) throws {
