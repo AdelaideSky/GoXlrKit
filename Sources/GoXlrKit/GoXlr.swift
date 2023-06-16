@@ -31,7 +31,7 @@ public class GoXlr: ObservableObject {
     
     @Published public var device = ""
     
-    public var logLevel: GoXlrLogLevel = .info
+    @Published public var logLevel: GoXlrLogLevel = .info
     
     public var utils = GoXlrUtils()
     
