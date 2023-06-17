@@ -663,18 +663,15 @@ public class Banks: Codable, ObservableObject {
     public required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         let a = try values.decode(Bank.self, forKey: .A)
-        a.bank = .A
-        a.assignSubValues()
+        a.assignSubValues(.A)
         A = a
         
         let b = try values.decode(Bank.self, forKey: .B)
-        b.bank = .B
-        b.assignSubValues()
+        b.assignSubValues(.B)
         B = b
         
         let c = try values.decode(Bank.self, forKey: .C)
-        c.bank = .C
-        c.assignSubValues()
+        c.assignSubValues(.C)
         C = c
         
     }
@@ -711,15 +708,12 @@ public class Bank: Codable, ObservableObject {
         BottomRight = try container.decode(SamplerButton.self, forKey: .BottomRight)
     }
     
-    fileprivate func assignSubValues() {
-        self.BottomLeft.button = .BottomLeft
-        self.BottomLeft.bank = self.bank
-        self.TopLeft.button = .TopLeft
-        self.TopLeft.bank = self.bank
-        self.TopRight.button = .TopRight
-        self.TopRight.bank = self.bank
-        self.BottomRight.button = .BottomRight
-        self.BottomRight.bank = self.bank
+    fileprivate func assignSubValues(_ bank: SampleBank) {
+        self.bank = bank
+        self.BottomLeft.assignSubValues(bank, button: .BottomLeft)
+        self.TopLeft.assignSubValues(bank, button: .TopLeft)
+        self.TopRight.assignSubValues(bank, button: .TopRight)
+        self.BottomRight.assignSubValues(bank, button: .BottomRight)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -764,10 +758,12 @@ public class SamplerButton: Codable, ObservableObject {
         self.is_playing = try container.decode(Bool.self, forKey: .is_playing)
     }
     
-    fileprivate func assignSubValues() {
+    fileprivate func assignSubValues(_ bank: SampleBank, button: SampleButtons) {
+        self.bank = bank
+        self.button = button
         for index in 0...self.samples.count-1 {
-            self.samples[index].bank = self.bank
-            self.samples[index].button = self.button
+            self.samples[index].bank = bank
+            self.samples[index].button = button
             self.samples[index].index = index
         }
     }

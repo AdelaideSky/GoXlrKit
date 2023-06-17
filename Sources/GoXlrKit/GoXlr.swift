@@ -192,7 +192,7 @@ public class GoXlr: ObservableObject {
         let folderName = "org.GoXLR-on-Linux.GoXLR-Utility/\(path.rawValue)/"
         let fileManager = FileManager.default
         if let tDocumentDirectory = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
-            let filePath =  tDocumentDirectory.appendingPathComponent("\(folderName)")
+            let filePath = tDocumentDirectory.appendingPathComponent("\(folderName)")
             if !fileManager.fileExists(atPath: filePath.path) {
                 do {
                     try fileManager.createDirectory(atPath: filePath.path, withIntermediateDirectories: true, attributes: nil)
