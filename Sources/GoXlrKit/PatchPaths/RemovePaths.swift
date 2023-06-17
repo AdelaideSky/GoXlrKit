@@ -88,6 +88,7 @@ fileprivate func removeSample(_ button: WritableKeyPath<Banks, SamplerButton>, a
         Logger().error("Error removing sample: no offset. Please check the implementation of this path.")
     }
     var answer = GoXlr.shared.mixer!.sampler!.banks[keyPath: button]
+    print(at)
     answer.samples.remove(at: at!)
     GoXlr.shared.mixer!.sampler!.banks[keyPath: button] = answer
 }
