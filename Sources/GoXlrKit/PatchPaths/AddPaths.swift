@@ -22,6 +22,9 @@ public func handleAddPatch(status: inout StatusClass, path: [String], value: JSO
     } else if path.contains(["files", "presets"]) {
         status.files.presets = patch(value: status.files.presets, add: value.stringValue, at: Int(key))
         
+    } else if path.contains(["files", "samples"]) {
+        status.files.samples[key] = value.stringValue
+        
     } else if path.contains(["mixers"]) {
         if path.contains("sampler") {
             if path.contains("banks") {
