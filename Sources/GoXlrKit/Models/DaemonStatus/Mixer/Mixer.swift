@@ -740,7 +740,7 @@ public class SamplerButton: Codable, ObservableObject {
 //            }
 //        }
 //    }
-    @Published public var is_playing: Bool { didSet { GoXlr.shared.command(is_playing ? .PlayNextSample(bank, button) : .StopSamplePlayback(bank, button)) } }
+    @Published public var is_playing: Bool { didSet { GoXlr.shared.command(is_playing ? .StopSamplePlayback(bank, button) : .PlayNextSample(bank, button)) } }
 
     fileprivate var bank: SampleBank = .A
     fileprivate var button: SampleButtons = .TopLeft
