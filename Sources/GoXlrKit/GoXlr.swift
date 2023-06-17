@@ -184,9 +184,11 @@ public class GoXlr: ObservableObject {
         case profiles
         case micprofiles = "mic-profiles"
         case presets
+        case samples
+        case icons
     }
     
-    public func importProfile(_ url: URL, path: profilesubfolders) {
+    public func importFile(_ url: URL, path: profilesubfolders) {
         let folderName = "org.GoXLR-on-Linux.GoXLR-Utility/\(path.rawValue)/"
         let fileManager = FileManager.default
         if let tDocumentDirectory = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
