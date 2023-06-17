@@ -53,6 +53,14 @@ internal func patch<type>(value: Array<type>, add: type, at: Int?) -> Array<type
     answer.insert(add, at: at ?? 0)
     return answer
 }
+internal func patch<type, secondtype>(value: type, add: secondtype, path: WritableKeyPath<type, Array<secondtype>>, at: Int?) -> type {
+    if at == nil {
+        Logger().error("Error adding item to: no offset. Please check the implementation of this path.")
+    }
+    var answer = value
+    answer[keyPath: path].insert(add, at: at ?? 0)
+    return answer
+}
 
 internal func patch<type: Equatable>(value: Array<type>, removeAt: Int?) -> Array<type> {
     if removeAt == nil {

@@ -127,9 +127,7 @@ public func handleMixerPatch(mixer: inout Mixer, path: [String], value: JSON) {
             if path.contains(["A"]) {
                 if path.contains(["TopLeft"]) {
                     if path.contains("samples") {
-                        print(mixer.sampler!.banks.A.TopLeft.samples)
                         mixer.sampler!.banks.A.TopLeft.samples = patch(value: mixer.sampler!.banks.A.TopLeft.samples, key: key, index: index, newValue: value)!
-                        mixer.sampler!.banks.A.TopLeft.samples
                     } else {
                         mixer.sampler!.banks.A.TopLeft = patch(value: mixer.sampler!.banks.A.TopLeft, key: key, newValue: value)!
                     }
