@@ -788,8 +788,8 @@ public class Sample: Codable, ObservableObject, Equatable {
     }
     
     @Published public var name: String
-    @Published public var startPct: Float { didSet { GoXlr.shared.command(.SetSampleStartPercent(bank, button, index, startPct)) } }
-    @Published public var stopPct: Float { didSet { GoXlr.shared.command(.SetSampleStopPercent(bank, button, index, stopPct)) } }
+    @Published public var startPct: Float
+    @Published public var stopPct: Float
 
     fileprivate var bank: SampleBank = .A
     fileprivate var button: SampleButtons = .TopLeft
@@ -806,10 +806,6 @@ public class Sample: Codable, ObservableObject, Equatable {
         self.name = name
         self.startPct = 0
         self.stopPct = 100
-    }
-    
-    public func play() {
-        GoXlr.shared.command(.PlaySampleByIndex(bank, button, index))
     }
     
     public required init(from decoder: Decoder) throws {
