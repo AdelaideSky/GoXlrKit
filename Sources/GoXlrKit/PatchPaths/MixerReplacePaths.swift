@@ -12,7 +12,7 @@ import os
 
 public func handleMixerPatch(mixer: inout Mixer, path: [String], value: JSON) {
     let key = path.last!
-    let subkey = path.dropLast().last!
+    let index = Int(path.dropLast().last!) ?? 0
     
     if path.contains(["levels"]) {
         
@@ -127,28 +127,30 @@ public func handleMixerPatch(mixer: inout Mixer, path: [String], value: JSON) {
             if path.contains(["A"]) {
                 if path.contains(["TopLeft"]) {
                     if path.contains("samples") {
-                        mixer.sampler!.banks.A.TopLeft.samples = patch(value: mixer.sampler!.banks.A.TopLeft.samples, key: key, subKey: subkey, newValue: value)!
+                        print(mixer.sampler!.banks.A.TopLeft.samples)
+                        mixer.sampler!.banks.A.TopLeft.samples = patch(value: mixer.sampler!.banks.A.TopLeft.samples, key: key, index: index, newValue: value)!
+                        mixer.sampler!.banks.A.TopLeft.samples
                     } else {
                         mixer.sampler!.banks.A.TopLeft = patch(value: mixer.sampler!.banks.A.TopLeft, key: key, newValue: value)!
                     }
                     
                 } else if path.contains(["TopRight"]) {
                     if path.contains("samples") {
-                        mixer.sampler!.banks.A.TopRight.samples = patch(value: mixer.sampler!.banks.A.TopRight.samples, key: key, subKey: subkey, newValue: value)!
+                        mixer.sampler!.banks.A.TopRight.samples = patch(value: mixer.sampler!.banks.A.TopRight.samples, key: key, index: index, newValue: value)!
                     } else {
                         mixer.sampler!.banks.A.TopRight = patch(value: mixer.sampler!.banks.A.TopRight, key: key, newValue: value)!
                     }
                     
                 } else if path.contains(["BottomLeft"]) {
                     if path.contains("samples") {
-                        mixer.sampler!.banks.A.BottomLeft.samples = patch(value: mixer.sampler!.banks.A.BottomLeft.samples, key: key, subKey: subkey, newValue: value)!
+                        mixer.sampler!.banks.A.BottomLeft.samples = patch(value: mixer.sampler!.banks.A.BottomLeft.samples, key: key, index: index, newValue: value)!
                     } else {
                         mixer.sampler!.banks.A.BottomLeft = patch(value: mixer.sampler!.banks.A.BottomLeft, key: key, newValue: value)!
                     }
                     
                 } else if path.contains(["BottomRight"]) {
                     if path.contains("samples") {
-                        mixer.sampler!.banks.A.BottomRight.samples = patch(value: mixer.sampler!.banks.A.BottomRight.samples, key: key, subKey: subkey, newValue: value)!
+                        mixer.sampler!.banks.A.BottomRight.samples = patch(value: mixer.sampler!.banks.A.BottomRight.samples, key: key, index: index, newValue: value)!
                     } else {
                         mixer.sampler!.banks.A.BottomRight = patch(value: mixer.sampler!.banks.A.BottomRight, key: key, newValue: value)!
                     }
@@ -157,28 +159,28 @@ public func handleMixerPatch(mixer: inout Mixer, path: [String], value: JSON) {
             } else if path.contains(["B"]) {
                 if path.contains(["TopLeft"]) {
                     if path.contains("samples") {
-                        mixer.sampler!.banks.B.TopLeft.samples = patch(value: mixer.sampler!.banks.B.TopLeft.samples, key: key, subKey: subkey, newValue: value)!
+                        mixer.sampler!.banks.B.TopLeft.samples = patch(value: mixer.sampler!.banks.B.TopLeft.samples, key: key, index: index, newValue: value)!
                     } else {
                         mixer.sampler!.banks.B.TopLeft = patch(value: mixer.sampler!.banks.B.TopLeft, key: key, newValue: value)!
                     }
                     
                 } else if path.contains(["TopRight"]) {
                     if path.contains("samples") {
-                        mixer.sampler!.banks.B.TopRight.samples = patch(value: mixer.sampler!.banks.B.TopRight.samples, key: key, subKey: subkey, newValue: value)!
+                        mixer.sampler!.banks.B.TopRight.samples = patch(value: mixer.sampler!.banks.B.TopRight.samples, key: key, index: index, newValue: value)!
                     } else {
                         mixer.sampler!.banks.B.TopRight = patch(value: mixer.sampler!.banks.B.TopRight, key: key, newValue: value)!
                     }
                     
                 } else if path.contains(["BottomLeft"]) {
                     if path.contains("samples") {
-                        mixer.sampler!.banks.B.BottomLeft.samples = patch(value: mixer.sampler!.banks.B.BottomLeft.samples, key: key, subKey: subkey, newValue: value)!
+                        mixer.sampler!.banks.B.BottomLeft.samples = patch(value: mixer.sampler!.banks.B.BottomLeft.samples, key: key, index: index, newValue: value)!
                     } else {
                         mixer.sampler!.banks.B.BottomLeft = patch(value: mixer.sampler!.banks.B.BottomLeft, key: key, newValue: value)!
                     }
                     
                 } else if path.contains(["BottomRight"]) {
                     if path.contains("samples") {
-                        mixer.sampler!.banks.B.BottomRight.samples = patch(value: mixer.sampler!.banks.B.BottomRight.samples, key: key, subKey: subkey, newValue: value)!
+                        mixer.sampler!.banks.B.BottomRight.samples = patch(value: mixer.sampler!.banks.B.BottomRight.samples, key: key, index: index, newValue: value)!
                     } else {
                         mixer.sampler!.banks.B.BottomRight = patch(value: mixer.sampler!.banks.B.BottomRight, key: key, newValue: value)!
                     }
@@ -187,28 +189,28 @@ public func handleMixerPatch(mixer: inout Mixer, path: [String], value: JSON) {
             } else if path.contains(["C"]) {
                 if path.contains(["TopLeft"]) {
                     if path.contains("samples") {
-                        mixer.sampler!.banks.C.TopLeft.samples = patch(value: mixer.sampler!.banks.C.TopLeft.samples, key: key, subKey: subkey, newValue: value)!
+                        mixer.sampler!.banks.C.TopLeft.samples = patch(value: mixer.sampler!.banks.C.TopLeft.samples, key: key, index: index, newValue: value)!
                     } else {
                         mixer.sampler!.banks.C.TopLeft = patch(value: mixer.sampler!.banks.C.TopLeft, key: key, newValue: value)!
                     }
                     
                 } else if path.contains(["TopRight"]) {
                     if path.contains("samples") {
-                        mixer.sampler!.banks.C.TopRight.samples = patch(value: mixer.sampler!.banks.C.TopRight.samples, key: key, subKey: subkey, newValue: value)!
+                        mixer.sampler!.banks.C.TopRight.samples = patch(value: mixer.sampler!.banks.C.TopRight.samples, key: key, index: index, newValue: value)!
                     } else {
                         mixer.sampler!.banks.C.TopRight = patch(value: mixer.sampler!.banks.C.TopRight, key: key, newValue: value)!
                     }
                     
                 } else if path.contains(["BottomLeft"]) {
                     if path.contains("samples") {
-                        mixer.sampler!.banks.C.BottomLeft.samples = patch(value: mixer.sampler!.banks.C.BottomLeft.samples, key: key, subKey: subkey, newValue: value)!
+                        mixer.sampler!.banks.C.BottomLeft.samples = patch(value: mixer.sampler!.banks.C.BottomLeft.samples, key: key, index: index, newValue: value)!
                     } else {
                         mixer.sampler!.banks.C.BottomLeft = patch(value: mixer.sampler!.banks.C.BottomLeft, key: key, newValue: value)!
                     }
                     
                 } else if path.contains(["BottomRight"]) {
                     if path.contains("samples") {
-                        mixer.sampler!.banks.C.BottomRight.samples = patch(value: mixer.sampler!.banks.C.BottomRight.samples, key: key, subKey: subkey, newValue: value)!
+                        mixer.sampler!.banks.C.BottomRight.samples = patch(value: mixer.sampler!.banks.C.BottomRight.samples, key: key, index: index, newValue: value)!
                     } else {
                         mixer.sampler!.banks.C.BottomRight = patch(value: mixer.sampler!.banks.C.BottomRight, key: key, newValue: value)!
                     }

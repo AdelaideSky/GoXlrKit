@@ -21,10 +21,12 @@ internal func patch<type: Codable>(value: any Codable, key: String, newValue: JS
     }
 }
 
-internal func patch<type: Codable>(value: any Codable, key: String, subKey: String, newValue: JSON) -> type? {
+internal func patch<type: Codable>(value: any Codable, key: String, index: Int, newValue: JSON) -> type? {
     do {
         var json = try JSON(data: try JSONEncoder().encode(value))
-        json[key][subKey] = newValue
+        print(json)
+        json[index][key] = newValue
+        print(json[index][key])
         return try JSONDecoder().decode(type.self, from: try json.rawData())
     } catch let error {
         Logger().error("Error patching \(key): \(error) Please check the implementation of this path.")

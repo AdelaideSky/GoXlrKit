@@ -27,7 +27,9 @@ public func handleAddPatch(status: inout StatusClass, path: [String], value: JSO
             if path.contains("banks") {
                 if path.contains("A") {
                     if path.contains("TopLeft") {
+                        print(status.mixers[path[1]]!.sampler!.banks.A.TopLeft.samples)
                         status.mixers[path[1]]!.sampler!.banks.A.TopLeft.samples = patch(value: status.mixers[path[1]]!.sampler!.banks.A.TopLeft.samples, add: try! JSONDecoder().decode(Sample.self, from: value.rawData()), at: Int(key))
+                        print(status.mixers[path[1]]!.sampler!.banks.A.TopLeft.samples)
                         
                     } else if path.contains("TopRight") {
                         status.mixers[path[1]]!.sampler!.banks.A.TopRight.samples = patch(value: status.mixers[path[1]]!.sampler!.banks.A.TopRight.samples, add: try! JSONDecoder().decode(Sample.self, from: value.rawData()), at: Int(key))
