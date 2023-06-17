@@ -25,11 +25,44 @@ public func handleAddPatch(status: inout StatusClass, path: [String], value: JSO
     } else if path.contains(["mixers"]) {
         if path.contains("sampler") {
             if path.contains("banks") {
-                if path.contains("a") {
+                if path.contains("A") {
                     if path.contains("TopLeft") {
-                        if path.contains("samples") {
-                            status.mixers[path[1]]!.sampler!.banks.A.TopLeft.samples = patch(value: status.mixers[path[1]]!.sampler!.banks.A.TopLeft.samples, add: try! JSONDecoder().decode(Sample.self, from: value.rawData()), at: Int(key))
-                        }
+                        status.mixers[path[1]]!.sampler!.banks.A.TopLeft.samples = patch(value: status.mixers[path[1]]!.sampler!.banks.A.TopLeft.samples, add: try! JSONDecoder().decode(Sample.self, from: value.rawData()), at: Int(key))
+                        
+                    } else if path.contains("TopRight") {
+                        status.mixers[path[1]]!.sampler!.banks.A.TopRight.samples = patch(value: status.mixers[path[1]]!.sampler!.banks.A.TopRight.samples, add: try! JSONDecoder().decode(Sample.self, from: value.rawData()), at: Int(key))
+                        
+                    } else if path.contains("BottomLeft") {
+                        status.mixers[path[1]]!.sampler!.banks.A.BottomLeft.samples = patch(value: status.mixers[path[1]]!.sampler!.banks.A.BottomLeft.samples, add: try! JSONDecoder().decode(Sample.self, from: value.rawData()), at: Int(key))
+                        
+                    } else if path.contains("BottomRight") {
+                        status.mixers[path[1]]!.sampler!.banks.A.BottomRight.samples = patch(value: status.mixers[path[1]]!.sampler!.banks.A.BottomRight.samples, add: try! JSONDecoder().decode(Sample.self, from: value.rawData()), at: Int(key))
+                    }
+                } else if path.contains("B") {
+                    if path.contains("TopLeft") {
+                        status.mixers[path[1]]!.sampler!.banks.B.TopLeft.samples = patch(value: status.mixers[path[1]]!.sampler!.banks.B.TopLeft.samples, add: try! JSONDecoder().decode(Sample.self, from: value.rawData()), at: Int(key))
+                        
+                    } else if path.contains("TopRight") {
+                        status.mixers[path[1]]!.sampler!.banks.B.TopRight.samples = patch(value: status.mixers[path[1]]!.sampler!.banks.B.TopRight.samples, add: try! JSONDecoder().decode(Sample.self, from: value.rawData()), at: Int(key))
+                        
+                    } else if path.contains("BottomLeft") {
+                        status.mixers[path[1]]!.sampler!.banks.B.BottomLeft.samples = patch(value: status.mixers[path[1]]!.sampler!.banks.B.BottomLeft.samples, add: try! JSONDecoder().decode(Sample.self, from: value.rawData()), at: Int(key))
+                        
+                    } else if path.contains("BottomRight") {
+                        status.mixers[path[1]]!.sampler!.banks.B.BottomRight.samples = patch(value: status.mixers[path[1]]!.sampler!.banks.B.BottomRight.samples, add: try! JSONDecoder().decode(Sample.self, from: value.rawData()), at: Int(key))
+                    }
+                } else if path.contains("C") {
+                    if path.contains("TopLeft") {
+                        status.mixers[path[1]]!.sampler!.banks.C.TopLeft.samples = patch(value: status.mixers[path[1]]!.sampler!.banks.C.TopLeft.samples, add: try! JSONDecoder().decode(Sample.self, from: value.rawData()), at: Int(key))
+                        
+                    } else if path.contains("TopRight") {
+                        status.mixers[path[1]]!.sampler!.banks.C.TopRight.samples = patch(value: status.mixers[path[1]]!.sampler!.banks.C.TopRight.samples, add: try! JSONDecoder().decode(Sample.self, from: value.rawData()), at: Int(key))
+                        
+                    } else if path.contains("BottomLeft") {
+                        status.mixers[path[1]]!.sampler!.banks.C.BottomLeft.samples = patch(value: status.mixers[path[1]]!.sampler!.banks.C.BottomLeft.samples, add: try! JSONDecoder().decode(Sample.self, from: value.rawData()), at: Int(key))
+                        
+                    } else if path.contains("BottomRight") {
+                        status.mixers[path[1]]!.sampler!.banks.C.BottomRight.samples = patch(value: status.mixers[path[1]]!.sampler!.banks.C.BottomRight.samples, add: try! JSONDecoder().decode(Sample.self, from: value.rawData()), at: Int(key))
                     }
                 }
             }
