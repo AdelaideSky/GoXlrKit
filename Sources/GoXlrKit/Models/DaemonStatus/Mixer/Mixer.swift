@@ -761,10 +761,13 @@ public class SamplerButton: Codable, ObservableObject {
     fileprivate func assignSubValues(_ bank: SampleBank, button: SampleButtons) {
         self.bank = bank
         self.button = button
-        for index in 0...self.samples.count-1 {
-            self.samples[index].bank = bank
-            self.samples[index].button = button
-            self.samples[index].index = index
+        if !self.samples.isEmpty {
+            for index in 0...self.samples.count {
+                guard index < self.samples.count else { break }
+                self.samples[index].bank = bank
+                self.samples[index].button = button
+                self.samples[index].index = index
+            }
         }
     }
 
