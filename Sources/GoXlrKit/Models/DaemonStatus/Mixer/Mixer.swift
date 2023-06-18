@@ -25,13 +25,13 @@ public class Mixer: Codable, ObservableObject {
     @Published public var profileName: String {
         didSet {
             guard profileName != oldValue else { return }
-            GoXlr.shared.command(.LoadProfile(profileName))
+            GoXlr.shared.command(.LoadProfile(profileName, true))
         }
     }
     @Published public var micProfileName: String {
         didSet {
             guard micProfileName != oldValue else { return }
-            GoXlr.shared.command(.LoadMicProfile(micProfileName))
+            GoXlr.shared.command(.LoadMicProfile(micProfileName, true))
         }
     }
 

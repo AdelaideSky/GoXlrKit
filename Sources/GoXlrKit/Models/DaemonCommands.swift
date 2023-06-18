@@ -152,14 +152,14 @@ public enum GoXLRCommand: Codable, Hashable {
 
     // Profile Handling..
     case NewProfile(String)
-    case LoadProfile(String)
+    case LoadProfile(String, Bool)
     case LoadProfileColours(String)
     case SaveProfile
     case SaveProfileAs(String)
     case DeleteProfile(String)
 
     case NewMicProfile(String)
-    case LoadMicProfile(String)
+    case LoadMicProfile(String, Bool)
     case SaveMicProfile
     case SaveMicProfileAs(String)
     case DeleteMicProfile(String)
