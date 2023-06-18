@@ -162,6 +162,7 @@ public class Paths: Codable, ObservableObject {
     @Published public var samplesDirectory: String
     @Published public var presetsDirectory: String
     @Published public var iconsDirectory: String
+    @Published public var logsDirectory: String
 
     enum CodingKeys: String, CodingKey {
         case profileDirectory = "profile_directory"
@@ -169,6 +170,7 @@ public class Paths: Codable, ObservableObject {
         case samplesDirectory = "samples_directory"
         case presetsDirectory = "presets_directory"
         case iconsDirectory = "icons_directory"
+        case logsDirectory = "logs_directory"
     }
     
     public required init(from decoder: Decoder) throws {
@@ -178,6 +180,8 @@ public class Paths: Codable, ObservableObject {
         samplesDirectory = try container.decode(String.self, forKey: .samplesDirectory)
         presetsDirectory = try container.decode(String.self, forKey: .presetsDirectory)
         iconsDirectory = try container.decode(String.self, forKey: .iconsDirectory)
+        logsDirectory = try container.decode(String.self, forKey: .logsDirectory)
+
     }
     
     public func encode(to encoder: Encoder) throws {
@@ -187,5 +191,6 @@ public class Paths: Codable, ObservableObject {
         try container.encode(samplesDirectory, forKey: .samplesDirectory)
         try container.encode(presetsDirectory, forKey: .presetsDirectory)
         try container.encode(iconsDirectory, forKey: .iconsDirectory)
+        try container.encode(logsDirectory, forKey: .logsDirectory)
     }
 }
