@@ -27,14 +27,16 @@ public struct Daemon {
         case startUI = "--start-ui"
         case bindAddress = "--http-bind-address"
     }
+    
     public enum logLevels: String, CaseIterable, Codable {
-        case off
-        case error
-        case warn
-        case info
-        case debug
-        case trace
+        case off = "Off"
+        case error = "Error"
+        case warn = "Warn"
+        case info = "Info"
+        case debug = "Debug"
+        case trace = "Trace"
     }
+    
     public enum DaemonStatus: String, CaseIterable, Codable {
         case stopped
         case launching

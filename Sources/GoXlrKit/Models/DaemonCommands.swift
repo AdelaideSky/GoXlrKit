@@ -216,6 +216,8 @@ public enum DaemonCommand: Codable {
     case SetShowTrayIcon(Bool)
     case SetTTSEnabled(Bool)
     case SetAutoStartEnabled(Bool)
+    case SetLogLevel(Daemon.logLevels)
+    case SetAllowNetworkAccess(Bool)
 //    case RecoverDefaults(PathTypes)
 }
 
