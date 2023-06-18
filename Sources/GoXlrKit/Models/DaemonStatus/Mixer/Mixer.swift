@@ -651,7 +651,10 @@ public class Sampler: Codable, ObservableObject {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(activeBank, forKey: .activeBank)
         try container.encode(banks, forKey: .banks)
+        try container.encode(clearActive, forKey: .clearActive)
+        try container.encode(processingState, forKey: .processingState)
         try container.encode(recordBuffer, forKey: .recordBuffer)
     }
 }
@@ -666,7 +669,7 @@ public class SamplerProcessingState: Codable, ObservableObject {
         case lastError = "last_error"
     }
     
-    func clear() {
+    public func clear() {
         GoXlr.shared.command(.ClearSampleProcessError)
     }
 
