@@ -769,17 +769,7 @@ public class SamplerButton: Codable, ObservableObject {
     @Published public var function: SamplePlaybackMode { didSet { GoXlr.shared.command(.SetSamplerFunction(bank, button, function)) } }
     @Published public var order: SamplePlayOrder { didSet { GoXlr.shared.command(.SetSamplerOrder(bank, button, order)) } }
     @Published public var samples: [Sample]
-//    {
-//        didSet {
-//            for index in 0...samples.count-1 {
-//                guard index < samples.count-1 else {}
-//                if oldValue[index] != samples[index] {
-//                    GoXlr.shared.command(.Sample)
-//                }
-//            }
-//        }
-//    }
-    @Published public var is_playing: Bool { didSet { GoXlr.shared.command(is_playing ? .StopSamplePlayback(bank, button) : .PlayNextSample(bank, button)) } }
+    @Published public var isPlaying: Bool
 
     fileprivate var bank: SampleBank = .A
     fileprivate var button: SampleButtons = .TopLeft
@@ -794,7 +784,7 @@ public class SamplerButton: Codable, ObservableObject {
         self.function = try container.decode(SamplePlaybackMode.self, forKey: .function)
         self.order = try container.decode(SamplePlayOrder.self, forKey: .order)
         self.samples = try container.decode([Sample].self, forKey: .samples)
-        self.is_playing = try container.decode(Bool.self, forKey: .is_playing)
+        self.isPlaying = try container.decode(Bool.self, forKey: .is_playing)
     }
     
     fileprivate func assignSubValues(_ bank: SampleBank, button: SampleButtons) {
@@ -815,7 +805,7 @@ public class SamplerButton: Codable, ObservableObject {
         try container.encode(self.function, forKey: .function)
         try container.encode(self.order, forKey: .order)
         try container.encode(self.samples, forKey: .samples)
-        try container.encode(self.is_playing, forKey: .is_playing)
+        try container.encode(self.isPlaying, forKey: .is_playing)
     }
 }
 
