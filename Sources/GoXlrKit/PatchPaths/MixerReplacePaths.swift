@@ -216,8 +216,15 @@ public func handleMixerPatch(mixer: inout Mixer, path: [String], value: JSON) {
         } else if path.contains("processing_state") {
             mixer.sampler?.processingState = patch(value: mixer.sampler!.processingState, key: key, newValue: value)!
 
+        } else if path.contains("active_bank") {
+            mixer.sampler?.activeBank = SampleBank(rawValue: value.stringValue)!
+            
+        } else if path.contains("clear_active") {
+            mixer.sampler?.clearActive = value.boolValue
+            
         } else {
-            mixer.sampler = patch(value: mixer.sampler, key: key, newValue: value)
+            mixer.sampler = patch(value: mixer.sampler, key: key, newValue: value)!
+            
         }
         
     } else if path.contains(["lighting"]) {
