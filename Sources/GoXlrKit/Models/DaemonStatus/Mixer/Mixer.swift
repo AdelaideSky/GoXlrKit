@@ -626,17 +626,26 @@ public class Accent: Codable, ObservableObject {
 
 // MARK: - S210401735CQKSampler
 public class Sampler: Codable, ObservableObject {
+    @Published public var activeBank: SampleBank
     @Published public var banks: Banks
+    @Published public var clearActive: Bool
+    @Published public var processingState: SamplerProcessingState
     @Published public var recordBuffer: Int { didSet { GoXlr.shared.command(.SetSamplerPreBufferDuration(recordBuffer)) } }
 
     enum CodingKeys: String, CodingKey {
         case banks
         case recordBuffer = "record_buffer"
+        case activeBank = "active_bank"
+        case clearActive = "clear_active"
+        case processingState = "processing_state"
     }
 
     public required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
+        activeBank = try values.decode(SampleBank.self, forKey: .activeBank)
         banks = try values.decode(Banks.self, forKey: .banks)
+        clearActive = try values.decode(Bool.self, forKey: .clearActive)
+        processingState = try values.decode(SamplerProcessingState.self, forKey: .processingState)
         recordBuffer = try values.decode(Int.self, forKey: .recordBuffer)
     }
 
@@ -644,6 +653,33 @@ public class Sampler: Codable, ObservableObject {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(banks, forKey: .banks)
         try container.encode(recordBuffer, forKey: .recordBuffer)
+    }
+}
+
+// MARK: - processing state
+public class SamplerProcessingState: Codable, ObservableObject {
+    @Published public var lastError: String?
+    @Published public var progress: Float?
+    
+    enum CodingKeys: String, CodingKey {
+        case progress
+        case lastError = "last_error"
+    }
+    
+    func clear() {
+        GoXlr.shared.command(.ClearSampleProcessError)
+    }
+
+    public required init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        lastError = try values.decodeIfPresent(String.self, forKey: .lastError)
+        progress = try values.decodeIfPresent(Float.self, forKey: .progress)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(lastError, forKey: .lastError)
+        try container.encode(progress, forKey: .progress)
     }
 }
 

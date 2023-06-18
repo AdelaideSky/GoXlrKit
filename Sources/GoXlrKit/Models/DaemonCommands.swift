@@ -132,6 +132,7 @@ public enum GoXLRCommand: Codable, Hashable {
     case SetHardTuneSource(HardTuneSource)
 
     // Sampler..
+    case ClearSampleProcessError
     case SetSamplerFunction(SampleBank, SampleButtons, SamplePlaybackMode)
     case SetSamplerOrder(SampleBank, SampleButtons, SamplePlayOrder)
     case AddSample(SampleBank, SampleButtons, String)
@@ -194,6 +195,8 @@ extension GoXLRCommand {
             return "SaveProfile"
         case .SaveMicProfile:
             return "SaveMicProfile"
+        case .ClearSampleProcessError:
+            return "ClearSampleProcessError"
         default:
             return ""
         }

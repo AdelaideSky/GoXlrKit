@@ -121,9 +121,7 @@ public func handleMixerPatch(mixer: inout Mixer, path: [String], value: JSON) {
         }
         
     } else if path.contains(["sampler"]) {
-        if path.contains(["record_buffer"]) {
-            mixer.sampler = patch(value: mixer.sampler, key: key, newValue: value)
-        } else if path.contains(["banks"]) {
+        if path.contains(["banks"]) {
             if path.contains(["A"]) {
                 if path.contains(["TopLeft"]) {
                     if path.contains("samples") {
@@ -215,6 +213,11 @@ public func handleMixerPatch(mixer: inout Mixer, path: [String], value: JSON) {
                     
                 }
             }
+        } else if path.contains("processing_state") {
+            mixer.sampler?.processingState = patch(value: mixer.sampler!.processingState, key: key, newValue: value)!
+
+        } else {
+            mixer.sampler = patch(value: mixer.sampler, key: key, newValue: value)
         }
         
     } else if path.contains(["lighting"]) {
