@@ -56,6 +56,8 @@ public class GoXlr: ObservableObject {
     public func stopObserving() {
         Task {
             self.command(.StopDaemon)
+            self.daemon.daemonStatus = .stopped
+            self.socket.disconnect()
         }
     }
     

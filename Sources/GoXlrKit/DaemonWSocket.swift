@@ -50,8 +50,9 @@ public class DaemonWSocket: WebSocketDelegate {
             Logger().error("No socket connected.")
             return
         }
-        
         socket?.disconnect()
+        self.socketConnexionStatus = .disconnected
+
     }
     
     /**
