@@ -12,10 +12,10 @@ import os
 /**
  GoXlr-Daemon manager. Allows control over bundled daemon build.
  */
-public struct Daemon {
+public class Daemon: ObservableObject {
     
     var daemonProcess = Process()
-    public var daemonStatus: DaemonStatus = .stopped
+    @Published public var daemonStatus: DaemonStatus = .stopped
     
     
     public enum daemonArguments: String, CaseIterable, Codable {
