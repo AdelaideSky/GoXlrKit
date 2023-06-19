@@ -50,7 +50,7 @@ public class Daemon: ObservableObject {
         - args: An array of `daemonArguments` passed at launch of the daemon.
      - Note: If no goxlr-daemon file is found in the package, this function won't do anything.
      */
-    public mutating func start(args: [daemonArguments]?) {
+    public func start(args: [daemonArguments]?) {
         
         let daemonPath = Bundle.main.url(forResource: "goxlr-daemon", withExtension: "")
         
@@ -88,7 +88,7 @@ public class Daemon: ObservableObject {
      Stops the daemon **previously launched by the module**.
      - Note: This function can't stop a daemon not previously launched by the module.
      */
-    public mutating func stop() {
+    public func stop() {
         daemonProcess.interrupt()
         self.daemonStatus = .stopped
         daemonProcess = Process()
@@ -100,7 +100,7 @@ public class Daemon: ObservableObject {
         - args: An array of `daemonArguments` passed at launch of the daemon.
      - Note: This function can't restart a daemon not previously launched by the module.
      */
-    public mutating func restart(args: [daemonArguments]?) {
+    public func restart(args: [daemonArguments]?) {
         daemonProcess.interrupt()
         self.daemonStatus = .stopped
         daemonProcess = Process()
