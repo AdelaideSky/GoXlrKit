@@ -187,9 +187,9 @@ public class ButtonDown: Codable, ObservableObject {
 
 // MARK: - CoughButton
 public class CoughButton: Codable, ObservableObject {
-    @Published public var isToggle: Bool
-    @Published public var muteType: String
-    @Published public var state: String
+    @Published public var isToggle: Bool { didSet { GoXlr.shared.command(.SetCoughIsHold(!isToggle)) } }
+    @Published public var muteType: MuteFunction { didSet { GoXlr.shared.command(.SetCoughMuteFunction(muteType)) } }
+    @Published public var state: MuteState { didSet { GoXlr.shared.command(.SetCoughMuteState(state)) } }
 
     enum CodingKeys: String, CodingKey {
         case isToggle = "is_toggle"
@@ -200,8 +200,8 @@ public class CoughButton: Codable, ObservableObject {
     public required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         isToggle = try values.decode(Bool.self, forKey: .isToggle)
-        muteType = try values.decode(String.self, forKey: .muteType)
-        state = try values.decode(String.self, forKey: .state)
+        muteType = try values.decode(MuteFunction.self, forKey: .muteType)
+        state = try values.decode(MuteState.self, forKey: .state)
     }
 
     public func encode(to encoder: Encoder) throws {

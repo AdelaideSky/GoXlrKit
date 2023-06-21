@@ -68,7 +68,7 @@ public func handleMixerPatch(mixer: inout Mixer, path: [String], value: JSON) {
             mixer.effects?.isEnabled = value.boolValue
             
         } else if path.contains(["current"]) {
-//            print(mixer.effects)
+            //            print(mixer.effects)
             
             if path.contains(["reverb"]) {
                 mixer.effects?.current.reverb = patch(value: mixer.effects!.current.reverb, key: key, newValue: value)!
@@ -215,7 +215,7 @@ public func handleMixerPatch(mixer: inout Mixer, path: [String], value: JSON) {
             }
         } else if path.contains("processing_state") {
             mixer.sampler?.processingState = patch(value: mixer.sampler!.processingState, key: key, newValue: value)!
-
+            
         } else if path.contains("active_bank") {
             mixer.sampler?.activeBank = SampleBank(rawValue: value.stringValue)!
             
@@ -307,10 +307,12 @@ public func handleMixerPatch(mixer: inout Mixer, path: [String], value: JSON) {
                 Shortcuts().run(shortcut)
             }
         }
-
-   } else {
-       if GoXlr.shared.logLevel == .info || GoXlr.shared.logLevel == .debug {
-           Logger().info("Mixer path \(path.debugDescription) isn't implemented. Please add its requirements within the module.")
-       }
+    } else if path.contains(["cough_button"]) {
+        mixer.coughButton = patch(value: mixer.coughButton, key: key, newValue: value)!
+        
+    } else {
+        if GoXlr.shared.logLevel == .info || GoXlr.shared.logLevel == .debug {
+            Logger().info("Mixer path \(path.debugDescription) isn't implemented. Please add its requirements within the module.")
+        }
     }
 }
