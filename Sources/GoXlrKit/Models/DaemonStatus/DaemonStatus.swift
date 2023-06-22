@@ -85,11 +85,13 @@ public class StatusClass: Codable, ObservableObject {
 // MARK: - Config
 public class Config: Codable, ObservableObject {
     @Published public var allowNetworkAccess: Bool { didSet { GoXlr.shared.command(.SetAllowNetworkAccess(allowNetworkAccess)) } }
-    @Published public var daemonVersion: String
     @Published public var autostartEnabled: Bool
+    @Published public var daemonVersion: String
     @Published public var logLevel: Daemon.logLevels { didSet { GoXlr.shared.command(.SetLogLevel(logLevel)) } }
     @Published public var showTrayIcon: Bool { didSet { GoXlr.shared.command(.SetShowTrayIcon(showTrayIcon)) } }
     @Published public var ttsEnabled: Bool { didSet { GoXlr.shared.command(.SetTTSEnabled(ttsEnabled)) } }
+    
+    @Published public var httpSettings: HttpConfig
 
     enum CodingKeys: String, CodingKey {
         case daemonVersion = "daemon_version"
@@ -98,6 +100,7 @@ public class Config: Codable, ObservableObject {
         case allowNetworkAccess = "allow_network_access"
         case logLevel = "log_level"
         case showTrayIcon = "show_tray_icon"
+        case httpSettings = "http_settings"
     }
     
     public required init(from decoder: Decoder) throws {
@@ -107,7 +110,12 @@ public class Config: Codable, ObservableObject {
         autostartEnabled = try values.decode(Bool.self, forKey: .autostartEnabled)
         logLevel = try values.decode(Daemon.logLevels.self, forKey: .logLevel)
         showTrayIcon = try values.decode(Bool.self, forKey: .showTrayIcon)
-        ttsEnabled = try values.decode(Bool.self, forKey: .ttsEnabled)
+        do {
+            ttsEnabled = try values.decode(Bool.self, forKey: .ttsEnabled)
+        } catch {
+            ttsEnabled = false
+        }
+        httpSettings = try values.decode(HttpConfig.self, forKey: .httpSettings)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -118,6 +126,37 @@ public class Config: Codable, ObservableObject {
         try container.encode(logLevel, forKey: .logLevel)
         try container.encode(showTrayIcon, forKey: .showTrayIcon)
         try container.encode(ttsEnabled, forKey: .ttsEnabled)
+    }
+}
+
+// MARK: - HttpConfig
+public class HttpConfig: Codable, ObservableObject {
+    @Published public var enabled: Bool
+    @Published public var bindAddress: String
+    @Published public var corsEnabled: Bool
+    @Published public var port: Int
+
+    enum CodingKeys: String, CodingKey {
+        case enabled, port
+        case bindAddress = "bind_address"
+        case corsEnabled = "cors_enabled"
+    }
+    
+    public required init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        enabled = try values.decode(Bool.self, forKey: .enabled)
+        bindAddress = try values.decode(String.self, forKey: .bindAddress)
+        corsEnabled = try values.decode(Bool.self, forKey: .corsEnabled)
+        port = try values.decode(Int.self, forKey: .port)
+        
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(enabled, forKey: .enabled)
+        try container.encode(bindAddress, forKey: .bindAddress)
+        try container.encode(corsEnabled, forKey: .corsEnabled)
+        try container.encode(port, forKey: .port)
     }
 }
 
