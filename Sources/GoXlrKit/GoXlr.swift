@@ -138,15 +138,15 @@ public class GoXlr: ObservableObject {
 
             if commandString?.components(separatedBy: ",").count ?? 0 > 1 {
                 if let commandString = commandString?.replacing(firstRegex, with: "").replacing(secondRegex, with: "\":[").replacing(thirdRegex, with: "]}") {
-                    self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\"Daemon\": {\(commandString)}}}")
+                    self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\"Daemon\": \(commandString)}}")
                 }
             } else {
                 if command.commandName == "" {
                     if let commandString = commandString?.replacing(firstRegex, with: "").replacing(secondRegex, with: "\":").replacing(thirdRegex, with: "}") {
-                        self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\"Daemon\": {"+commandString+"}}}")
+                        self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\"Daemon\": "+commandString+"}}")
                     }
                 } else {
-                    self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\"Daemon\":{\"\(command.commandName)\"}}}")
+                    self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\"Daemon\":\"\(command.commandName)\"}}")
                 }
             }
             
