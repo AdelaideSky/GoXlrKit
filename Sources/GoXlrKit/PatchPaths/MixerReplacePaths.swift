@@ -24,7 +24,13 @@ public func handleMixerPatch(mixer: inout Mixer, path: [String], value: JSON) {
             mixer.levels.volumes = patch(value: mixer.levels.volumes as any Codable, key: key, newValue: value)!
             
         } else if path.contains("submix") {
-            mixer.levels.submix = patch(value: mixer.levels.submix as any Codable, key: key, newValue: value)
+            if mixer.levels.submix == nil {
+                mixer.levels.submix = try? JSONDecoder().decode(Submix.self, from: try value.rawData())
+            } else if path.contains("inputs") {
+                mixer.levels.submix?.inputs = patch(value: mixer.levels.submix?.inputs as any Codable, key: key, newValue: value)!
+            } else if path.contains("outputs") {
+                mixer.levels.submix?.inputs = patch(value: mixer.levels.submix?.inputs as any Codable, key: key, newValue: value)!
+            }
             
         } else {
             mixer.levels = patch(value: mixer.levels as any Codable, key: key, newValue: value)!
