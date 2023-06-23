@@ -104,6 +104,23 @@ public class Volumes: Codable, ObservableObject {
 public class Submix: Codable {
     var inputs: Inputs
     var outputs: SubmixesOutputs
+    
+    enum CodingKeys: String, CodingKey {
+        case inputs
+        case outputs
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(inputs, forKey: .inputs)
+        try container.encode(outputs, forKey: .outputs)
+    }
+    
+    public required init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        inputs = try values.decode(Inputs.self, forKey: .inputs)
+        outputs = try values.decode(SubmixesOutputs.self, forKey: .outputs)
+    }
 }
 
 // MARK: - Inputs
