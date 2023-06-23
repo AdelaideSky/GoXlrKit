@@ -65,12 +65,6 @@ public func handleMixerPatch(mixer: inout Mixer, path: [String], value: JSON) {
         if path.contains(["preset_names"]) {
             mixer.effects?.presetNames = patch(value: mixer.effects!.presetNames, key: key, newValue: value)!
             
-        } else if path.contains(["active_preset"]) {
-            mixer.effects?.activePreset = .init(rawValue: value.stringValue)!
-            
-        } else if path.contains(["is_enabled"]) {
-            mixer.effects?.isEnabled = value.boolValue
-            
         } else if path.contains(["current"]) {
             //            print(mixer.effects)
             
@@ -95,6 +89,8 @@ public func handleMixerPatch(mixer: inout Mixer, path: [String], value: JSON) {
             } else if path.contains(["hard_tune"]) {
                 mixer.effects?.current.hardTune = patch(value: mixer.effects!.current.hardTune, key: key, newValue: value)!
             }
+        } else {
+            mixer.effects = patch(value: mixer.effects!, key: key, newValue: value)
         }
     } else if path.contains(["router"]) {
         
