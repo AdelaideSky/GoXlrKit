@@ -101,9 +101,9 @@ public class Volumes: Codable, ObservableObject {
     }
 }
 // MARK: - Submix
-public class Submix: Codable {
-    var inputs: Inputs
-    var outputs: SubmixesOutputs
+public class Submix: Codable, ObservableObject {
+    @Published public var inputs: Inputs
+    @Published public var outputs: SubmixesOutputs
     
     enum CodingKeys: String, CodingKey {
         case inputs
@@ -124,7 +124,7 @@ public class Submix: Codable {
 }
 
 // MARK: - Inputs
-public class Inputs: Codable {
+public class Inputs: Codable, ObservableObject {
     @Published public var mic: SubmixesInputs
     @Published public var lineIn: SubmixesInputs
     @Published public var console: SubmixesInputs
@@ -171,7 +171,7 @@ public class Inputs: Codable {
 }
 
 // MARK: - Chat
-public class SubmixesInputs: Codable {
+public class SubmixesInputs: Codable, ObservableObject {
     @Published public var volume: Float
     @Published public var linked: Bool
     @Published public var ratio: Double
