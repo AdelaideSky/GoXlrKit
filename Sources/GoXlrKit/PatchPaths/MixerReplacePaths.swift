@@ -12,7 +12,11 @@ import os
 
 public func handleMixerPatch(mixer: inout Mixer, path: [String], value: JSON) {
     let key = path.last!
-    let index = Int(path.dropLast().last!) ?? 0
+    if path.dropLast().count > 0 {
+        let index = Int(path.dropLast().last!) ?? 0
+    } else {
+        let index = 0
+    }
     
     if path.contains(["levels"]) {
         
