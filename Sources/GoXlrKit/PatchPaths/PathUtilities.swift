@@ -17,6 +17,7 @@ internal func patch<type: Codable>(value: any Codable, key: String, newValue: JS
         return try JSONDecoder().decode(type.self, from: try json.rawData())
     } catch let error {
         print(error)
+        print(newValue)
         Logger().error("Error patching \(key): \(error) Please check the implementation of this path.")
         return nil
     }
