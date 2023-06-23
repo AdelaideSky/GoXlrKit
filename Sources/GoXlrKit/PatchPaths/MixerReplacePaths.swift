@@ -30,6 +30,8 @@ public func handleMixerPatch(mixer: inout Mixer, path: [String], value: JSON) {
                 mixer.levels.submix?.inputs = patch(value: mixer.levels.submix?.inputs as any Codable, key: key, newValue: value)!
             } else if path.contains("outputs") {
                 mixer.levels.submix?.inputs = patch(value: mixer.levels.submix?.inputs as any Codable, key: key, newValue: value)!
+            } else {
+                mixer.levels.submix = nil
             }
             
         } else {
