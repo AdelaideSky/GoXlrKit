@@ -52,7 +52,7 @@ public class Daemon: ObservableObject {
      */
     public func start(args: [daemonArguments]?) {
         
-        let daemonPath = Bundle.main.executableURL?.appendingPathExtension("Helpers").appendingPathComponent("goxlr-daemon", conformingTo: .executable)
+        let daemonPath = Bundle.main.url(forAuxiliaryExecutable: "goxlr-daemon")
         
         guard daemonPath != nil else {
             self.daemonStatus = .error
@@ -74,6 +74,7 @@ public class Daemon: ObservableObject {
         do {
             try daemonProcess.run()
         } catch {
+            print("Failed to launch daemon: \(error)")
             Logger().error("Failed to launch daemon: \(error)")
             self.daemonStatus = .error
             return
