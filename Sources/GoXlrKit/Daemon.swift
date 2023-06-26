@@ -94,13 +94,11 @@ public class Daemon: ObservableObject {
 //        }
         
         if GoXlr.shared.logLevel == .debug {
-            Logger().debug("Launching daemon with parameters: \((args ?? []).debugDescription)")
+            Logger().debug("Launching daemon with parameters: \((options).debugDescription)")
         }
         
         daemonProcess.executableURL = daemonPath
-        if args != nil {
-            daemonProcess.arguments = options.components(separatedBy: " ")
-        }
+        daemonProcess.arguments = options.components(separatedBy: " ")
         self.daemonStatus = .launching
         do {
             try daemonProcess.run()
