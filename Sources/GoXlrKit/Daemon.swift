@@ -52,7 +52,7 @@ public class Daemon: ObservableObject {
      */
     public func start(args: [daemonArguments]?) {
         
-        let daemonPath = Bundle.main.url(forAuxiliaryExecutable: "goxlr-daemon")
+        let daemonPath = Bundle.main.executableURL?.appendingPathExtension("Helpers").appendingPathComponent("goxlr-daemon", conformingTo: .executable)
         
         guard daemonPath != nil else {
             self.daemonStatus = .error
