@@ -84,6 +84,37 @@ public class Daemon: ObservableObject {
         }
         self.daemonStatus = .running
     }
+ public func start(options: String) {
+        
+        let daemonPath = Bundle.main.bundleURL.appendingPathComponent("Contents/MacOS/Helpers/goxlr-daemon")
+        
+//        guard daemonPath != nil else {
+//            self.daemonStatus = .error
+//            fatalError("No daemon executable was found in the Resources of the app. Don't forget to add them !")
+//        }
+        
+        if GoXlr.shared.logLevel == .debug {
+            Logger().debug("Launching daemon with parameters: \((args ?? []).debugDescription)")
+        }
+        
+        daemonProcess.executableURL = daemonPath
+        if args != nil {
+            daemonProcess.arguments = options.components(separatedBy: " ")
+        }
+        self.daemonStatus = .launching
+        do {
+            try daemonProcess.run()
+        } catch {
+            print("Failed to launch daemon: \(error)")
+            Logger().error("Failed to launch daemon: \(error)")
+            self.daemonStatus = .error
+            return
+        }
+        if GoXlr.shared.logLevel == .debug {
+            Logger().debug("Daemon launched successfully.")
+        }
+        self.daemonStatus = .running
+    }
     
     /**
      Stops the daemon **previously launched by the module**.
