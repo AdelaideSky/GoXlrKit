@@ -54,16 +54,16 @@ public class Daemon: ObservableObject {
         
         let daemonPath = Bundle.main.bundleURL.appendingPathComponent("Contents/MacOS/Helpers/goxlr-daemon")
         
-        guard daemonPath != nil else {
-            self.daemonStatus = .error
-            fatalError("No daemon executable was found in the Resources of the app. Don't forget to add them !")
-        }
+//        guard daemonPath != nil else {
+//            self.daemonStatus = .error
+//            fatalError("No daemon executable was found in the Resources of the app. Don't forget to add them !")
+//        }
         
         if GoXlr.shared.logLevel == .debug {
             Logger().debug("Launching daemon with parameters: \((args ?? []).debugDescription)")
         }
         
-        daemonProcess.executableURL = daemonPath!
+        daemonProcess.executableURL = daemonPath
         if args != nil {
             daemonProcess.arguments = []
             for arg in args! {
