@@ -212,13 +212,13 @@ public enum DaemonCommand: Codable {
     case GetStatus
     case StopDaemon
     case GetHttpState
-//    case OpenPath(PathTypes)
+    case OpenPath(PathTypes)
     case SetShowTrayIcon(Bool)
     case SetTTSEnabled(Bool)
     case SetAutoStartEnabled(Bool)
     case SetLogLevel(Daemon.logLevels)
     case SetAllowNetworkAccess(Bool)
-//    case RecoverDefaults(PathTypes)
+    case RecoverDefaults(PathTypes)
 }
 
 extension DaemonCommand {

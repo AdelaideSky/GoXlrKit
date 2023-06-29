@@ -642,3 +642,12 @@ public enum SubmixAssignation: String, Codable {
     case A
     case B
 }
+
+public enum PathTypes: String, Codable {
+    case Profiles
+    case MicProfiles
+    case Presets
+    case Samples
+    case Icons
+    case Logs
+}
