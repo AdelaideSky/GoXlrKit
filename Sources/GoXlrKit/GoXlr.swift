@@ -115,7 +115,6 @@ public class GoXlr: ObservableObject {
                     }
                 }
                 answer+="]}"
-
                 self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\"Command\": [\"\(self.device)\", "+answer+"]}}")
             } else {
                 if command.commandName == "" {
@@ -126,7 +125,7 @@ public class GoXlr: ObservableObject {
                     self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\"Command\": [\"\(self.device)\", {\""+command.commandName+"\":[]}]}}")
                 }
             }
-        } catch {}
+        } catch {print(error)}
     }
     
     public func command(_ command: DaemonCommand) {

@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-extension Color {
+public extension Color {
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
         var int: UInt64 = 0
@@ -44,7 +44,7 @@ extension CGColor {
         let green = Int(components[1] * 255)
         let blue = Int(components[2] * 255)
         
-        let hex = String(format: "#%02X%02X%02X", red, green, blue)
+        let hex = String(format: "%02X%02X%02X", red, green, blue)
         return hex
     }
 }

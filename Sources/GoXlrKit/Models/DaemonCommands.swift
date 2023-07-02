@@ -55,18 +55,18 @@ public enum GoXLRCommand: Codable, Hashable {
 
     // Colour Related Settings..
     case SetFaderDisplayStyle(FaderName, FaderDisplayStyle)
-    case SetFaderColours(FaderName, String, String)
-    case SetAllFaderColours(String, String)
+    case SetFaderColours(FaderName, Color, Color)
+    case SetAllFaderColours(Color, Color)
     case SetAllFaderDisplayStyle(FaderDisplayStyle)
 
-    case SetButtonColours(GoXlrButton, String, String?)
+    case SetButtonColours(GoXlrButton, Color, Color?)
     case SetButtonOffStyle(GoXlrButton, ButtonColourOffStyle)
-    case SetButtonGroupColours(ButtonColourGroups, String, String?)
+    case SetButtonGroupColours(ButtonColourGroups, Color, Color?)
     case SetButtonGroupOffStyle(ButtonColourGroups, ButtonColourOffStyle)
 
-    case SetSimpleColour(SimpleColourTargets, String)
-    case SetEncoderColour(EncoderColourTargets, String, String, String)
-    case SetSampleColour(SamplerColourTargets, String, String, String)
+    case SetSimpleColour(SimpleColourTargets, Color)
+    case SetEncoderColour(EncoderColourTargets, Color, Color, Color)
+    case SetSampleColour(SamplerColourTargets, Color, Color, Color)
     case SetSampleOffStyle(SamplerColourTargets, ButtonColourOffStyle)
 
     // Effect Related Settings..
