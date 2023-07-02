@@ -71,12 +71,9 @@ public class ButtonsLightning: Codable, ObservableObject {
     
     
     private func handleDidSet(_ style: ButtonStyle, _ button: GoXlrButton, _ oldValue: ButtonStyle) {
-        print(button)
         if style.offStyle != oldValue.offStyle {
-            print("dfd")
             GoXlr.shared.command(.SetButtonOffStyle(button, style.offStyle))
         } else {
-            print("fmkgfg")
             GoXlr.shared.command(.SetButtonColours(button, style.colours.colourOne, style.colours.colourTwo))
         }
     }
