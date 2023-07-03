@@ -68,88 +68,92 @@ public class GoXlr: ObservableObject {
         - command: The command to send, in `GoXLRCommand` type.
      */
     public func command(_ command: GoXLRCommand) {
-        do {
-            let commandString = String(data: try JSONEncoder().encode(command), encoding: .utf8)
-            let firstRegex = #/\"_[0-9]\":/#
-            let secondRegex = #/\":{/#
-            let thirdRegex = #/}}/#
-            let finalRegex = #/\{"\w+":\{/#
-            
-            switch command {
-            case .SetRouter(let inputDevice, let outputDevice, let state):
-                self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\"Command\": [\"\(self.device)\", {\"SetRouter\": [\"\(inputDevice.rawValue)\", \"\(outputDevice.rawValue)\", \(state)]}]}}")
-                return
-            case .SetEncoderColour(let target, let colL, let colR, let colK):
-                self.socket.sendCommand(string: "{\"id\":0,\"data\":{\"Command\":[\"\(self.device)\",{\"SetEncoderColour\":[\"\(target.rawValue)\",\"\(colL)\",\"\(colR)\",\"\(colK)\"]}]}}")
-                return
-//            case .SetFaderColours(let channel, let colA, let colB):
-//                self.socket.sendCommand(string: "{\"id\":1,\"data\":{\"Command\":[\"\(self.device)\",{\"SetFaderColours\":[\"\(channel.rawValue)\",\"\(colA)\",\"\(colB)\"]}]}}")
-            default:
-                break
-            }
+        DispatchQueue(label: "goxlrKit.sendCommand").async {
+            do {
+                let commandString = String(data: try JSONEncoder().encode(command), encoding: .utf8)
+                let firstRegex = #/\"_[0-9]\":/#
+                let secondRegex = #/\":{/#
+                let thirdRegex = #/}}/#
+                let finalRegex = #/\{"\w+":\{/#
+                
+                switch command {
+                case .SetRouter(let inputDevice, let outputDevice, let state):
+                    self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\"Command\": [\"\(self.device)\", {\"SetRouter\": [\"\(inputDevice.rawValue)\", \"\(outputDevice.rawValue)\", \(state)]}]}}")
+                    return
+                case .SetEncoderColour(let target, let colL, let colR, let colK):
+                    self.socket.sendCommand(string: "{\"id\":0,\"data\":{\"Command\":[\"\(self.device)\",{\"SetEncoderColour\":[\"\(target.rawValue)\",\"\(colL)\",\"\(colR)\",\"\(colK)\"]}]}}")
+                    return
+    //            case .SetFaderColours(let channel, let colA, let colB):
+    //                self.socket.sendCommand(string: "{\"id\":1,\"data\":{\"Command\":[\"\(self.device)\",{\"SetFaderColours\":[\"\(channel.rawValue)\",\"\(colA)\",\"\(colB)\"]}]}}")
+                default:
+                    break
+                }
 
-            if commandString?.components(separatedBy: ",").count ?? 0 > 1 {
-                var answer = "\(commandString!.firstMatch(of: finalRegex)!.0)".dropLast()+"["
-                if commandString!.contains("_0") {
-                    answer += (commandString?.split(separator: ",").first(where: { $0.contains("_0") }))!
-                        .replacing(firstRegex, with: "")
-                        .replacing(thirdRegex, with: "")
-                        .replacing(finalRegex, with: "")
-                    if commandString!.contains("_1") {
-                        answer += ","+(commandString?.split(separator: ",").first(where: { $0.contains("_1") }))!
+                if commandString?.components(separatedBy: ",").count ?? 0 > 1 {
+                    var answer = "\(commandString!.firstMatch(of: finalRegex)!.0)".dropLast()+"["
+                    if commandString!.contains("_0") {
+                        answer += (commandString?.split(separator: ",").first(where: { $0.contains("_0") }))!
                             .replacing(firstRegex, with: "")
                             .replacing(thirdRegex, with: "")
                             .replacing(finalRegex, with: "")
-                        if commandString!.contains("_2") {
-                            answer += ","+(commandString?.split(separator: ",").first(where: { $0.contains("_2") }))!
+                        if commandString!.contains("_1") {
+                            answer += ","+(commandString?.split(separator: ",").first(where: { $0.contains("_1") }))!
                                 .replacing(firstRegex, with: "")
                                 .replacing(thirdRegex, with: "")
                                 .replacing(finalRegex, with: "")
-                            if commandString!.contains("_3") {
-                                answer += ","+(commandString?.split(separator: ",").first(where: { $0.contains("_3") }))!
+                            if commandString!.contains("_2") {
+                                answer += ","+(commandString?.split(separator: ",").first(where: { $0.contains("_2") }))!
                                     .replacing(firstRegex, with: "")
                                     .replacing(thirdRegex, with: "")
                                     .replacing(finalRegex, with: "")
+                                if commandString!.contains("_3") {
+                                    answer += ","+(commandString?.split(separator: ",").first(where: { $0.contains("_3") }))!
+                                        .replacing(firstRegex, with: "")
+                                        .replacing(thirdRegex, with: "")
+                                        .replacing(finalRegex, with: "")
+                                }
                             }
                         }
                     }
-                }
-                answer+="]}"
-                self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\"Command\": [\"\(self.device)\", "+answer+"]}}")
-            } else {
-                if command.commandName == "" {
-                    if let commandString = commandString?.replacing(firstRegex, with: "").replacing(secondRegex, with: "\":").replacing(thirdRegex, with: "}") {
-                        self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\"Command\": [\"\(self.device)\", "+commandString+"]}}")
-                    }
+                    answer+="]}"
+                    self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\"Command\": [\"\(self.device)\", "+answer+"]}}")
                 } else {
-                    self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\"Command\": [\"\(self.device)\", {\""+command.commandName+"\":[]}]}}")
+                    if command.commandName == "" {
+                        if let commandString = commandString?.replacing(firstRegex, with: "").replacing(secondRegex, with: "\":").replacing(thirdRegex, with: "}") {
+                            self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\"Command\": [\"\(self.device)\", "+commandString+"]}}")
+                        }
+                    } else {
+                        self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\"Command\": [\"\(self.device)\", {\""+command.commandName+"\":[]}]}}")
+                    }
                 }
-            }
-        } catch {print(error)}
+            } catch {print(error)}
+        }
     }
     
     public func command(_ command: DaemonCommand) {
-        do {
-            let commandString = String(data: try JSONEncoder().encode(command), encoding: .utf8)
-            let firstRegex = #/\"_[0-9]\":/#
-            let secondRegex = #/\":{/#
-            let thirdRegex = #/}}/#
+        DispatchQueue(label: "goxlrKit.sendCommand").async {
+            do {
+                let commandString = String(data: try JSONEncoder().encode(command), encoding: .utf8)
+                let firstRegex = #/\"_[0-9]\":/#
+                let secondRegex = #/\":{/#
+                let thirdRegex = #/}}/#
 
-            if commandString?.components(separatedBy: ",").count ?? 0 > 1 {
-                if let commandString = commandString?.replacing(firstRegex, with: "").replacing(secondRegex, with: "\":[").replacing(thirdRegex, with: "]}") {
-                    self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\"Daemon\": \(commandString)}}")
-                }
-            } else {
-                if command.commandName == "" {
-                    if let commandString = commandString?.replacing(firstRegex, with: "").replacing(secondRegex, with: "\":").replacing(thirdRegex, with: "}") {
-                        self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\"Daemon\": "+commandString+"}}")
+                if commandString?.components(separatedBy: ",").count ?? 0 > 1 {
+                    if let commandString = commandString?.replacing(firstRegex, with: "").replacing(secondRegex, with: "\":[").replacing(thirdRegex, with: "]}") {
+                        self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\"Daemon\": \(commandString)}}")
                     }
                 } else {
-                    self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\"Daemon\":\"\(command.commandName)\"}}")
+                    if command.commandName == "" {
+                        if let commandString = commandString?.replacing(firstRegex, with: "").replacing(secondRegex, with: "\":").replacing(thirdRegex, with: "}") {
+                            self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\"Daemon\": "+commandString+"}}")
+                        }
+                    } else {
+                        self.socket.sendCommand(string: "{\"id\": 0, \"data\": {\"Daemon\":\"\(command.commandName)\"}}")
+                    }
                 }
-            }
-            
-        } catch {}
+                
+            } catch {}
+        }
     }
     
     public func copyDebugInfo() {
