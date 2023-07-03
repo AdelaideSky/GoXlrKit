@@ -57,9 +57,7 @@ public class Volumes: Codable, ObservableObject {
     @Published public var lineOut: Float { didSet { handleDidSet(lineOut, .LineOut) } }
     
     private func handleDidSet(_ volume: Float, _ channel: ChannelName) {
-        if liveUD {
-            GoXlr.shared.command(.SetVolume(channel, Int(volume)))
-        }
+        GoXlr.shared.command(.SetVolume(channel, Int(volume)))
     }
 
     enum CodingKeys: String, CodingKey {
