@@ -74,7 +74,9 @@ public class ButtonsLightning: Codable, ObservableObject {
         if style.offStyle != oldValue.offStyle {
             GoXlr.shared.command(.SetButtonOffStyle(button, style.offStyle))
         } else {
-            GoXlr.shared.command(.SetButtonColours(button, style.colours.colourOne, style.colours.colourTwo))
+            if liveUD {
+                GoXlr.shared.command(.SetButtonColours(button, style.colours.colourOne, style.colours.colourTwo))
+            }
         }
     }
     
@@ -284,8 +286,8 @@ public class FaderColors: Codable, ObservableObject {
 
 // MARK: - FadersA
 public class FaderColor: Codable, ObservableObject {
-    @Published public var style: FaderDisplayStyle { didSet { GoXlr.shared.command(.SetFaderDisplayStyle(fader, style)) }}
-    @Published public var colours: Colours { didSet { GoXlr.shared.command(.SetFaderColours(fader, colours.colourOne, colours.colourTwo)) }}
+    @Published public var style: FaderDisplayStyle { didSet { if liveUD { GoXlr.shared.command(.SetFaderDisplayStyle(fader, style)) }}}
+    @Published public var colours: Colours { didSet { if liveUD { GoXlr.shared.command(.SetFaderColours(fader, colours.colourOne, colours.colourTwo)) }}}
     
     var fader: FaderName = .A
 

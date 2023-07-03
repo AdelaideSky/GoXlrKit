@@ -160,11 +160,11 @@ public class FaderD: Codable, ObservableObject {
 }
 
 // MARK: - Scribble
-public class Scribble: Codable, ObservableObject {
-    @Published public var fileName: String
-    @Published public var bottomText: String
-    @Published public var leftText: String?
-    @Published public var inverted: Bool
+public struct Scribble: Codable {
+    public var fileName: String
+    public var bottomText: String
+    public var leftText: String?
+    public var inverted: Bool
 
     enum CodingKeys: String, CodingKey {
         case fileName = "file_name"
@@ -173,7 +173,7 @@ public class Scribble: Codable, ObservableObject {
         case inverted
     }
     
-    public required init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         fileName = try values.decode(String.self, forKey: .fileName)
         bottomText = try values.decode(String.self, forKey: .bottomText)

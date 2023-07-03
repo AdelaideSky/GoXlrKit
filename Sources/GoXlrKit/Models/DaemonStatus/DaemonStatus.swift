@@ -3,8 +3,7 @@
 // Status structs.
 import Foundation
 
-public var valueUpdatedByUI = true
-
+var liveUD = GoXlr.shared.eligibleForLiveUpdate
 // MARK: - Status
 /**
  Base Status struct. Only used to decode daemon's JSON. Doesn't contain any useful information.

@@ -35,6 +35,14 @@ public class GoXlr: ObservableObject {
     
     public var utils = GoXlrUtils()
     
+    public var eligibleForLiveUpdate: Bool {
+        if let type = self.mixer?.hardware.deviceType {
+            return type == .Full
+        } else {
+            return false
+        }
+    }
+    
     // Runs specified shortcut when specified button is pressed
     public var observationStore: Binding<[String : String]>? = nil
     
