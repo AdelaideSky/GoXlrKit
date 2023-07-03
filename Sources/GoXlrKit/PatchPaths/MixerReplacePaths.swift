@@ -280,9 +280,7 @@ public func handleMixerPatch(mixer: inout Mixer, path: [String], value: JSON) {
             }
         } else if path.contains(["buttons"]) {
             if path.contains(["colours"]) {
-                print(mixer.lighting.buttons.bleep.colours.colourOne.description)
                 mixer.lighting.buttons = patch(value: mixer.lighting.buttons, path: Array(path.dropFirst(path.count-3)), newValue: value)!
-                print(mixer.lighting.buttons.bleep.colours.colourOne.description)
             } else {
                 mixer.lighting.buttons = patch(value: mixer.lighting.buttons, path: Array(path.dropFirst(path.count-2)), newValue: value)!
             }

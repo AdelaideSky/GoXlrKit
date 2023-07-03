@@ -28,7 +28,7 @@ internal func patch<type: Codable>(value: any Codable, path: [String], newValue:
         var json = try JSON(data: try JSONEncoder().encode(value))
         if path.count == 2 {
             json[path[0]][path[1]] = newValue
-        } else if path.count == 2 {
+        } else if path.count == 3 {
             json[path[0]][path[1]][path[2]] = newValue
         }
         

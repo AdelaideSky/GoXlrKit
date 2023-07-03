@@ -39,32 +39,31 @@ public extension Color {
             a = CGFloat(rgb & 0x000000FF) / 255.0
 
         }
-
+//        let newhex = (String(data: try! JSONEncoder().encode(Color.init(red: r, green: g, blue: b, opacity: a)), encoding: .utf8) ?? "").replacingOccurrences(of: "\"", with: "")
+//        
+//        guard newhex == hex else {
+//            print("---")
+//            print("ERROR:")
+//            print("INPUT: \(hex)")
+//            print("OUTPUT: \(newhex)")
+//            print("RGB: \(r*255) \(g*255) \(b*255)")
+//            self = .black
+//            return
+//        }
         self.init(red: r, green: g, blue: b, opacity: a)
     }
 }
 
-extension CGColor {
-    func hex() -> String? {
-        guard let components = self.components else {
-            return nil
-        }
-        
-        let red = Int(components[0] * 255)
-        let green = Int(components[1] * 255)
-        let blue = Int(components[2] * 255)
-        
-        let hex = String(format: "%02X%02X%02X", red, green, blue)
-        return hex
-    }
-}
 extension Color: Codable {
     public func encode(to encoder: Encoder) throws {
-        guard let cgColor = self.cgColor else {
-            throw CodingError.wrongColor
-        }
+        
+        let components = self.getRGB()
+        let rgb: Int = (Int)(components.0*255)<<16 | (Int)(components.1*255)<<8 | (Int)(components.2*255)<<0
+        
+        let hex = NSString(format:"%06x", rgb) as String
+        
         var container = encoder.singleValueContainer()
-        try container.encode(cgColor.hex())
+        try container.encode(hex.uppercased())
         
     }
     
@@ -78,4 +77,21 @@ extension Color: Codable {
 enum CodingError: Error {
     case wrongColor
     case wrongData
+}
+
+extension Color {
+    func getRGB() -> (CGFloat, CGFloat, CGFloat) {
+        guard let nsColor = NSColor(self).usingColorSpace(.deviceRGB) else {
+            return (0, 0, 0)
+        }
+        
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 0
+        
+        nsColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+
+        return (red, green, blue)
+    }
 }
