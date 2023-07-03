@@ -68,6 +68,7 @@ public enum GoXLRCommand: Codable, Hashable {
     case SetEncoderColour(EncoderColourTargets, Color, Color, Color)
     case SetSampleColour(SamplerColourTargets, Color, Color, Color)
     case SetSampleOffStyle(SamplerColourTargets, ButtonColourOffStyle)
+    case SetGlobalColour(Color)
 
     // Effect Related Settings..
     case LoadEffectPreset(String)

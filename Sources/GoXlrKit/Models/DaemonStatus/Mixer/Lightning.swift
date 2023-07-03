@@ -365,7 +365,10 @@ public class Simple: Codable, ObservableObject {
 
     private func handleDidSet(_ style: Accent?, _ simple: SimpleColourTargets, _ oldValue: Accent?) {
         guard style != nil && oldValue != nil else { return }
+        
         if style!.colourOne != oldValue!.colourOne && liveUD {
+            guard simple != .Global else { GoXlr.shared.command(.SetGlobalColour(style!.colourOne)) }
+            
             GoXlr.shared.command(.SetSimpleColour(simple, style!.colourOne))
         }
     }
