@@ -53,16 +53,16 @@ public class ButtonsLightning: Codable, ObservableObject {
     
     @Published public var bleep: ButtonStyle { didSet { handleDidSet(bleep, .Bleep, oldValue) }}
     @Published public var cough: ButtonStyle { didSet { handleDidSet(cough, .Cough, oldValue) }}
-    @Published public var effectFx: ButtonStyle { didSet { handleDidSet(effectFx, .EffectFx, oldValue) }}
-    @Published public var effectHardTune: ButtonStyle { didSet { handleDidSet(effectHardTune, .EffectHardTune, oldValue) }}
-    @Published public var effectMegaphone: ButtonStyle { didSet { handleDidSet(effectMegaphone, .EffectMegaphone, oldValue) }}
-    @Published public var effectRobot: ButtonStyle { didSet { handleDidSet(effectRobot, .EffectRobot, oldValue) }}
-    @Published public var effectSelect1: ButtonStyle { didSet { handleDidSet(effectSelect1, .EffectSelect1, oldValue) }}
-    @Published public var effectSelect2: ButtonStyle { didSet { handleDidSet(effectSelect2, .EffectSelect2, oldValue) }}
-    @Published public var effectSelect3: ButtonStyle { didSet { handleDidSet(effectSelect3, .EffectSelect3, oldValue) }}
-    @Published public var effectSelect4: ButtonStyle { didSet { handleDidSet(effectSelect4, .EffectSelect4, oldValue) }}
-    @Published public var effectSelect5: ButtonStyle { didSet { handleDidSet(effectSelect5, .EffectSelect5, oldValue) }}
-    @Published public var effectSelect6: ButtonStyle { didSet { handleDidSet(effectSelect6, .EffectSelect6, oldValue) }}
+    @Published public var effectFx: ButtonStyle? { didSet { handleDidSet(effectFx!, .EffectFx, oldValue!) }}
+    @Published public var effectHardTune: ButtonStyle? { didSet { handleDidSet(effectHardTune!, .EffectHardTune, oldValue!) }}
+    @Published public var effectMegaphone: ButtonStyle? { didSet { handleDidSet(effectMegaphone!, .EffectMegaphone, oldValue!) }}
+    @Published public var effectRobot: ButtonStyle? { didSet { handleDidSet(effectRobot!, .EffectRobot, oldValue!) }}
+    @Published public var effectSelect1: ButtonStyle? { didSet { handleDidSet(effectSelect1!, .EffectSelect1, oldValue!) }}
+    @Published public var effectSelect2: ButtonStyle? { didSet { handleDidSet(effectSelect2!, .EffectSelect2, oldValue!) }}
+    @Published public var effectSelect3: ButtonStyle? { didSet { handleDidSet(effectSelect3!, .EffectSelect3, oldValue!) }}
+    @Published public var effectSelect4: ButtonStyle? { didSet { handleDidSet(effectSelect4!, .EffectSelect4, oldValue!) }}
+    @Published public var effectSelect5: ButtonStyle? { didSet { handleDidSet(effectSelect5!, .EffectSelect5, oldValue!) }}
+    @Published public var effectSelect6: ButtonStyle? { didSet { handleDidSet(effectSelect6!, .EffectSelect6, oldValue!) }}
 
     @Published public var fader1Mute: ButtonStyle { didSet { handleDidSet(fader1Mute, .Fader1Mute, oldValue) }}
     @Published public var fader2Mute: ButtonStyle { didSet { handleDidSet(fader2Mute, .Fader2Mute, oldValue) }}
@@ -122,16 +122,16 @@ public class ButtonsLightning: Codable, ObservableObject {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         bleep = try container.decode(ButtonStyle.self, forKey: .bleep)
         cough = try container.decode(ButtonStyle.self, forKey: .cough)
-        effectFx = try container.decode(ButtonStyle.self, forKey: .effectFX)
-        effectHardTune = try container.decode(ButtonStyle.self, forKey: .effectHardTune)
-        effectMegaphone = try container.decode(ButtonStyle.self, forKey: .effectMegaphone)
-        effectRobot = try container.decode(ButtonStyle.self, forKey: .effectRobot)
-        effectSelect1 = try container.decode(ButtonStyle.self, forKey: .effectSelect1)
-        effectSelect2 = try container.decode(ButtonStyle.self, forKey: .effectSelect2)
-        effectSelect3 = try container.decode(ButtonStyle.self, forKey: .effectSelect3)
-        effectSelect4 = try container.decode(ButtonStyle.self, forKey: .effectSelect4)
-        effectSelect5 = try container.decode(ButtonStyle.self, forKey: .effectSelect5)
-        effectSelect6 = try container.decode(ButtonStyle.self, forKey: .effectSelect6)
+        effectFx = try container.decodeIfPresent(ButtonStyle.self, forKey: .effectFX)
+        effectHardTune = try container.decodeIfPresent(ButtonStyle.self, forKey: .effectHardTune)
+        effectMegaphone = try container.decodeIfPresent(ButtonStyle.self, forKey: .effectMegaphone)
+        effectRobot = try container.decodeIfPresent(ButtonStyle.self, forKey: .effectRobot)
+        effectSelect1 = try container.decodeIfPresent(ButtonStyle.self, forKey: .effectSelect1)
+        effectSelect2 = try container.decodeIfPresent(ButtonStyle.self, forKey: .effectSelect2)
+        effectSelect3 = try container.decodeIfPresent(ButtonStyle.self, forKey: .effectSelect3)
+        effectSelect4 = try container.decodeIfPresent(ButtonStyle.self, forKey: .effectSelect4)
+        effectSelect5 = try container.decodeIfPresent(ButtonStyle.self, forKey: .effectSelect5)
+        effectSelect6 = try container.decodeIfPresent(ButtonStyle.self, forKey: .effectSelect6)
         fader1Mute = try container.decode(ButtonStyle.self, forKey: .fader1Mute)
         fader2Mute = try container.decode(ButtonStyle.self, forKey: .fader2Mute)
         fader3Mute = try container.decode(ButtonStyle.self, forKey: .fader3Mute)
