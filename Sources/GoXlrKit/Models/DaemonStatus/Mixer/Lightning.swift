@@ -367,10 +367,7 @@ public class Simple: Codable, ObservableObject {
         guard style != nil && oldValue != nil else { return }
         
         if style!.colourOne != oldValue!.colourOne && liveUD {
-            guard simple != .Global else {
-                GoXlr.shared.command(.SetGlobalColour(style!.colourOne))
-                return
-            }
+            guard simple != .Global else { return }
             
             GoXlr.shared.command(.SetSimpleColour(simple, style!.colourOne))
         }
