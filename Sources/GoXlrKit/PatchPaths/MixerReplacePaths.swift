@@ -240,44 +240,14 @@ public func handleMixerPatch(mixer: inout Mixer, path: [String], value: JSON) {
         
     } else if path.contains(["lighting"]) {
         if path.contains(["faders"]) {
-            if path.contains(["A"]) {
-                if path.contains(["colours"]) {
-                    mixer.lighting.faders.a.colours = patch(value: mixer.lighting.faders.a.colours, key: key, newValue: value)!
-                    
-                }
-            } else if path.contains(["B"]) {
-                if path.contains(["colours"]) {
-                    mixer.lighting.faders.b.colours = patch(value: mixer.lighting.faders.b.colours, key: key, newValue: value)!
-                    
-                }
-            } else if path.contains(["C"]) {
-                if path.contains(["colours"]) {
-                    mixer.lighting.faders.c.colours = patch(value: mixer.lighting.faders.c.colours, key: key, newValue: value)!
-                    
-                }
-            } else if path.contains(["D"]) {
-                if path.contains(["colours"]) {
-                    mixer.lighting.faders.d.colours = patch(value: mixer.lighting.faders.d.colours, key: key, newValue: value)!
-                    
-                }
+            if path.contains(["colours"]) {
+                mixer.lighting.faders = patch(value: mixer.lighting.faders, path: Array(path.dropFirst(path.count-3)), newValue: value)!
+            } else {
+                mixer.lighting.faders = patch(value: mixer.lighting.faders, path: Array(path.dropFirst(path.count-2)), newValue: value)!
             }
         } else if path.contains(["simple"]) {
-            if path.contains(["Scribble1"]) {
-                mixer.lighting.simple.scribble1 = patch(value: mixer.lighting.simple.scribble1, key: key, newValue: value)
-                
-            } else if path.contains(["Scribble2"]) {
-                mixer.lighting.simple.scribble2 = patch(value: mixer.lighting.simple.scribble2, key: key, newValue: value)
-                
-            } else if path.contains(["Scribble3"]) {
-                mixer.lighting.simple.scribble3 = patch(value: mixer.lighting.simple.scribble3, key: key, newValue: value)
-                
-            } else if path.contains(["Scribble4"]) {
-                mixer.lighting.simple.scribble4 = patch(value: mixer.lighting.simple.scribble4, key: key, newValue: value)
-                
-            } else if path.contains(["Accent"]) {
-                mixer.lighting.simple.accent = patch(value: mixer.lighting.simple.accent, key: key, newValue: value)!
-                
-            }
+            mixer.lighting.simple = patch(value: mixer.lighting.simple, path: Array(path.dropFirst(path.count-2)), newValue: value)!
+            
         } else if path.contains(["buttons"]) {
             if path.contains(["colours"]) {
                 mixer.lighting.buttons = patch(value: mixer.lighting.buttons, path: Array(path.dropFirst(path.count-3)), newValue: value)!

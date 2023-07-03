@@ -251,6 +251,14 @@ public class FaderColors: Codable, ObservableObject {
     @Published public var b: FaderColor
     @Published public var c: FaderColor
     @Published public var d: FaderColor
+    
+    private func handleDidSet(_ style: FaderColor, _ fader: FaderName, _ oldValue: FaderColor) {
+        if ((style.colours.colourOne != oldValue.colours.colourOne) || (style.colours.colourTwo != oldValue.colours.colourTwo)) && liveUD {
+            GoXlr.shared.command(.SetFaderColours(fader, style.colours.colourOne, style.colours.colourTwo))
+        } else {
+            GoXlr.shared.command(.SetFaderDisplayStyle(fader, style.style))
+        }
+    }
 
     enum CodingKeys: String, CodingKey {
         case c = "C"
@@ -261,18 +269,9 @@ public class FaderColors: Codable, ObservableObject {
     public required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         a = try values.decode(FaderColor.self, forKey: .a)
-        
-        var tmpb = (try values.decode(FaderColor.self, forKey: .b))
-        tmpb.fader = .B
-        b = tmpb
-        
-        var tmpc = try values.decode(FaderColor.self, forKey: .c)
-        tmpc.fader = .C
-        c = tmpc
-        
-        var tmpd = try values.decode(FaderColor.self, forKey: .d)
-        tmpd.fader = .D
-        d = tmpd
+        b = (try values.decode(FaderColor.self, forKey: .b))
+        c = try values.decode(FaderColor.self, forKey: .c)
+        d = try values.decode(FaderColor.self, forKey: .d)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -286,10 +285,8 @@ public class FaderColors: Codable, ObservableObject {
 
 // MARK: - FadersA
 public class FaderColor: Codable, ObservableObject {
-    @Published public var style: FaderDisplayStyle { didSet { if liveUD { GoXlr.shared.command(.SetFaderDisplayStyle(fader, style)) }}}
-    @Published public var colours: Colours { didSet { if liveUD { GoXlr.shared.command(.SetFaderColours(fader, colours.colourOne, colours.colourTwo)) }}}
-    
-    var fader: FaderName = .A
+    @Published public var style: FaderDisplayStyle
+    @Published public var colours: Colours
 
     enum CodingKeys: String, CodingKey {
         case style
@@ -359,13 +356,20 @@ public class SamplerSelect: Codable, ObservableObject {
 
 // MARK: - Simple
 public class Simple: Codable, ObservableObject {
-    @Published public var scribble1: Accent?
-    @Published public var scribble2: Accent?
-    @Published public var scribble3: Accent?
-    @Published public var scribble4: Accent?
-    @Published public var global: Accent
-    @Published public var accent: Accent
+    @Published public var scribble1: Accent? { didSet { handleDidSet(scribble1, .Scribble1, oldValue) } }
+    @Published public var scribble2: Accent? { didSet { handleDidSet(scribble2, .Scribble2, oldValue) } }
+    @Published public var scribble3: Accent? { didSet { handleDidSet(scribble3, .Scribble3, oldValue) } }
+    @Published public var scribble4: Accent? { didSet { handleDidSet(scribble4, .Scribble4, oldValue) } }
+    @Published public var global: Accent { didSet { handleDidSet(global, .Global, oldValue) } }
+    @Published public var accent: Accent { didSet { handleDidSet(accent, .Accent, oldValue) } }
 
+    private func handleDidSet(_ style: Accent?, _ simple: SimpleColourTargets, _ oldValue: Accent?) {
+        guard style != nil && oldValue != nil else { return }
+        if style!.colourOne != oldValue!.colourOne && liveUD {
+            GoXlr.shared.command(.SetSimpleColour(simple, style!.colourOne))
+        }
+    }
+    
     enum CodingKeys: String, CodingKey {
         case scribble3 = "Scribble3"
         case global = "Global"
