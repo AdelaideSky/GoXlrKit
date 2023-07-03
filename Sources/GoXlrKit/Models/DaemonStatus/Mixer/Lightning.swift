@@ -414,14 +414,14 @@ public class Simple: Codable, ObservableObject {
 }
 
 // MARK: - Accent
-public class Accent: Codable, ObservableObject {
-    @Published public var colourOne: Color
+public struct Accent: Codable {
+    public var colourOne: Color
 
     enum CodingKeys: String, CodingKey {
         case colourOne = "colour_one"
     }
     
-    public required init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         colourOne = try values.decode(Color.self, forKey: .colourOne)
     }
