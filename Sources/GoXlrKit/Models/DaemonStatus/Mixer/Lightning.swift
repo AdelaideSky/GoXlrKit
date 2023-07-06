@@ -247,10 +247,10 @@ public class GenderClass: Codable, ObservableObject {
 
 // MARK: - Faders
 public class FaderColors: Codable, ObservableObject {
-    @Published public var a: FaderColor
-    @Published public var b: FaderColor
-    @Published public var c: FaderColor
-    @Published public var d: FaderColor
+    @Published public var a: FaderColor { didSet { handleDidSet(a, .A, oldValue) } }
+    @Published public var b: FaderColor { didSet { handleDidSet(b, .B, oldValue) } }
+    @Published public var c: FaderColor { didSet { handleDidSet(c, .C, oldValue) } }
+    @Published public var d: FaderColor { didSet { handleDidSet(d, .D, oldValue) } }
     
     private func handleDidSet(_ style: FaderColor, _ fader: FaderName, _ oldValue: FaderColor) {
         if ((style.colours.colourOne != oldValue.colours.colourOne) || (style.colours.colourTwo != oldValue.colours.colourTwo)) && liveUD {
