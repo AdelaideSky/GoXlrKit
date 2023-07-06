@@ -284,16 +284,16 @@ public class FaderColors: Codable, ObservableObject {
 }
 
 // MARK: - FadersA
-public class FaderColor: Codable, ObservableObject {
-    @Published public var style: FaderDisplayStyle
-    @Published public var colours: Colours
+public struct FaderColor: Codable {
+    public var style: FaderDisplayStyle
+    public var colours: Colours
 
     enum CodingKeys: String, CodingKey {
         case style
         case colours
     }
     
-    public required init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         style = try container.decode(FaderDisplayStyle.self, forKey: .style)
         colours = try container.decode(Colours.self, forKey: .colours)
