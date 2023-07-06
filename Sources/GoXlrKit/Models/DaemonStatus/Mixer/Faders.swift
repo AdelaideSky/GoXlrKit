@@ -162,7 +162,7 @@ public class FaderD: Codable, ObservableObject {
 // MARK: - Scribble
 public struct Scribble: Codable {
     public var fileName: String?
-    public var bottomText: String?
+    public var bottomText: String
     public var leftText: String?
     public var inverted: Bool
 
@@ -176,7 +176,11 @@ public struct Scribble: Codable {
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         fileName = try values.decodeIfPresent(String.self, forKey: .fileName)
-        bottomText = try values.decodeIfPresent(String.self, forKey: .bottomText)
+        if let text = try values.decodeIfPresent(String.self, forKey: .bottomText) {
+            bottomText = text
+        } else {
+            bottomText = ""
+        }
         leftText = try values.decodeIfPresent(String.self, forKey: .leftText)
         inverted = try values.decode(Bool.self, forKey: .inverted)
     }
