@@ -175,9 +175,9 @@ public struct Scribble: Codable {
     
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        fileName = try values.decodeIfPresent(String.self, forKey: .fileName)
+        fileName = try values.decode(String?.self, forKey: .fileName)
         bottomText = try values.decode(String.self, forKey: .bottomText)
-        leftText = try values.decodeIfPresent(String.self, forKey: .leftText)
+        leftText = try values.decode(String?.self, forKey: .leftText)
         inverted = try values.decode(Bool.self, forKey: .inverted)
     }
 
