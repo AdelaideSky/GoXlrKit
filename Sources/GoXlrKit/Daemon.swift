@@ -23,7 +23,7 @@ public class Daemon: ObservableObject {
         case enableCors = "--http-enable-cors"
         case httpPort = "--http-port"
         case logLevel = "--log-level"
-        case noMenubarIcon = "--disable-tray"
+        case noMenubarIcon = "--disable-tray true"
         case startUI = "--start-ui"
         case bindAddress = "--http-bind-address"
     }
