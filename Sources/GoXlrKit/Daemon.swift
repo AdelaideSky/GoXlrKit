@@ -23,9 +23,18 @@ public class Daemon: ObservableObject {
         case enableCors = "--http-enable-cors"
         case httpPort = "--http-port"
         case logLevel = "--log-level"
-        case noMenubarIcon = "--disable-tray true"
+        case noMenubarIcon = "--disable-tray"
         case startUI = "--start-ui"
         case bindAddress = "--http-bind-address"
+        
+        var args: [String] {
+            switch self {
+            case .noMenubarIcon:
+                [self.rawValue, "true"]
+            default:
+                [self.rawValue]
+            }
+        }
     }
     
     public enum logLevels: String, CaseIterable, Codable {
@@ -67,7 +76,10 @@ public class Daemon: ObservableObject {
         if args != nil {
             daemonProcess.arguments = []
             for arg in args! {
-                daemonProcess.arguments?.append(arg.rawValue)
+                for subArg in arg.args {
+                    daemonProcess.arguments?.append(subArg)
+                }
+                
             }
         }
         self.daemonStatus = .launching
