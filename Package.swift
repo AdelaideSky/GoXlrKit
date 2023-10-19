@@ -30,7 +30,7 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "GoXlrKit",
-            dependencies: ["Starscream", "SwiftyJSON", .product(name: "SkyKitC", package: "SkyKit"), .product(name: "SkyKit_Design", package: "SkyKit")],
+            dependencies: ["Starscream", "SwiftyJSON", .product(name: "SkyKitC", package: "SkyKit"), .product(name: "SkyKit", package: "SkyKit")],
             resources: [.copy("Resources/Library")]),
         .target(
             name: "GoXlrKit-Audio",

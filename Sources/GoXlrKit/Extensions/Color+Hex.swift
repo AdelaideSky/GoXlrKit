@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 import SkyKitC
-import SkyKit_Design
+import SkyKit
 
 
 extension Color: Codable {
