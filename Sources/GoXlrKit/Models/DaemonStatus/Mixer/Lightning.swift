@@ -74,9 +74,9 @@ public class ButtonsLightning: Codable, ObservableObject {
         if style.offStyle != oldValue.offStyle {
             GoXlr.shared.command(.SetButtonOffStyle(button, style.offStyle))
         } else {
-            if liveUD {
-                GoXlr.shared.command(.SetButtonColours(button, style.colours.colourOne, style.colours.colourTwo))
-            }
+//            if liveUD {
+//                GoXlr.shared.command(.SetButtonColours(button, style.colours.colourOne, style.colours.colourTwo))
+//            }
         }
     }
     
@@ -253,9 +253,12 @@ public class FaderColors: Codable, ObservableObject {
     @Published public var d: FaderColor { didSet { handleDidSet(d, .D, oldValue) } }
     
     private func handleDidSet(_ style: FaderColor, _ fader: FaderName, _ oldValue: FaderColor) {
-        if ((style.colours.colourOne != oldValue.colours.colourOne) || (style.colours.colourTwo != oldValue.colours.colourTwo)) && liveUD {
-            GoXlr.shared.command(.SetFaderColours(fader, style.colours.colourOne, style.colours.colourTwo))
-        } else {
+//        if ((style.colours.colourOne != oldValue.colours.colourOne) || (style.colours.colourTwo != oldValue.colours.colourTwo)) && liveUD {
+//            GoXlr.shared.command(.SetFaderColours(fader, style.colours.colourOne, style.colours.colourTwo))
+//        } else {
+//            GoXlr.shared.command(.SetFaderDisplayStyle(fader, style.style))
+//        }
+        if style.style != oldValue.style {
             GoXlr.shared.command(.SetFaderDisplayStyle(fader, style.style))
         }
     }
@@ -364,13 +367,13 @@ public class Simple: Codable, ObservableObject {
     @Published public var accent: Accent { didSet { handleDidSet(accent, .Accent, oldValue) } }
 
     private func handleDidSet(_ style: Accent?, _ simple: SimpleColourTargets, _ oldValue: Accent?) {
-        guard style != nil && oldValue != nil else { return }
-        
-        if style!.colourOne != oldValue!.colourOne && liveUD {
-            guard simple != .Global else { return }
-            
-            GoXlr.shared.command(.SetSimpleColour(simple, style!.colourOne))
-        }
+//        guard style != nil && oldValue != nil else { return }
+//        
+//        if style!.colourOne != oldValue!.colourOne && liveUD {
+//            guard simple != .Global else { return }
+//            
+//            GoXlr.shared.command(.SetSimpleColour(simple, style!.colourOne))
+//        }
     }
     
     enum CodingKeys: String, CodingKey {
