@@ -24,13 +24,13 @@ public enum ChannelName: String, Codable, CaseIterable {
 }
 
 
-public enum FaderName: String, Codable {
+public enum FaderName: String, Codable, Hashable {
     case A,
     B,
     C,
     D
 }
-public enum GoXlrModel: String, Codable {
+public enum GoXlrModel: String, Codable, Hashable {
     case Full
     case Mini
 }
@@ -249,7 +249,7 @@ public enum MicrophoneParamKey: Double, Codable {
 }
 
 
-public enum FaderDisplayStyle: String, Codable {
+public enum FaderDisplayStyle: String, Codable, Hashable {
     case TwoColour,
     Gradient,
     Meter,
@@ -257,7 +257,7 @@ public enum FaderDisplayStyle: String, Codable {
 }
 
 
-public enum GoXlrButton: String, Codable {
+public enum GoXlrButton: String, Codable, Hashable {
     // These are all the buttons from the GoXLR Mini.
     case Fader1Mute,
     Fader2Mute,
@@ -292,7 +292,7 @@ public enum GoXlrButton: String, Codable {
 }
 
 
-public enum SimpleColourTargets: String, Codable {
+public enum SimpleColourTargets: String, Codable, Hashable {
     case Global,
     Accent,
     Scribble1,
@@ -302,21 +302,21 @@ public enum SimpleColourTargets: String, Codable {
 }
 
 
-public enum SamplerColourTargets: String, Codable {
+public enum SamplerColourTargets: String, Codable, Hashable {
     case SamplerSelectA,
     SamplerSelectB,
     SamplerSelectC
 }
 
 
-public enum EncoderColourTargets: String, Codable {
+public enum EncoderColourTargets: String, Codable, Hashable {
     case Reverb,
     Pitch,
     Echo,
     Gender
 }
 
-public enum ButtonColourGroups: String, Codable {
+public enum ButtonColourGroups: String, Codable, Hashable {
     case FaderMute,
     EffectSelector,
     SampleBankSelector,
@@ -324,7 +324,7 @@ public enum ButtonColourGroups: String, Codable {
 }
 
 
-public enum ButtonColourOffStyle: String, Codable {
+public enum ButtonColourOffStyle: String, Codable, Hashable  {
     case Dimmed,
     Colour2,
     DimmedColour2
@@ -332,7 +332,7 @@ public enum ButtonColourOffStyle: String, Codable {
 
 // MuteChat
 
-public enum MuteFunction: String, Codable {
+public enum MuteFunction: String, Codable, Hashable {
     case All,
     ToStream,
     ToVoiceChat,
@@ -341,7 +341,7 @@ public enum MuteFunction: String, Codable {
 }
 
 
-public enum MicrophoneType: String, Codable {
+public enum MicrophoneType: String, Codable, Hashable {
     case Dynamic,
     Condenser,
     Jack
@@ -373,13 +373,13 @@ public enum EffectBankPresets: String, Codable, CaseIterable {
     Preset6
 }
 
-public enum SampleBank: String, Codable {
+public enum SampleBank: String, Codable, Hashable {
     case A,
     B,
     C
 }
 
-public enum MiniEqFrequencies: String, Codable {
+public enum MiniEqFrequencies: String, Codable, Hashable {
     case Equalizer90Hz,
     Equalizer250Hz,
     Equalizer500Hz,
@@ -388,7 +388,7 @@ public enum MiniEqFrequencies: String, Codable {
     Equalizer8KHz
 }
 
-public enum EqFrequencies: String, Codable {
+public enum EqFrequencies: String, Codable, Hashable {
     case Equalizer31Hz,
     Equalizer63Hz,
     Equalizer125Hz,
@@ -572,7 +572,7 @@ public enum RobotStyle: String, Codable, CaseIterable {
 }
 
 
-public enum RobotRange: String, Codable {
+public enum RobotRange: String, Codable, Hashable {
     case Low,
     Medium,
     High
@@ -586,7 +586,7 @@ public enum HardTuneStyle: String, Codable, CaseIterable {
 }
 
 
-public enum HardTuneSource: String, Codable {
+public enum HardTuneSource: String, Codable, Hashable {
     case All,
     Music,
     Game,
@@ -594,7 +594,7 @@ public enum HardTuneSource: String, Codable {
     System
 }
 
-public enum SampleButtons: String, Codable {
+public enum SampleButtons: String, Codable, Hashable {
     case TopLeft,
     TopRight,
     BottomLeft,
@@ -602,7 +602,7 @@ public enum SampleButtons: String, Codable {
 }
 
 
-public enum SamplePlaybackMode: String, Codable {
+public enum SamplePlaybackMode: String, Codable, Hashable {
     case PlayNext,
     PlayStop,
     PlayFade,
@@ -612,19 +612,19 @@ public enum SamplePlaybackMode: String, Codable {
 }
 
 
-public enum SamplePlayOrder: String, Codable {
+public enum SamplePlayOrder: String, Codable, Hashable {
     case Sequential,
     Random
 }
 
 
-public enum DisplayMode: String, Codable {
+public enum DisplayMode: String, Codable, Hashable {
     case Simple,
     Advanced
 }
 
 
-public enum DisplayModeComponents: String, Codable {
+public enum DisplayModeComponents: String, Codable, Hashable {
     case NoiseGate,
     Equaliser,
     Compressor,
@@ -632,18 +632,18 @@ public enum DisplayModeComponents: String, Codable {
 }
 
 
-public enum MuteState: String, Codable {
+public enum MuteState: String, Codable, Hashable {
     case Unmuted,
     MutedToX,
     MutedToAll
 }
 
-public enum SubmixAssignation: String, Codable {
+public enum SubmixAssignation: String, Codable, Hashable {
     case A
     case B
 }
 
-public enum PathTypes: String, Codable {
+public enum PathTypes: String, Codable, Hashable {
     case Profiles
     case MicProfiles
     case Presets

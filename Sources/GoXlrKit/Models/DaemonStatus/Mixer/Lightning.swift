@@ -143,7 +143,8 @@ public class ButtonsLightning: Codable, ObservableObject {
 
 
 // MARK: - Button
-public struct ButtonStyle: Codable {
+public struct ButtonStyle: Codable, Hashable {
+    
     public var offStyle: ButtonColourOffStyle
     public var colours: Colours
 
@@ -166,7 +167,7 @@ public struct ButtonStyle: Codable {
 }
 
 // MARK: - Colours
-public struct Colours: Codable {
+public struct Colours: Codable, Hashable {
     public var colourOne: Color
     public var colourTwo: Color
 
@@ -220,6 +221,7 @@ public class Encoders: Codable, ObservableObject {
 
 // MARK: - GenderClass
 public class GenderClass: Codable, ObservableObject {
+    
     @Published public var colourOne: Color
     @Published public var colourTwo: Color
     @Published public var colourThree: Color
@@ -287,7 +289,7 @@ public class FaderColors: Codable, ObservableObject {
 }
 
 // MARK: - FadersA
-public struct FaderColor: Codable {
+public struct FaderColor: Codable, Hashable {
     public var style: FaderDisplayStyle
     public var colours: Colours
 
@@ -414,7 +416,7 @@ public class Simple: Codable, ObservableObject {
 }
 
 // MARK: - Accent
-public struct Accent: Codable {
+public struct Accent: Codable, Hashable {
     public var colourOne: Color
 
     enum CodingKeys: String, CodingKey {
