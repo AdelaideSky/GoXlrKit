@@ -21,13 +21,13 @@ public struct GoXLRDynamicValue<Parent: ObservableObject & GoXLRCommandConvertib
     }
     
     private let paths: [Selection:(KeyPath<Mixer, Parent>, KeyPath<Parent, Value>)]
-    @Binding var selection: Selection
+    let selection: Selection
     
     @ObservedObject private var updater = Updater()
     private var cancellable: AnyCancellable? = nil
     
-    public init(_ paths: [Selection:(KeyPath<Mixer, Parent>, KeyPath<Parent, Value>)], selection: Binding<Selection>) {
-        self._selection = selection
+    public init(_ paths: [Selection:(KeyPath<Mixer, Parent>, KeyPath<Parent, Value>)], selection: Selection) {
+        self.selection = selection
         self.paths = paths
         
         //TODO: MAKE IT SO IT DON'T UPDATE FOR THE WHOLE CLASS
