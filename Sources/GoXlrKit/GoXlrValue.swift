@@ -111,6 +111,66 @@ public struct GoXLRStaticValue<Parent: ObservableObject, Value: Equatable>: Dyna
     }
 }
 
+@propertyWrapper
+public struct GoXLROptionalValue<Parent: ObservableObject & GoXLRCommandConvertible, Value: Equatable>: DynamicProperty {
+    private let parentKeyPath: KeyPath<Mixer, Parent>?
+    private let valueKeyPath: KeyPath<Parent, Value>?
+    private let fullKeyPath: KeyPath<Mixer, Value>?
+    
+    @ObservedObject private var updater = Updater()
+    private var cancellable: AnyCancellable? = nil
+    
+    public init(_ parentKeyPath: KeyPath<Mixer, Parent>, _ valueKeyPath: KeyPath<Parent, Value>) {
+        self.parentKeyPath = parentKeyPath
+        self.valueKeyPath = valueKeyPath
+        self.fullKeyPath = parentKeyPath.appending(path: valueKeyPath)
+        
+        //TODO: MAKE IT SO IT DON'T UPDATE FOR THE WHOLE CLASS
+        cancellable = GoXlr.shared.mixer![keyPath: parentKeyPath].publisher(for: valueKeyPath).sink { [self] newValue in
+            //Maybe check if value has really been updated and not just re-set ?
+            updater.notifyUpdate()
+        }
+    }
+    
+    public init() {
+        self.parentKeyPath = nil
+        self.valueKeyPath = nil
+        self.fullKeyPath = nil
+    }
+    
+    public var wrappedValue: Value? {
+        get {
+            guard fullKeyPath != nil else { return nil }
+            return GoXlr.shared.mixer![keyPath: fullKeyPath!]
+        }
+        nonmutating set {
+            guard liveUD else { return }
+            guard fullKeyPath != nil else { return }
+            guard newValue != nil else { return }
+            
+            if let command = GoXlr.shared.mixer?[keyPath: parentKeyPath!].command(for: valueKeyPath!, newValue: newValue!) {
+                GoXlr.shared.command(command)
+            }
+            
+//            TODO: We'll probably need here to update the value directly, as it may result in UI lag. To do it, replace KeyPath by WritableKeyPath and uncomment this:
+//            GoXlr.shared.mixer![keyPath: fullKeyPath] = newValue
+            
+            updater.notifyUpdate()
+        }
+    }
+    
+    public var projectedValue: Binding<Value>? {
+        guard fullKeyPath != nil else { return nil }
+        return Binding(get: { wrappedValue! }, set: { wrappedValue = $0})
+    }
+    
+    class Updater: ObservableObject {
+        func notifyUpdate() {
+            objectWillChange.send()
+        }
+    }
+}
+
 public extension ObservableObject {
     func publisher<Value>(for keyPath: KeyPath<Self, Value>) -> AnyPublisher<Value, Never> {
         return self.objectWillChange
