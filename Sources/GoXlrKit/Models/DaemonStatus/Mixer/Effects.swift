@@ -6,13 +6,26 @@
 //
 
 import Foundation
+import Patchable
 
 // MARK: - Effects
-public class Effects: Codable, ObservableObject {
-    @Published public var isEnabled: Bool { didSet { GoXlr.shared.command(.SetFXEnabled(isEnabled)) } }
-    @Published public var activePreset: EffectBankPresets { didSet { GoXlr.shared.command(.SetActiveEffectPreset(activePreset)) } }
-    @Published public var presetNames: PresetNames
-    @Published public var current: CurrentEffectPreset
+@Patchable
+public final class Effects: Codable, ObservableObject, GoXLRCommandConvertible {
+    public func command(for value: PartialKeyPath<Effects>, newValue: Any) -> GoXLRCommand? {
+        switch value {
+        case \.isEnabled:
+            return .SetFXEnabled(newValue as! Bool)
+        case \.activePreset:
+            return .SetActiveEffectPreset(newValue as! EffectBankPresets)
+        default: return nil
+        }
+    }
+    
+    
+    @Published public var isEnabled: Bool
+    @Published public var activePreset: EffectBankPresets 
+    @child @Published public var presetNames: PresetNames
+    @child @Published public var current: CurrentEffectPreset
 
     enum CodingKeys: String, CodingKey {
         case isEnabled = "is_enabled"
@@ -40,14 +53,15 @@ public class Effects: Codable, ObservableObject {
 }
 
 // MARK: - Current
+@Patchable
 public class CurrentEffectPreset: Codable, ObservableObject {
-    @Published public var reverb: Reverb
-    @Published public var echo: EchoClass
-    @Published public var pitch: Pitch
-    @Published public var gender: Gender
-    @Published public var megaphone: Megaphone
-    @Published public var robot: Robot
-    @Published public var hardTune: HardTune
+    @child @Published public var reverb: Reverb
+    @child @Published public var echo: EchoClass
+    @child @Published public var pitch: Pitch
+    @child @Published public var gender: Gender
+    @child @Published public var megaphone: Megaphone
+    @child @Published public var robot: Robot
+    @child @Published public var hardTune: HardTune
 
     enum CodingKeys: String, CodingKey {
         case reverb, echo, pitch, gender, megaphone, robot
@@ -78,17 +92,45 @@ public class CurrentEffectPreset: Codable, ObservableObject {
 }
 
 // MARK: - EchoClass
-public class EchoClass: Codable, ObservableObject {
-    @Published public var style: EchoStyle { didSet { GoXlr.shared.command(.SetEchoStyle(style)) } }
-    @Published public var amount: Float { didSet { GoXlr.shared.command(.SetEchoAmount(Int(amount))) } }
-    @Published public var feedback: Float { didSet { GoXlr.shared.command(.SetEchoFeedback(Int(feedback))) } }
-    @Published public var tempo: Float { didSet { GoXlr.shared.command(.SetEchoTempo(Int(tempo))) } }
-    @Published public var delayLeft: Float { didSet { GoXlr.shared.command(.SetEchoDelayLeft(Int(delayLeft))) } }
-    @Published public var delayRight: Float { didSet { GoXlr.shared.command(.SetEchoDelayRight(Int(delayRight))) } }
-    @Published public var feedbackLeft: Float { didSet { GoXlr.shared.command(.SetEchoFeedbackLeft(Int(feedbackLeft))) } }
-    @Published public var feedbackRight: Float { didSet { GoXlr.shared.command(.SetEchoFeedbackRight(Int(feedbackRight))) } }
-    @Published public var feedbackXfbLToR: Float { didSet { GoXlr.shared.command(.SetEchoFeedbackXFBLtoR(Int(feedbackXfbLToR))) } }
-    @Published public var feedbackXfbRToL: Float { didSet { GoXlr.shared.command(.SetEchoFeedbackXFBRtoL(Int(feedbackXfbRToL))) } }
+@Patchable
+public final class EchoClass: Codable, ObservableObject, GoXLRCommandConvertible {
+    public func command(for value: PartialKeyPath<EchoClass>, newValue: Any) -> GoXLRCommand? {
+        switch value {
+        case \.style:
+            return .SetEchoStyle(newValue as! EchoStyle)
+        case \.amount:
+            return .SetEchoAmount(Int(newValue as! Float))
+        case \.feedback:
+            return .SetEchoFeedback(Int(newValue as! Float))
+        case \.tempo:
+            return .SetEchoTempo(Int(newValue as! Float))
+        case \.delayLeft:
+            return .SetEchoDelayLeft(Int(newValue as! Float))
+        case \.delayRight:
+            return .SetEchoDelayRight(Int(newValue as! Float))
+        case \.feedbackLeft:
+            return .SetEchoFeedbackLeft(Int(newValue as! Float))
+        case \.feedbackRight:
+            return .SetEchoFeedbackRight(Int(newValue as! Float))
+        case \.feedbackXfbLToR:
+            return .SetEchoFeedbackXFBLtoR(Int(newValue as! Float))
+        case \.feedbackXfbRToL:
+            return .SetEchoFeedbackXFBRtoL(Int(newValue as! Float))
+        default: return nil
+        }
+    }
+    
+    
+    @Published public var style: EchoStyle
+    @Published public var amount: Float
+    @Published public var feedback: Float
+    @Published public var tempo: Float
+    @Published public var delayLeft: Float
+    @Published public var delayRight: Float
+    @Published public var feedbackLeft: Float
+    @Published public var feedbackRight: Float
+    @Published public var feedbackXfbLToR: Float
+    @Published public var feedbackXfbRToL: Float
 
     enum CodingKeys: String, CodingKey {
         case style, amount, feedback, tempo
@@ -130,9 +172,20 @@ public class EchoClass: Codable, ObservableObject {
 }
 
 // MARK: - Gender
-public class Gender: Codable, ObservableObject {
-    @Published public var style: GenderStyle { didSet { GoXlr.shared.command(.SetGenderStyle(style)) } }
-    @Published public var amount: Float { didSet { GoXlr.shared.command(.SetGenderAmount(Int(amount))) } }
+@Patchable
+public final class Gender: Codable, ObservableObject, GoXLRCommandConvertible {
+    public func command(for value: PartialKeyPath<Gender>, newValue: Any) -> GoXLRCommand? {
+        switch value {
+        case \.style:
+            return .SetGenderStyle(newValue as! GenderStyle)
+        case \.amount:
+            return .SetGenderAmount(Int(newValue as! Float))
+        default: return nil
+        }
+    }
+    
+    @Published public var style: GenderStyle
+    @Published public var amount: Float
     
     enum CodingKeys: String, CodingKey {
         case style, amount
@@ -153,13 +206,34 @@ public class Gender: Codable, ObservableObject {
 
 
 // MARK: - HardTune
-public class HardTune: Codable, ObservableObject {
-    @Published public var isEnabled: Bool { didSet { GoXlr.shared.command(.SetHardTuneEnabled(isEnabled)) } }
-    @Published public var style: HardTuneStyle { didSet { GoXlr.shared.command(.SetHardTuneStyle(style)) } }
-    @Published public var amount: Float { didSet { GoXlr.shared.command(.SetHardTuneAmount(Int(amount))) } }
-    @Published public var rate: Float { didSet { GoXlr.shared.command(.SetHardTuneRate(Int(rate))) } }
-    @Published public var window: Float { didSet { GoXlr.shared.command(.SetHardTuneWindow(Int(window))) } }
-    @Published public var source: HardTuneSource { didSet { GoXlr.shared.command(.SetHardTuneSource(source)) } }
+@Patchable
+public final class HardTune: Codable, ObservableObject, GoXLRCommandConvertible {
+    public func command(for value: PartialKeyPath<HardTune>, newValue: Any) -> GoXLRCommand? {
+        switch value {
+        case \.isEnabled:
+            return .SetHardTuneEnabled(newValue as! Bool)
+        case \.style:
+            return .SetHardTuneStyle(newValue as! HardTuneStyle)
+        case \.amount:
+            return .SetHardTuneAmount(Int(newValue as! Float))
+        case \.rate:
+            return .SetHardTuneRate(Int(newValue as! Float))
+        case \.window:
+            return .SetHardTuneWindow(Int(newValue as! Float))
+        case \.source:
+            return .SetHardTuneSource(newValue as! HardTuneSource)
+        default: return nil
+        }
+    }
+    
+    
+    
+    @Published public var isEnabled: Bool
+    @Published public var style: HardTuneStyle
+    @Published public var amount: Float
+    @Published public var rate: Float
+    @Published public var window: Float
+    @Published public var source: HardTuneSource
     
     enum CodingKeys: String, CodingKey {
         case isEnabled = "is_enabled"
@@ -188,11 +262,27 @@ public class HardTune: Codable, ObservableObject {
 }
 
 // MARK: - Megaphone
-public class Megaphone: Codable, ObservableObject {
-    @Published public var isEnabled: Bool { didSet { GoXlr.shared.command(.SetMegaphoneEnabled(isEnabled)) } }
-    @Published public var style: MegaphoneStyle { didSet { GoXlr.shared.command(.SetMegaphoneStyle(style)) } }
-    @Published public var amount: Float { didSet { GoXlr.shared.command(.SetMegaphoneAmount(Int(amount))) } }
-    @Published public var postGain: Float { didSet { GoXlr.shared.command(.SetMegaphonePostGain(Int(postGain))) } }
+@Patchable
+public final class Megaphone: Codable, ObservableObject, GoXLRCommandConvertible {
+    public func command(for value: PartialKeyPath<Megaphone>, newValue: Any) -> GoXLRCommand? {
+        switch value {
+        case \.isEnabled:
+            return .SetMegaphoneEnabled(newValue as! Bool)
+        case \.style:
+            return .SetMegaphoneStyle(newValue as! MegaphoneStyle)
+        case \.amount:
+            return .SetMegaphoneAmount(Int(newValue as! Float))
+        case \.postGain:
+            return .SetMegaphonePostGain(Int(newValue as! Float))
+        default: return nil
+        }
+    }
+    
+
+    @Published public var isEnabled: Bool
+    @Published public var style: MegaphoneStyle
+    @Published public var amount: Float
+    @Published public var postGain: Float
 
     enum CodingKeys: String, CodingKey {
         case isEnabled = "is_enabled"
@@ -217,10 +307,23 @@ public class Megaphone: Codable, ObservableObject {
 }
 
 // MARK: - Pitch
-public class Pitch: Codable, ObservableObject {
-    @Published public var style: PitchStyle { didSet { GoXlr.shared.command(.SetPitchStyle(style)) } }
-    @Published public var amount: Float { didSet { GoXlr.shared.command(.SetPitchAmount(Int(amount))) } }
-    @Published public var character: Float { didSet { GoXlr.shared.command(.SetPitchCharacter(Int(character))) } }
+@Patchable
+public final class Pitch: Codable, ObservableObject, GoXLRCommandConvertible {
+    public func command(for value: PartialKeyPath<Pitch>, newValue: Any) -> GoXLRCommand? {
+        switch value {
+        case \.style:
+            .SetPitchStyle(newValue as! PitchStyle)
+        case \.amount:
+            .SetPitchAmount(Int(newValue as! Float))
+        case \.character:
+            .SetPitchCharacter(Int(newValue as! Float))
+        default: nil
+        }
+    }
+    
+    @Published public var style: PitchStyle
+    @Published public var amount: Float
+    @Published public var character: Float
 
     enum CodingKeys: String, CodingKey {
         case style, amount, character
@@ -243,22 +346,41 @@ public class Pitch: Codable, ObservableObject {
 
 
 // MARK: - Reverb
-public class Reverb: Codable, ObservableObject {
-    @Published public var style: ReverbStyle { didSet { GoXlr.shared.command(.SetReverbStyle(style)) } }
+@Patchable
+public final class Reverb: Codable, ObservableObject, GoXLRCommandConvertible {
+    public func command(for value: PartialKeyPath<Reverb>, newValue: Any) -> GoXLRCommand? {
+        switch value {
+        case \.style: .SetReverbStyle(newValue as! ReverbStyle)
+        case \.amount: .SetReverbAmount(Int(newValue as! Float))
+        case \.decay: .SetReverbDecay(Int(newValue as! Float))
+        case \.earlyLevel: .SetReverbEarlyLevel(Int(newValue as! Float))
+        case \.tailLevel: .SetReverbTailLevel(Int(newValue as! Float))
+        case \.preDelay: .SetReverbPreDelay(Int(newValue as! Float))
+        case \.loColour: .SetReverbLowColour(Int(newValue as! Float))
+        case \.hiColour: .SetReverbHighColour(Int(newValue as! Float))
+        case \.hiFactor: .SetReverbHighFactor(Int(newValue as! Float))
+        case \.diffuse: .SetReverbDiffuse(Int(newValue as! Float))
+        case \.modDepth: .SetReverbModDepth(Int(newValue as! Float))
+        case \.modSpeed: .SetReverbModSpeed(Int(newValue as! Float))
+        default: nil
+        }
+    }
+    
+    @Published public var style: ReverbStyle
         
-    @Published public var amount: Float { didSet { GoXlr.shared.command(.SetReverbAmount(Int(amount))) } }
-    @Published public var decay: Float { didSet { GoXlr.shared.command(.SetReverbDecay(Int(decay))) } }
-    @Published public var earlyLevel: Float { didSet { GoXlr.shared.command(.SetReverbEarlyLevel(Int(earlyLevel))) } }
-    @Published public var tailLevel: Float { didSet { GoXlr.shared.command(.SetReverbTailLevel(Int(tailLevel))) } }
+    @Published public var amount: Float
+    @Published public var decay: Float
+    @Published public var earlyLevel: Float
+    @Published public var tailLevel: Float
         
-    @Published public var preDelay: Float { didSet { GoXlr.shared.command(.SetReverbPreDelay(Int(preDelay))) } }
-    @Published public var loColour: Float { didSet { GoXlr.shared.command(.SetReverbLowColour(Int(loColour))) } }
-    @Published public var hiColour: Float { didSet { GoXlr.shared.command(.SetReverbHighColour(Int(hiColour))) } }
-    @Published public var hiFactor: Float { didSet { GoXlr.shared.command(.SetReverbHighFactor(Int(hiFactor))) } }
+    @Published public var preDelay: Float
+    @Published public var loColour: Float
+    @Published public var hiColour: Float
+    @Published public var hiFactor: Float
         
-    @Published public var diffuse: Float { didSet { GoXlr.shared.command(.SetReverbDiffuse(Int(diffuse))) } }
-    @Published public var modSpeed: Float { didSet { GoXlr.shared.command(.SetReverbModSpeed(Int(modSpeed))) } }
-    @Published public var modDepth: Float { didSet { GoXlr.shared.command(.SetReverbModDepth(Int(modDepth))) } }
+    @Published public var diffuse: Float
+    @Published public var modSpeed: Float
+    @Published public var modDepth: Float
 
     enum CodingKeys: String, CodingKey {
         case style, amount, decay
@@ -307,26 +429,47 @@ public class Reverb: Codable, ObservableObject {
 }
 
 // MARK: - Robot
-public class Robot: Codable, ObservableObject {
+@Patchable
+public final class Robot: Codable, ObservableObject, GoXLRCommandConvertible {
+    public func command(for value: PartialKeyPath<Robot>, newValue: Any) -> GoXLRCommand? {
+        switch value {
+        case \.isEnabled: .SetRobotEnabled(newValue as! Bool)
+        case \.style: .SetRobotStyle(newValue as! RobotStyle)
+        case \.lowGain: .SetRobotGain(.Low, Int(newValue as! Float))
+        case \.lowFreq: .SetRobotFreq(.Low, Int(newValue as! Float))
+        case \.lowWidth: .SetRobotWidth(.Low, Int(newValue as! Float))
+            
+        case \.midGain: .SetRobotGain(.Medium, Int(newValue as! Float))
+        case \.midFreq: .SetRobotFreq(.Medium, Int(newValue as! Float))
+        case \.midWidth: .SetRobotWidth(.Medium, Int(newValue as! Float))
+            
+        case \.highGain: .SetRobotGain(.High, Int(newValue as! Float))
+        case \.highFreq: .SetRobotFreq(.High, Int(newValue as! Float))
+        case \.highWidth: .SetRobotWidth(.High, Int(newValue as! Float))
+        default: nil
+        }
+    }
+    
+    
     @Published public var isEnabled: Bool
     @Published public var style: RobotStyle
     
-    @Published public var lowGain: Float { didSet { GoXlr.shared.command(.SetRobotGain(.Low, Int(lowGain))) } }
-    @Published public var lowFreq: Float { didSet { GoXlr.shared.command(.SetRobotFreq(.Low, Int(lowFreq))) } }
-    @Published public var lowWidth: Float { didSet { GoXlr.shared.command(.SetRobotWidth(.Low, Int(lowWidth))) } }
+    @Published public var lowGain: Float
+    @Published public var lowFreq: Float
+    @Published public var lowWidth: Float 
     
-    @Published public var midGain: Float { didSet { GoXlr.shared.command(.SetRobotGain(.Medium, Int(midGain))) } }
-    @Published public var midFreq: Float { didSet { GoXlr.shared.command(.SetRobotFreq(.Medium, Int(midFreq))) } }
-    @Published public var midWidth: Float { didSet { GoXlr.shared.command(.SetRobotWidth(.Medium, Int(midWidth))) } }
+    @Published public var midGain: Float
+    @Published public var midFreq: Float
+    @Published public var midWidth: Float
     
-    @Published public var highGain: Float { didSet { GoXlr.shared.command(.SetRobotGain(.High, Int(highGain))) } }
-    @Published public var highFreq: Float { didSet { GoXlr.shared.command(.SetRobotFreq(.High, Int(highFreq))) } }
-    @Published public var highWidth: Float { didSet { GoXlr.shared.command(.SetRobotWidth(.High, Int(highWidth))) } }
+    @Published public var highGain: Float
+    @Published public var highFreq: Float
+    @Published public var highWidth: Float
     
-    @Published public var waveform: Float { didSet { GoXlr.shared.command(.SetRobotWaveform(Int(waveform))) } }
-    @Published public var pulseWidth: Float { didSet { GoXlr.shared.command(.SetRobotPulseWidth(Int(pulseWidth))) } }
-    @Published public var threshold: Float { didSet { GoXlr.shared.command(.SetRobotThreshold(Int(threshold))) } }
-    @Published public var dryMix: Float { didSet { GoXlr.shared.command(.SetRobotDryMix(Int(dryMix))) } }
+    @Published public var waveform: Float
+    @Published public var pulseWidth: Float
+    @Published public var threshold: Float
+    @Published public var dryMix: Float
 
     enum CodingKeys: String, CodingKey {
         case isEnabled = "is_enabled"
@@ -387,13 +530,21 @@ public class Robot: Codable, ObservableObject {
 
 // MARK: - PresetNames
 // WARNING: - Renaming presets only renames ACTIVE preset. Make sure to update names ONLY when the preset is active
-public class PresetNames: Codable, ObservableObject {
-    @Published public var preset1: String { didSet { GoXlr.shared.command(.RenameActivePreset(preset1)) } }
-    @Published public var preset2: String { didSet { GoXlr.shared.command(.RenameActivePreset(preset2)) } }
-    @Published public var preset3: String { didSet { GoXlr.shared.command(.RenameActivePreset(preset3)) } }
-    @Published public var preset4: String { didSet { GoXlr.shared.command(.RenameActivePreset(preset4)) } }
-    @Published public var preset5: String { didSet { GoXlr.shared.command(.RenameActivePreset(preset5)) } }
-    @Published public var preset6: String { didSet { GoXlr.shared.command(.RenameActivePreset(preset6)) } }
+@Patchable
+public final class PresetNames: Codable, ObservableObject, GoXLRCommandConvertible {
+    public func command(for value: PartialKeyPath<PresetNames>, newValue: Any) -> GoXLRCommand? {
+        if let newValue = newValue as? String {
+            return .RenameActivePreset(newValue)
+        }
+        return nil
+    }
+    
+    @Published public var preset1: String
+    @Published public var preset2: String
+    @Published public var preset3: String
+    @Published public var preset4: String
+    @Published public var preset5: String
+    @Published public var preset6: String
 
     enum CodingKeys: String, CodingKey {
         case preset5 = "Preset5"

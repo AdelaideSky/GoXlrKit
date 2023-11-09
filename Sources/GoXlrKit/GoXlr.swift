@@ -14,7 +14,7 @@ public class GoXlr: ObservableObject {
         return GoXlr()
     }()
     
-    @Published public var status: Status? = nil
+    public var status: Status? = nil
     public var mixer: Mixer? {
         get {
             status?.data.status.mixers[device]
@@ -32,6 +32,7 @@ public class GoXlr: ObservableObject {
     @Published public var device = ""
     
     @Published public var logLevel: GoXlrLogLevel = .info
+    
     
     public var utils = GoXlrUtils()
     

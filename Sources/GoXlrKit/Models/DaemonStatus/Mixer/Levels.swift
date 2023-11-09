@@ -6,14 +6,26 @@
 //
 
 import Foundation
+import Patchable
 
 // MARK: - Levels
-public class Levels: Codable, ObservableObject {
+@Patchable
+public final class Levels: Codable, ObservableObject, GoXLRCommandConvertible {
+    public func command(for value: PartialKeyPath<Levels>, newValue: Any) -> GoXLRCommand? {
+        switch value {
+        case \.bleep:
+            return .SetSwearButtonVolume(Int(newValue as! Float))
+        case \.deess:
+            return .SetDeeser(Int(newValue as! Float))
+        default: return nil
+        }
+    }
+    
     @Published public var submixSupported: Bool
-    @Published public var volumes: Volumes
-    @Published public var bleep: Float { didSet { if liveUD { GoXlr.shared.command(.SetSwearButtonVolume(Int(bleep))) }}}
-    @Published public var deess: Float { didSet { if liveUD { GoXlr.shared.command(.SetDeeser(Int(deess))) }}}
-    @Published public var submix: Submix?
+    @child @Published public var volumes: Volumes
+    @Published public var bleep: Float
+    @Published public var deess: Float
+    @child @Published public var submix: Submix?
     
     enum CodingKeys: String, CodingKey {
         case volumes
@@ -43,23 +55,48 @@ public class Levels: Codable, ObservableObject {
 }
 
 // MARK: - Volumes
-public class Volumes: Codable, ObservableObject {
-    @Published public var system: Float { didSet { handleDidSet(system, .System) } }
-    @Published public var mic: Float { didSet { handleDidSet(mic, .Mic) } }
-    @Published public var lineIn: Float { didSet { handleDidSet(lineIn, .LineIn) } }
-    @Published public var console: Float { didSet { handleDidSet(console, .Console) } }
-    @Published public var game: Float { didSet { handleDidSet(game, .Game) } }
-    @Published public var chat: Float { didSet { handleDidSet(chat, .Chat) } }
-    @Published public var sample: Float { didSet { handleDidSet(sample, .Sample) } }
-    @Published public var music: Float { didSet { handleDidSet(music, .Music) } }
-    @Published public var headphones: Float { didSet { handleDidSet(headphones, .Headphones) } }
-    @Published public var micMonitor: Float { didSet { handleDidSet(micMonitor, .MicMonitor) } }
-    @Published public var lineOut: Float { didSet { handleDidSet(lineOut, .LineOut) } }
-    
-    private func handleDidSet(_ volume: Float, _ channel: ChannelName) {
-        GoXlr.shared.command(.SetVolume(channel, Int(volume)))
+@Patchable
+public final class Volumes: Codable, ObservableObject, GoXLRCommandConvertible {
+    public func command(for value: PartialKeyPath<Volumes>, newValue: Any) -> GoXLRCommand? {
+        switch value {
+        case \.system:
+            return .SetVolume(.System, Int(newValue as! Float))
+        case \.mic:
+            return .SetVolume(.Mic, Int(newValue as! Float))
+        case \.lineIn:
+            return .SetVolume(.LineIn, Int(newValue as! Float))
+        case \.console:
+            return .SetVolume(.Console, Int(newValue as! Float))
+        case \.game:
+            return .SetVolume(.Game, Int(newValue as! Float))
+        case \.chat:
+            return .SetVolume(.Chat, Int(newValue as! Float))
+        case \.sample:
+            return .SetVolume(.Sample, Int(newValue as! Float))
+        case \.music:
+            return .SetVolume(.Music, Int(newValue as! Float))
+        case \.headphones:
+            return .SetVolume(.Headphones, Int(newValue as! Float))
+        case \.micMonitor:
+            return .SetVolume(.MicMonitor, Int(newValue as! Float))
+        case \.lineOut:
+            return .SetVolume(.LineOut, Int(newValue as! Float))
+        default: return nil
+        }
     }
-
+    
+    @Published public var system: Float
+    @Published public var mic: Float
+    @Published public var lineIn: Float
+    @Published public var console: Float
+    @Published public var game: Float
+    @Published public var chat: Float
+    @Published public var sample: Float
+    @Published public var music: Float
+    @Published public var headphones: Float
+    @Published public var micMonitor: Float
+    @Published public var lineOut: Float
+    
     enum CodingKeys: String, CodingKey {
         case mic = "Mic"
         case lineIn = "LineIn"
@@ -105,9 +142,10 @@ public class Volumes: Codable, ObservableObject {
     }
 }
 // MARK: - Submix
+@Patchable
 public class Submix: Codable, ObservableObject {
-    @Published public var inputs: Inputs
-    @Published public var outputs: SubmixesOutputs
+    @child @Published public var inputs: Inputs
+    @child @Published public var outputs: SubmixesOutputs
     
     enum CodingKeys: String, CodingKey {
         case inputs
@@ -128,25 +166,16 @@ public class Submix: Codable, ObservableObject {
 }
 
 // MARK: - Inputs
+@Patchable
 public class Inputs: Codable, ObservableObject {
-    @Published public var mic: SubmixesInputs { didSet { handleDidSet(.Mic, mic, oldValue) } }
-    @Published public var lineIn: SubmixesInputs { didSet { handleDidSet(.LineIn, lineIn, oldValue) } }
-    @Published public var console: SubmixesInputs { didSet { handleDidSet(.Console, console, oldValue) } }
-    @Published public var system: SubmixesInputs { didSet { handleDidSet(.System, system, oldValue) } }
-    @Published public var game: SubmixesInputs { didSet { handleDidSet(.Game, game, oldValue) } }
-    @Published public var chat: SubmixesInputs { didSet { handleDidSet(.Chat, chat, oldValue) } }
-    @Published public var sample: SubmixesInputs { didSet { handleDidSet(.Sample, sample, oldValue) } }
-    @Published public var music: SubmixesInputs { didSet { handleDidSet(.Music, music, oldValue) } }
-    
-    func handleDidSet(_ channel: ChannelName, _ value: SubmixesInputs, _ oldValue: SubmixesInputs) {
-        if value.linked != oldValue.linked {
-            GoXlr.shared.command(.SetSubMixLinked(channel, value.linked))
-        } else if value.volume != oldValue.volume {
-            if liveUD {
-                GoXlr.shared.command(.SetSubMixVolume(channel, Int(value.volume)))
-            }
-        }
-    }
+    @child @Published public var mic: SubmixesInputs
+    @child @Published public var lineIn: SubmixesInputs
+    @child @Published public var console: SubmixesInputs
+    @child @Published public var system: SubmixesInputs
+    @child @Published public var game: SubmixesInputs
+    @child @Published public var chat: SubmixesInputs
+    @child @Published public var sample: SubmixesInputs
+    @child @Published public var music: SubmixesInputs
     
     enum CodingKeys: String, CodingKey {
         case mic = "Mic"
@@ -181,14 +210,39 @@ public class Inputs: Codable, ObservableObject {
         chat = try values.decode(SubmixesInputs.self, forKey: .chat)
         sample = try values.decode(SubmixesInputs.self, forKey: .sample)
         music = try values.decode(SubmixesInputs.self, forKey: .music)
+        mic.assign(.Mic)
+        lineIn.assign(.LineIn)
+        console.assign(.Console)
+        system.assign(.System)
+        game.assign(.Game)
+        chat.assign(.Chat)
+        sample.assign(.Sample)
+        music.assign(.Music)
     }
 }
 
 // MARK: - Chat
-public struct SubmixesInputs: Codable {
-    public var volume: Float
-    public var linked: Bool
-    public var ratio: Double
+@Patchable
+public final class SubmixesInputs: Codable, ObservableObject, GoXLRCommandConvertible {
+    public func command(for value: PartialKeyPath<SubmixesInputs>, newValue: Any) -> GoXLRCommand? {
+        switch value {
+        case \.volume:
+            return .SetSubMixVolume(channel, Int(newValue as! Float))
+        case \.linked:
+            return .SetSubMixLinked(channel, newValue as! Bool)
+        default: return nil
+        }
+    }
+    
+    @Published public var volume: Float
+    @Published public var linked: Bool
+    @Published public var ratio: Double
+    
+    private var channel: ChannelName = .System
+    
+    func assign(_ channel: ChannelName) {
+        self.channel = channel
+    }
     
     enum CodingKeys: String, CodingKey {
         case volume
@@ -212,13 +266,30 @@ public struct SubmixesInputs: Codable {
 }
 
 // MARK: - Outputs
-public class SubmixesOutputs: Codable, ObservableObject {
-    @Published public var headphones: SubmixAssignation { didSet { GoXlr.shared.command(.SetSubMixOutputMix(.Headphones, headphones)) }}
-    @Published public var broadcastMix: SubmixAssignation { didSet { GoXlr.shared.command(.SetSubMixOutputMix(.BroadcastMix, broadcastMix)) }}
-    @Published public var chatMic: SubmixAssignation { didSet { GoXlr.shared.command(.SetSubMixOutputMix(.ChatMic, chatMic)) }}
-    @Published public var sampler: SubmixAssignation { didSet { GoXlr.shared.command(.SetSubMixOutputMix(.Sampler, sampler)) }}
-    @Published public var lineOut: SubmixAssignation { didSet { GoXlr.shared.command(.SetSubMixOutputMix(.LineOut, lineOut)) }}
-
+@Patchable
+public final class SubmixesOutputs: Codable, ObservableObject, GoXLRCommandConvertible {
+    public func command(for value: PartialKeyPath<SubmixesOutputs>, newValue: Any) -> GoXLRCommand? {
+        switch value {
+        case \.headphones:
+            return .SetSubMixOutputMix(.Headphones, newValue as! SubmixAssignation)
+        case \.broadcastMix:
+            return .SetSubMixOutputMix(.BroadcastMix, newValue as! SubmixAssignation)
+        case \.chatMic:
+            return .SetSubMixOutputMix(.ChatMic, newValue as! SubmixAssignation)
+        case \.sampler:
+            return .SetSubMixOutputMix(.Sampler, newValue as! SubmixAssignation)
+        case \.lineOut:
+            return .SetSubMixOutputMix(.LineOut, newValue as! SubmixAssignation)
+        default: return nil
+        }
+    }
+    
+    @Published public var headphones: SubmixAssignation
+    @Published public var broadcastMix: SubmixAssignation
+    @Published public var chatMic: SubmixAssignation
+    @Published public var sampler: SubmixAssignation
+    @Published public var lineOut: SubmixAssignation
+    
     enum CodingKeys: String, CodingKey {
         case headphones = "Headphones"
         case broadcastMix = "BroadcastMix"

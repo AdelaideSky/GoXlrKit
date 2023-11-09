@@ -8,33 +8,43 @@
 import Foundation
 import SwiftyJSON
 import SwiftUI
+import Patchable
 
 // MARK: - Mixer
-public class Mixer: Codable, ObservableObject {
-    @Published public var hardware: Hardware
-    @Published public var faderStatus: FadersStatus
-    @Published public var micStatus: MicStatus
-    @Published public var levels: Levels
-    @Published public var router: Router
-    @Published public var coughButton: CoughButton
-    @Published public var lighting: Lighting
-    @Published public var effects: Effects?
-    @Published public var sampler: Sampler?
-    @Published public var settings: Settings
-    @Published public var button_down: ButtonDown
-    @Published public var profileName: String {
-        didSet {
-            guard profileName != oldValue else { return }
-            GoXlr.shared.command(.LoadProfile(profileName, true))
+@Patchable
+public final class Mixer: Codable, ObservableObject, GoXLRCommandConvertible {
+    public func command(for value: PartialKeyPath<Mixer>, newValue: Any) -> GoXLRCommand? {
+        switch value {
+        case \.profileName:
+            if let newValue = newValue as? String {
+                guard newValue != profileName else { return nil }
+                return .LoadProfile(newValue, true)
+            }
+        case \.micProfileName:
+            if let newValue = newValue as? String {
+                guard newValue != micProfileName else { return nil }
+                return .LoadMicProfile(newValue, true)
+            }
+        default: return nil
         }
+        return nil
     }
-    @Published public var micProfileName: String {
-        didSet {
-            guard micProfileName != oldValue else { return }
-            GoXlr.shared.command(.LoadMicProfile(micProfileName, true))
-        }
-    }
-
+    
+    @child @Published public var hardware: Hardware
+    @child @Published public var faderStatus: FadersStatus
+    @child @Published public var micStatus: MicStatus
+    @child @Published public var levels: Levels
+    @child @Published public var router: Router
+    @child @Published public var coughButton: CoughButton
+    @child @Published public var lighting: Lighting
+    @child @Published public var effects: Effects?
+    @child @Published public var sampler: Sampler?
+    @child @Published public var settings: Settings
+    @child @Published public var button_down: ButtonDown
+    
+    @Published public var profileName: String = ""
+    @Published public var micProfileName: String = ""
+    
     enum CodingKeys: String, CodingKey {
         case hardware
         case faderStatus = "fader_status"
@@ -81,6 +91,7 @@ public class Mixer: Codable, ObservableObject {
     }
 }
 
+@Patchable
 public class ButtonDown: Codable, ObservableObject {
     @Published public var Fader1Mute: Bool
     @Published public var Fader2Mute: Bool
@@ -186,10 +197,11 @@ public class ButtonDown: Codable, ObservableObject {
 }
 
 // MARK: - CoughButton
-public class CoughButton: Codable, ObservableObject {
-    @Published public var isToggle: Bool { didSet { GoXlr.shared.command(.SetCoughIsHold(!isToggle)) } }
-    @Published public var muteType: MuteFunction { didSet { GoXlr.shared.command(.SetCoughMuteFunction(muteType)) } }
-    @Published public var state: MuteState { didSet { GoXlr.shared.command(.SetCoughMuteState(state)) } }
+@Patchable
+public final class CoughButton: Codable, ObservableObject, GoXLRCommandConvertible {
+    @Published public var isToggle: Bool
+    @Published public var muteType: MuteFunction
+    @Published public var state: MuteState
 
     enum CodingKeys: String, CodingKey {
         case isToggle = "is_toggle"
@@ -210,9 +222,21 @@ public class CoughButton: Codable, ObservableObject {
         try container.encode(muteType, forKey: .muteType)
         try container.encode(state, forKey: .state)
     }
+    public func command(for value: PartialKeyPath<CoughButton>, newValue: Any) -> GoXLRCommand? {
+        switch value {
+        case \.isToggle:
+            return .SetCoughIsHold(!(newValue as! Bool))
+        case \.muteType:
+            return .SetCoughMuteFunction(newValue as! MuteFunction)
+        case \.state:
+            return .SetCoughMuteState(newValue as! MuteState)
+        default: return nil
+        }
+    }
 }
 
 // MARK: - Hardware
+@Patchable
 public class Hardware: Codable, ObservableObject {
     @Published public var versions: Versions
     @Published public var serialNumber: String
@@ -316,12 +340,14 @@ public class Versions: Codable, ObservableObject {
 
 
 // MARK: - S210401735CQKSampler
-public class Sampler: Codable, ObservableObject {
+@Patchable
+public final class Sampler: Codable, ObservableObject, GoXLRCommandConvertible {
+    
     @Published public var activeBank: SampleBank
-    @Published public var banks: Banks
+    @child @Published public var banks: Banks
     @Published public var clearActive: Bool
-    @Published public var processingState: SamplerProcessingState
-    @Published public var recordBuffer: Int { didSet { GoXlr.shared.command(.SetSamplerPreBufferDuration(recordBuffer)) } }
+    @child @Published public var processingState: SamplerProcessingState
+    @Published public var recordBuffer: Int
 
     enum CodingKeys: String, CodingKey {
         case banks
@@ -348,9 +374,21 @@ public class Sampler: Codable, ObservableObject {
         try container.encode(processingState, forKey: .processingState)
         try container.encode(recordBuffer, forKey: .recordBuffer)
     }
+    
+    public func command(for value: PartialKeyPath<Sampler>, newValue: Any) -> GoXLRCommand? {
+        switch value {
+        case \.activeBank:
+                return .SetActiveSamplerBank(newValue as! SampleBank)
+        case \.recordBuffer:
+            return .SetSamplerPreBufferDuration(newValue as! Int)
+        default:
+            return nil
+        }
+    }
 }
 
 // MARK: - processing state
+@Patchable
 public class SamplerProcessingState: Codable, ObservableObject {
     @Published public var lastError: String?
     @Published public var progress: Float?
@@ -379,10 +417,11 @@ public class SamplerProcessingState: Codable, ObservableObject {
 
 
 // MARK: - Banks
+@Patchable
 public class Banks: Codable, ObservableObject {
-    @Published public var A: Bank
-    @Published public var B: Bank
-    @Published public var C: Bank
+    @child @Published public var A: Bank
+    @child @Published public var B: Bank
+    @child @Published public var C: Bank
 
     enum CodingKeys: String, CodingKey {
         case C = "C"
@@ -415,11 +454,12 @@ public class Banks: Codable, ObservableObject {
 }
 
 // MARK: - BanksA
+@Patchable
 public class Bank: Codable, ObservableObject {
-    @Published public var BottomLeft: SamplerButton
-    @Published public var TopLeft: SamplerButton
-    @Published public var TopRight: SamplerButton
-    @Published public var BottomRight: SamplerButton
+    @child @Published public var BottomLeft: SamplerButton
+    @child @Published public var TopLeft: SamplerButton
+    @child @Published public var TopRight: SamplerButton
+    @child @Published public var BottomRight: SamplerButton
     
     fileprivate var bank: SampleBank = .A
     
@@ -456,10 +496,11 @@ public class Bank: Codable, ObservableObject {
 }
 
 // MARK: - BottomLeft
-public class SamplerButton: Codable, ObservableObject {
-    @Published public var function: SamplePlaybackMode { didSet { GoXlr.shared.command(.SetSamplerFunction(bank, button, function)) } }
-    @Published public var order: SamplePlayOrder { didSet { GoXlr.shared.command(.SetSamplerOrder(bank, button, order)) } }
-    @Published public var samples: [Sample]
+@Patchable
+public final class SamplerButton: Codable, ObservableObject, GoXLRCommandConvertible {
+    @Published public var function: SamplePlaybackMode
+    @Published public var order: SamplePlayOrder
+    @child @Published public var samples: [Sample]
     @Published public var isPlaying: Bool
 
     fileprivate var bank: SampleBank = .A
@@ -498,9 +539,20 @@ public class SamplerButton: Codable, ObservableObject {
         try container.encode(self.samples, forKey: .samples)
         try container.encode(self.isPlaying, forKey: .is_playing)
     }
+    public func command(for value: PartialKeyPath<SamplerButton>, newValue: Any) -> GoXLRCommand? {
+        switch value {
+        case \.function:
+                return .SetSamplerFunction(bank, button, newValue as! SamplePlaybackMode)
+        case \.order:
+                return .SetSamplerOrder(bank, button, newValue as! SamplePlayOrder)
+        default:
+            return nil
+        }
+    }
 }
 
 // MARK: - Sample
+@Patchable
 public class Sample: Codable, ObservableObject, Equatable {
     
     public static func == (lhs: Sample, rhs: Sample) -> Bool {
@@ -544,10 +596,12 @@ public class Sample: Codable, ObservableObject, Equatable {
 }
 
 // MARK: - Settings
-public class Settings: Codable, ObservableObject {
+@Patchable
+public final class Settings: Codable, ObservableObject, GoXLRCommandConvertible {
+    
     @Published public var display: Display
-    @Published public var muteHoldDuration: Int { didSet { GoXlr.shared.command(.SetMuteHoldDuration(muteHoldDuration)) } }
-    @Published public var vcMuteAlsoMuteCM: Bool { didSet { GoXlr.shared.command(.SetVCMuteAlsoMuteCM(vcMuteAlsoMuteCM)) } }
+    @Published public var muteHoldDuration: Int
+    @Published public var vcMuteAlsoMuteCM: Bool
 
     enum CodingKeys: String, CodingKey {
         case display
@@ -568,9 +622,20 @@ public class Settings: Codable, ObservableObject {
         try container.encode(muteHoldDuration, forKey: .muteHoldDuration)
         try container.encode(vcMuteAlsoMuteCM, forKey: .vcMuteAlsoMuteCM)
     }
+    public func command(for value: PartialKeyPath<Settings>, newValue: Any) -> GoXLRCommand? {
+        switch value {
+        case \.muteHoldDuration:
+            return .SetMuteHoldDuration(newValue as! Int)
+        case \.vcMuteAlsoMuteCM:
+            return .SetVCMuteAlsoMuteCM(newValue as! Bool)
+        default:
+            return nil
+        }
+    }
 }
 
 // MARK: - Display
+@Patchable
 public class Display: Codable, ObservableObject {
     @Published public var gate: String
     @Published public var compressor: String

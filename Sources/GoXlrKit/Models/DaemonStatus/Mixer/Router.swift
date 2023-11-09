@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Patchable
 
 protocol RouterInputs {
     var headphones: Bool { get set }
@@ -17,17 +18,18 @@ protocol RouterInputs {
 }
 
 // MARK: - Router
+@Patchable
 public class Router: Codable, ObservableObject {
-    @Published public var microphone: Microphone
-    @Published public var chat: Chat
-    @Published public var music: Music
-    @Published public var game: Game
-    @Published public var console: Console
-    @Published public var lineIn: LineIn
-    @Published public var system: System
-    @Published public var samples: RoutingSamples
+    @child @Published public var microphone: Microphone
+    @child @Published public var chat: Chat
+    @child @Published public var music: Music
+    @child @Published public var game: Game
+    @child @Published public var console: Console
+    @child @Published public var lineIn: LineIn
+    @child @Published public var system: System
+    @child @Published public var samples: RoutingSamples
     
-    public var everyHeadphones: [Binding<Bool>] {
+    @IgnorePatches public var everyHeadphones: [Binding<Bool>] {
         return [
             Binding(get: { self.microphone.headphones }, set: { self.microphone.headphones = $0 }),
             Binding(get: { self.chat.headphones }, set: { self.chat.headphones = $0 }),
@@ -39,7 +41,7 @@ public class Router: Codable, ObservableObject {
             Binding(get: { self.samples.headphones }, set: { self.samples.headphones = $0 }),
         ]
     }
-    public var everyBroadcastMix: [Binding<Bool>] {
+    @IgnorePatches public var everyBroadcastMix: [Binding<Bool>] {
         return [
             Binding(get: { self.microphone.broadcastMix }, set: { self.microphone.broadcastMix = $0 }),
             Binding(get: { self.chat.broadcastMix }, set: { self.chat.broadcastMix = $0 }),
@@ -51,7 +53,7 @@ public class Router: Codable, ObservableObject {
             Binding(get: { self.samples.broadcastMix }, set: { self.samples.broadcastMix = $0 }),
         ]
     }
-    public var everyLineOut: [Binding<Bool>] {
+    @IgnorePatches public var everyLineOut: [Binding<Bool>] {
         return [
             Binding(get: { self.microphone.lineOut }, set: { self.microphone.lineOut = $0 }),
             Binding(get: { self.chat.lineOut }, set: { self.chat.lineOut = $0 }),
@@ -63,7 +65,7 @@ public class Router: Codable, ObservableObject {
             Binding(get: { self.samples.lineOut }, set: { self.samples.lineOut = $0 }),
         ]
     }
-    public var everyChatMic: [Binding<Bool>] {
+    @IgnorePatches public var everyChatMic: [Binding<Bool>] {
         return [
             Binding(get: { self.microphone.chatMic }, set: { self.microphone.chatMic = $0 }),
             Binding(get: { self.chat.chatMic }, set: { self.chat.chatMic = $0 }),
@@ -76,7 +78,7 @@ public class Router: Codable, ObservableObject {
         ]
     }
     
-    public var everySampler: [Binding<Bool>] {
+    @IgnorePatches public var everySampler: [Binding<Bool>] {
         return [
             Binding(get: { self.microphone.sampler }, set: { self.microphone.sampler = $0 }),
             Binding(get: { self.chat.sampler }, set: { self.chat.sampler = $0 }),
@@ -124,12 +126,30 @@ public class Router: Codable, ObservableObject {
     }
 }
 
-public class Microphone: Codable, ObservableObject, RouterInputs {
-    @Published public var headphones: Bool { didSet { GoXlr.shared.command(.SetRouter(.Microphone, .Headphones, headphones)) } }
-    @Published public var broadcastMix: Bool { didSet { GoXlr.shared.command(.SetRouter(.Microphone, .BroadcastMix, broadcastMix)) } }
-    @Published public var lineOut: Bool { didSet { GoXlr.shared.command(.SetRouter(.Microphone, .LineOut, lineOut)) } }
-    @Published public var chatMic: Bool { didSet { GoXlr.shared.command(.SetRouter(.Microphone, .ChatMic, chatMic)) } }
-    @Published public var sampler: Bool { didSet { GoXlr.shared.command(.SetRouter(.Microphone, .Sampler, sampler)) } }
+@Patchable
+public final class Microphone: Codable, ObservableObject, RouterInputs, GoXLRCommandConvertible {
+    public func command(for value: PartialKeyPath<Microphone>, newValue: Any) -> GoXLRCommand? {
+        let channel = InputDevice.Microphone
+        switch value {
+        case \.headphones:
+            return .SetRouter(channel, .Headphones, newValue as! Bool)
+        case \.broadcastMix:
+            return .SetRouter(channel, .BroadcastMix, newValue as! Bool)
+        case \.lineOut:
+            return .SetRouter(channel, .LineOut, newValue as! Bool)
+        case \.chatMic:
+            return .SetRouter(channel, .ChatMic, newValue as! Bool)
+        case \.sampler:
+            return .SetRouter(channel, .Sampler, newValue as! Bool)
+        default: return nil
+        }
+    }
+    
+    @Published public var headphones: Bool
+    @Published public var broadcastMix: Bool
+    @Published public var lineOut: Bool
+    @Published public var chatMic: Bool
+    @Published public var sampler: Bool
 
     enum CodingKeys: String, CodingKey {
         case headphones = "Headphones"
@@ -158,12 +178,29 @@ public class Microphone: Codable, ObservableObject, RouterInputs {
     }
 }
 
-public class Chat: Codable, ObservableObject, RouterInputs {
-    @Published public var headphones: Bool { didSet { GoXlr.shared.command(.SetRouter(.Chat, .Headphones, headphones)) } }
-    @Published public var broadcastMix: Bool { didSet { GoXlr.shared.command(.SetRouter(.Chat, .BroadcastMix, broadcastMix)) } }
-    @Published public var lineOut: Bool { didSet { GoXlr.shared.command(.SetRouter(.Chat, .LineOut, lineOut)) } }
-    @Published public var chatMic: Bool { didSet { GoXlr.shared.command(.SetRouter(.Chat, .ChatMic, chatMic)) } }
-    @Published public var sampler: Bool { didSet { GoXlr.shared.command(.SetRouter(.Chat, .Sampler, sampler)) } }
+@Patchable
+public final class Chat: Codable, ObservableObject, RouterInputs, GoXLRCommandConvertible {
+    public func command(for value: PartialKeyPath<Chat>, newValue: Any) -> GoXLRCommand? {
+        let channel = InputDevice.Chat
+        switch value {
+        case \.headphones:
+            return .SetRouter(channel, .Headphones, newValue as! Bool)
+        case \.broadcastMix:
+            return .SetRouter(channel, .BroadcastMix, newValue as! Bool)
+        case \.lineOut:
+            return .SetRouter(channel, .LineOut, newValue as! Bool)
+        case \.chatMic:
+            return .SetRouter(channel, .ChatMic, newValue as! Bool)
+        case \.sampler:
+            return .SetRouter(channel, .Sampler, newValue as! Bool)
+        default: return nil
+        }
+    }
+    @Published public var headphones: Bool
+    @Published public var broadcastMix: Bool
+    @Published public var lineOut: Bool
+    @Published public var chatMic: Bool
+    @Published public var sampler: Bool
 
     enum CodingKeys: String, CodingKey {
         case headphones = "Headphones"
@@ -192,12 +229,30 @@ public class Chat: Codable, ObservableObject, RouterInputs {
     }
 }
 
-public class Music: Codable, ObservableObject, RouterInputs {
-    @Published public var headphones: Bool { didSet { GoXlr.shared.command(.SetRouter(.Music, .Headphones, headphones)) } }
-    @Published public var broadcastMix: Bool { didSet { GoXlr.shared.command(.SetRouter(.Music, .BroadcastMix, broadcastMix)) } }
-    @Published public var lineOut: Bool { didSet { GoXlr.shared.command(.SetRouter(.Music, .LineOut, lineOut)) } }
-    @Published public var chatMic: Bool { didSet { GoXlr.shared.command(.SetRouter(.Music, .ChatMic, chatMic)) } }
-    @Published public var sampler: Bool { didSet { GoXlr.shared.command(.SetRouter(.Music, .Sampler, sampler)) } }
+@Patchable
+public final class Music: Codable, ObservableObject, RouterInputs, GoXLRCommandConvertible {
+    public func command(for value: PartialKeyPath<Music>, newValue: Any) -> GoXLRCommand? {
+        let channel = InputDevice.Music
+        switch value {
+        case \.headphones:
+            return .SetRouter(channel, .Headphones, newValue as! Bool)
+        case \.broadcastMix:
+            return .SetRouter(channel, .BroadcastMix, newValue as! Bool)
+        case \.lineOut:
+            return .SetRouter(channel, .LineOut, newValue as! Bool)
+        case \.chatMic:
+            return .SetRouter(channel, .ChatMic, newValue as! Bool)
+        case \.sampler:
+            return .SetRouter(channel, .Sampler, newValue as! Bool)
+        default: return nil
+        }
+    }
+    
+    @Published public var headphones: Bool
+    @Published public var broadcastMix: Bool
+    @Published public var lineOut: Bool
+    @Published public var chatMic: Bool
+    @Published public var sampler: Bool
 
     enum CodingKeys: String, CodingKey {
         case headphones = "Headphones"
@@ -226,12 +281,30 @@ public class Music: Codable, ObservableObject, RouterInputs {
     }
 }
 
-public class Game: Codable, ObservableObject, RouterInputs {
-    @Published public var headphones: Bool { didSet { GoXlr.shared.command(.SetRouter(.Game, .Headphones, headphones)) } }
-    @Published public var broadcastMix: Bool { didSet { GoXlr.shared.command(.SetRouter(.Game, .BroadcastMix, broadcastMix)) } }
-    @Published public var lineOut: Bool { didSet { GoXlr.shared.command(.SetRouter(.Game, .LineOut, lineOut)) } }
-    @Published public var chatMic: Bool { didSet { GoXlr.shared.command(.SetRouter(.Game, .ChatMic, chatMic)) } }
-    @Published public var sampler: Bool { didSet { GoXlr.shared.command(.SetRouter(.Game, .Sampler, sampler)) } }
+@Patchable
+public final class Game: Codable, ObservableObject, RouterInputs, GoXLRCommandConvertible {
+    public func command(for value: PartialKeyPath<Game>, newValue: Any) -> GoXLRCommand? {
+        let channel = InputDevice.Game
+        switch value {
+        case \.headphones:
+            return .SetRouter(channel, .Headphones, newValue as! Bool)
+        case \.broadcastMix:
+            return .SetRouter(channel, .BroadcastMix, newValue as! Bool)
+        case \.lineOut:
+            return .SetRouter(channel, .LineOut, newValue as! Bool)
+        case \.chatMic:
+            return .SetRouter(channel, .ChatMic, newValue as! Bool)
+        case \.sampler:
+            return .SetRouter(channel, .Sampler, newValue as! Bool)
+        default: return nil
+        }
+    }
+    
+    @Published public var headphones: Bool
+    @Published public var broadcastMix: Bool
+    @Published public var lineOut: Bool
+    @Published public var chatMic: Bool
+    @Published public var sampler: Bool
 
     enum CodingKeys: String, CodingKey {
         case headphones = "Headphones"
@@ -260,12 +333,30 @@ public class Game: Codable, ObservableObject, RouterInputs {
     }
 }
 
-public class Console: Codable, ObservableObject, RouterInputs {
-    @Published public var headphones: Bool { didSet { GoXlr.shared.command(.SetRouter(.Console, .Headphones, headphones)) } }
-    @Published public var broadcastMix: Bool { didSet { GoXlr.shared.command(.SetRouter(.Console, .BroadcastMix, broadcastMix)) } }
-    @Published public var lineOut: Bool { didSet { GoXlr.shared.command(.SetRouter(.Console, .LineOut, lineOut)) } }
-    @Published public var chatMic: Bool { didSet { GoXlr.shared.command(.SetRouter(.Console, .ChatMic, chatMic)) } }
-    @Published public var sampler: Bool { didSet { GoXlr.shared.command(.SetRouter(.Console, .Sampler, sampler)) } }
+@Patchable
+public final class Console: Codable, ObservableObject, RouterInputs, GoXLRCommandConvertible {
+    public func command(for value: PartialKeyPath<Console>, newValue: Any) -> GoXLRCommand? {
+        let channel = InputDevice.Console
+        switch value {
+        case \.headphones:
+            return .SetRouter(channel, .Headphones, newValue as! Bool)
+        case \.broadcastMix:
+            return .SetRouter(channel, .BroadcastMix, newValue as! Bool)
+        case \.lineOut:
+            return .SetRouter(channel, .LineOut, newValue as! Bool)
+        case \.chatMic:
+            return .SetRouter(channel, .ChatMic, newValue as! Bool)
+        case \.sampler:
+            return .SetRouter(channel, .Sampler, newValue as! Bool)
+        default: return nil
+        }
+    }
+    
+    @Published public var headphones: Bool
+    @Published public var broadcastMix: Bool
+    @Published public var lineOut: Bool
+    @Published public var chatMic: Bool
+    @Published public var sampler: Bool
 
     enum CodingKeys: String, CodingKey {
         case headphones = "Headphones"
@@ -294,12 +385,29 @@ public class Console: Codable, ObservableObject, RouterInputs {
     }
 }
 
-public class LineIn: Codable, ObservableObject, RouterInputs {
-    @Published public var headphones: Bool { didSet { GoXlr.shared.command(.SetRouter(.LineIn, .Headphones, headphones)) } }
-    @Published public var broadcastMix: Bool { didSet { GoXlr.shared.command(.SetRouter(.LineIn, .BroadcastMix, broadcastMix)) } }
-    @Published public var lineOut: Bool { didSet { GoXlr.shared.command(.SetRouter(.LineIn, .LineOut, lineOut)) } }
-    @Published public var chatMic: Bool { didSet { GoXlr.shared.command(.SetRouter(.LineIn, .ChatMic, chatMic)) } }
-    @Published public var sampler: Bool { didSet { GoXlr.shared.command(.SetRouter(.LineIn, .Sampler, sampler)) } }
+@Patchable
+public final class LineIn: Codable, ObservableObject, RouterInputs, GoXLRCommandConvertible {
+    public func command(for value: PartialKeyPath<LineIn>, newValue: Any) -> GoXLRCommand? {
+        let channel = InputDevice.LineIn
+        switch value {
+        case \.headphones:
+            return .SetRouter(channel, .Headphones, newValue as! Bool)
+        case \.broadcastMix:
+            return .SetRouter(channel, .BroadcastMix, newValue as! Bool)
+        case \.lineOut:
+            return .SetRouter(channel, .LineOut, newValue as! Bool)
+        case \.chatMic:
+            return .SetRouter(channel, .ChatMic, newValue as! Bool)
+        case \.sampler:
+            return .SetRouter(channel, .Sampler, newValue as! Bool)
+        default: return nil
+        }
+    }
+    @Published public var headphones: Bool
+    @Published public var broadcastMix: Bool
+    @Published public var lineOut: Bool
+    @Published public var chatMic: Bool
+    @Published public var sampler: Bool
 
     enum CodingKeys: String, CodingKey {
         case headphones = "Headphones"
@@ -328,12 +436,29 @@ public class LineIn: Codable, ObservableObject, RouterInputs {
     }
 }
 
-public class System: Codable, ObservableObject, RouterInputs {
-    @Published public var headphones: Bool { didSet { GoXlr.shared.command(.SetRouter(.System, .Headphones, headphones)) } }
-    @Published public var broadcastMix: Bool { didSet { GoXlr.shared.command(.SetRouter(.System, .BroadcastMix, broadcastMix)) } }
-    @Published public var lineOut: Bool { didSet { GoXlr.shared.command(.SetRouter(.System, .LineOut, lineOut)) } }
-    @Published public var chatMic: Bool { didSet { GoXlr.shared.command(.SetRouter(.System, .ChatMic, chatMic)) } }
-    @Published public var sampler: Bool { didSet { GoXlr.shared.command(.SetRouter(.System, .Sampler, sampler)) } }
+@Patchable
+public final class System: Codable, ObservableObject, RouterInputs, GoXLRCommandConvertible {
+    public func command(for value: PartialKeyPath<System>, newValue: Any) -> GoXLRCommand? {
+        let channel = InputDevice.System
+        switch value {
+        case \.headphones:
+            return .SetRouter(channel, .Headphones, newValue as! Bool)
+        case \.broadcastMix:
+            return .SetRouter(channel, .BroadcastMix, newValue as! Bool)
+        case \.lineOut:
+            return .SetRouter(channel, .LineOut, newValue as! Bool)
+        case \.chatMic:
+            return .SetRouter(channel, .ChatMic, newValue as! Bool)
+        case \.sampler:
+            return .SetRouter(channel, .Sampler, newValue as! Bool)
+        default: return nil
+        }
+    }
+    @Published public var headphones: Bool
+    @Published public var broadcastMix: Bool
+    @Published public var lineOut: Bool
+    @Published public var chatMic: Bool
+    @Published public var sampler: Bool
 
     enum CodingKeys: String, CodingKey {
         case headphones = "Headphones"
@@ -362,12 +487,29 @@ public class System: Codable, ObservableObject, RouterInputs {
     }
 }
 
-public class RoutingSamples: Codable, ObservableObject, RouterInputs {
-    @Published public var headphones: Bool { didSet { GoXlr.shared.command(.SetRouter(.Samples, .Headphones, headphones)) } }
-    @Published public var broadcastMix: Bool { didSet { GoXlr.shared.command(.SetRouter(.Samples, .BroadcastMix, broadcastMix)) } }
-    @Published public var lineOut: Bool { didSet { GoXlr.shared.command(.SetRouter(.Samples, .LineOut, lineOut)) } }
-    @Published public var chatMic: Bool { didSet { GoXlr.shared.command(.SetRouter(.Samples, .ChatMic, chatMic)) } }
-    @Published public var sampler: Bool { didSet { GoXlr.shared.command(.SetRouter(.Samples, .Sampler, sampler)) } }
+@Patchable
+public final class RoutingSamples: Codable, ObservableObject, RouterInputs, GoXLRCommandConvertible {
+    public func command(for value: PartialKeyPath<RoutingSamples>, newValue: Any) -> GoXLRCommand? {
+        let channel = InputDevice.Samples
+        switch value {
+        case \.headphones:
+            return .SetRouter(channel, .Headphones, newValue as! Bool)
+        case \.broadcastMix:
+            return .SetRouter(channel, .BroadcastMix, newValue as! Bool)
+        case \.lineOut:
+            return .SetRouter(channel, .LineOut, newValue as! Bool)
+        case \.chatMic:
+            return .SetRouter(channel, .ChatMic, newValue as! Bool)
+        case \.sampler:
+            return .SetRouter(channel, .Sampler, newValue as! Bool)
+        default: return nil
+        }
+    }
+    @Published public var headphones: Bool
+    @Published public var broadcastMix: Bool
+    @Published public var lineOut: Bool 
+    @Published public var chatMic: Bool
+    @Published public var sampler: Bool
 
     enum CodingKeys: String, CodingKey {
         case headphones = "Headphones"

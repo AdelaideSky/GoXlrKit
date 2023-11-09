@@ -120,34 +120,41 @@ public class DaemonWSocket: WebSocketDelegate {
                         
                         for patch in json["data"]["Patch"].arrayValue {
                             let path = Array(patch["path"].stringValue.components(separatedBy: "/").dropFirst())
-                            
+//                            print(path)
                             if patch["op"].stringValue == "replace" {
-                                if patch["path"].stringValue.starts(with: "/mixers/") && path.count > 2 {
-                                    if GoXlr.shared.logLevel == .debug {
-                                        Logger().debug("Updates are not hold, status isn't nil, decoding as mixer replace patch...")
-                                    }
-                                    
-                                    let device = patch["path"].stringValue.components(separatedBy: "/")[2]
-                                    handleMixerPatch(mixer: &GoXlr.shared.status!.data.status.mixers[device]!, path: Array(path.dropFirst(2)), value: patch["value"])
-                                    
-                                } else {
-                                    if GoXlr.shared.logLevel == .debug {
-                                        Logger().debug("Updates are not hold, status isn't nil, decoding as status replace patch...")
-                                    }
-                                    
-                                    handleStatusPatch(status: &GoXlr.shared.status!.data.status, path: path, value: patch["value"])
+                                do {
+                                    try GoXlr.shared.status!.data.status.patch(path, with: try JSONSerialization.data(withJSONObject: patch["value"].rawValue, options: .fragmentsAllowed))
+                                } catch {
+                                    print(error)
                                 }
+//                                if patch["path"].stringValue.starts(with: "/mixers/") && path.count > 2 {
+//                                    if GoXlr.shared.logLevel == .debug {
+//                                        Logger().debug("Updates are not hold, status isn't nil, decoding as mixer replace patch...")
+//                                    }
+//                                    
+//                                    let device = patch["path"].stringValue.components(separatedBy: "/")[2]
+//                                    handleMixerPatch(mixer: &GoXlr.shared.status!.data.status.mixers[device]!, path: Array(path.dropFirst(2)), value: patch["value"])
+//                                    
+//                                } else {
+//                                    if GoXlr.shared.logLevel == .debug {
+//                                        Logger().debug("Updates are not hold, status isn't nil, decoding as status replace patch...")
+//                                    }
+//                                    
+//                                    handleStatusPatch(status: &GoXlr.shared.status!.data.status, path: path, value: patch["value"])
+//                                }
                                 
                             } else if patch["op"].stringValue == "add" {
                                 if GoXlr.shared.logLevel == .debug {
                                     Logger().debug("Updates are not hold, status isn't nil, decoding as status add patch...")
                                 }
+                                //TODO: Make it automatic via Patchable
                                 handleAddPatch(status: &GoXlr.shared.status!.data.status, path: path, value: patch["value"])
                                 
                             } else if patch["op"].stringValue == "remove" {
                                 if GoXlr.shared.logLevel == .debug {
                                     Logger().debug("Updates are not hold, status isn't nil, decoding as status remove patch...")
                                 }
+                                //TODO: Make it automatic via Patchable
                                 handleRemovePatch(status: &GoXlr.shared.status!.data.status, path: path, value: patch["value"])
                             }
                         }

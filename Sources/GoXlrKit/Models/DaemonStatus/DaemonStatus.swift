@@ -2,15 +2,18 @@
 //
 // Status structs.
 import Foundation
+import Patchable
 
 var liveUD = GoXlr.shared.eligibleForLiveUpdate
 // MARK: - Status
 /**
  Base Status struct. Only used to decode daemon's JSON. Doesn't contain any useful information.
  */
+
+@Patchable
 public class Status: Codable, ObservableObject {
-    @Published public var id: Int
-    @Published public var data: DataClass
+    public var id: Int
+    @child public var data: DataClass
     
     enum CodingKeys: String, CodingKey {
         case id, data
@@ -33,8 +36,9 @@ public class Status: Codable, ObservableObject {
 /**
  Enclosing struct of the status.
  */
+@Patchable
 public class DataClass: Codable, ObservableObject {
-    @Published public var status: StatusClass
+    @child @Published public var status: StatusClass
 
     enum CodingKeys: String, CodingKey {
         case status = "Status"
@@ -54,11 +58,12 @@ public class DataClass: Codable, ObservableObject {
 /**
  Status struct. Root of the Daemon Status.
  */
+@Patchable
 public class StatusClass: Codable, ObservableObject {
-    @Published public var config: Config
-    @Published public var mixers: [String:Mixer]
-    @Published public var paths: Paths
-    @Published public var files: Files
+    @child @Published public var config: Config
+    @child @Published public var mixers: [String:Mixer]
+    @child @Published public var paths: Paths
+    @child @Published public var files: Files
     
     enum CodingKeys: String, CodingKey {
         case config, mixers, paths, files
@@ -82,15 +87,30 @@ public class StatusClass: Codable, ObservableObject {
 }
 
 // MARK: - Config
-public class Config: Codable, ObservableObject {
-    @Published public var allowNetworkAccess: Bool { didSet { GoXlr.shared.command(.SetAllowNetworkAccess(allowNetworkAccess)) } }
+@Patchable
+public final class Config: Codable, ObservableObject, DaemonCommandConvertible {
+    public func command(for value: PartialKeyPath<Config>, newValue: Any) -> DaemonCommand? {
+        switch value {
+        case \.allowNetworkAccess:
+            return .SetAllowNetworkAccess(newValue as! Bool)
+        case \.logLevel:
+            return .SetLogLevel(newValue as! Daemon.logLevels)
+        case \.showTrayIcon:
+            return .SetShowTrayIcon(newValue as! Bool)
+        case \.ttsEnabled:
+            return .SetTTSEnabled(newValue as! Bool)
+        default: return nil
+        }
+    }
+    
+    @Published public var allowNetworkAccess: Bool
     @Published public var autostartEnabled: Bool
     @Published public var daemonVersion: String
-    @Published public var logLevel: Daemon.logLevels { didSet { GoXlr.shared.command(.SetLogLevel(logLevel)) } }
-    @Published public var showTrayIcon: Bool { didSet { GoXlr.shared.command(.SetShowTrayIcon(showTrayIcon)) } }
-    @Published public var ttsEnabled: Bool { didSet { GoXlr.shared.command(.SetTTSEnabled(ttsEnabled)) } }
+    @Published public var logLevel: Daemon.logLevels
+    @Published public var showTrayIcon: Bool
+    @Published public var ttsEnabled: Bool
     
-    @Published public var httpSettings: HttpConfig
+    @child @Published public var httpSettings: HttpConfig
 
     enum CodingKeys: String, CodingKey {
         case daemonVersion = "daemon_version"
@@ -129,6 +149,7 @@ public class Config: Codable, ObservableObject {
 }
 
 // MARK: - HttpConfig
+@Patchable
 public class HttpConfig: Codable, ObservableObject {
     @Published public var enabled: Bool
     @Published public var bindAddress: String
@@ -160,6 +181,7 @@ public class HttpConfig: Codable, ObservableObject {
 }
 
 // MARK: - Files
+@Patchable
 public class Files: Codable, ObservableObject {
     @Published public var profiles: [String]
     @Published public var micProfiles: [String]
@@ -194,6 +216,7 @@ public class Files: Codable, ObservableObject {
 }
 
 // MARK: - Paths
+@Patchable
 public class Paths: Codable, ObservableObject {
     @Published public var profileDirectory: String
     @Published public var micProfileDirectory: String

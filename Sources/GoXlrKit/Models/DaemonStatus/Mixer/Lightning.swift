@@ -7,14 +7,16 @@
 
 import Foundation
 import SwiftUI
+import Patchable
 
 // MARK: - Lighting
+@Patchable
 public class Lighting: Codable, ObservableObject {
-    @Published public var faders: FaderColors
-    @Published public var buttons: ButtonsLightning
-    @Published public var simple: Simple
-    @Published public var sampler: LightingSampler?
-    @Published public var encoders: Encoders?
+    @child @Published public var faders: FaderColors
+    @child @Published public var buttons: ButtonsLightning
+    @child @Published public var simple: Simple
+    @child @Published public var sampler: LightingSampler?
+    @child @Published public var encoders: Encoders?
 
     enum CodingKeys: String, CodingKey {
         case faders
@@ -49,42 +51,43 @@ public class Lighting: Codable, ObservableObject {
     }
 }
 
+@Patchable
 public class ButtonsLightning: Codable, ObservableObject {
     
-    @Published public var bleep: ButtonStyle { didSet { handleDidSet(bleep, .Bleep, oldValue) }}
-    @Published public var cough: ButtonStyle { didSet { handleDidSet(cough, .Cough, oldValue) }}
-    @Published public var effectFx: ButtonStyle? { didSet { handleDidSet(effectFx!, .EffectFx, oldValue!) }}
-    @Published public var effectHardTune: ButtonStyle? { didSet { handleDidSet(effectHardTune!, .EffectHardTune, oldValue!) }}
-    @Published public var effectMegaphone: ButtonStyle? { didSet { handleDidSet(effectMegaphone!, .EffectMegaphone, oldValue!) }}
-    @Published public var effectRobot: ButtonStyle? { didSet { handleDidSet(effectRobot!, .EffectRobot, oldValue!) }}
-    @Published public var effectSelect1: ButtonStyle? { didSet { handleDidSet(effectSelect1!, .EffectSelect1, oldValue!) }}
-    @Published public var effectSelect2: ButtonStyle? { didSet { handleDidSet(effectSelect2!, .EffectSelect2, oldValue!) }}
-    @Published public var effectSelect3: ButtonStyle? { didSet { handleDidSet(effectSelect3!, .EffectSelect3, oldValue!) }}
-    @Published public var effectSelect4: ButtonStyle? { didSet { handleDidSet(effectSelect4!, .EffectSelect4, oldValue!) }}
-    @Published public var effectSelect5: ButtonStyle? { didSet { handleDidSet(effectSelect5!, .EffectSelect5, oldValue!) }}
-    @Published public var effectSelect6: ButtonStyle? { didSet { handleDidSet(effectSelect6!, .EffectSelect6, oldValue!) }}
+    @child @Published public var bleep: ButtonStyle
+    @child @Published public var cough: ButtonStyle
+    @child @Published public var effectFx: ButtonStyle?
+    @child @Published public var effectHardTune: ButtonStyle?
+    @child @Published public var effectMegaphone: ButtonStyle?
+    @child @Published public var effectRobot: ButtonStyle?
+    @child @Published public var effectSelect1: ButtonStyle?
+    @child @Published public var effectSelect2: ButtonStyle?
+    @child @Published public var effectSelect3: ButtonStyle?
+    @child @Published public var effectSelect4: ButtonStyle?
+    @child @Published public var effectSelect5: ButtonStyle?
+    @child @Published public var effectSelect6: ButtonStyle?
 
-    @Published public var fader1Mute: ButtonStyle { didSet { handleDidSet(fader1Mute, .Fader1Mute, oldValue) }}
-    @Published public var fader2Mute: ButtonStyle { didSet { handleDidSet(fader2Mute, .Fader2Mute, oldValue) }}
-    @Published public var fader3Mute: ButtonStyle { didSet { handleDidSet(fader3Mute, .Fader3Mute, oldValue) }}
-    @Published public var fader4Mute: ButtonStyle { didSet { handleDidSet(fader4Mute, .Fader4Mute, oldValue) }}
+    @child @Published public var fader1Mute: ButtonStyle
+    @child @Published public var fader2Mute: ButtonStyle
+    @child @Published public var fader3Mute: ButtonStyle
+    @child @Published public var fader4Mute: ButtonStyle
     
-    
-    private func handleDidSet(_ style: ButtonStyle, _ button: GoXlrButton, _ oldValue: ButtonStyle) {
-        if style.offStyle != oldValue.offStyle {
-            GoXlr.shared.command(.SetButtonOffStyle(button, style.offStyle))
-        } else {
-//            if liveUD {
-//                GoXlr.shared.command(.SetButtonColours(button, style.colours.colourOne, style.colours.colourTwo))
-//            }
-        }
-    }
+//    
+//    private func handleDidSet(_ style: ButtonStyle, _ button: GoXlrButton, _ oldValue: ButtonStyle) {
+//        if style.offStyle != oldValue.offStyle {
+//            GoXlr.shared.command(.SetButtonOffStyle(button, style.offStyle))
+//        } else {
+////            if liveUD {
+////                GoXlr.shared.command(.SetButtonColours(button, style.colours.colourOne, style.colours.colourTwo))
+////            }
+//        }
+//    }
     
     
     private enum CodingKeys: String, CodingKey {
         case bleep = "Bleep"
         case cough = "Cough"
-        case effectFX = "EffectFx"
+        case effectFx = "EffectFx"
         case effectHardTune = "EffectHardTune"
         case effectMegaphone = "EffectMegaphone"
         case effectRobot = "EffectRobot"
@@ -104,7 +107,7 @@ public class ButtonsLightning: Codable, ObservableObject {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(bleep, forKey: .bleep)
         try container.encode(cough, forKey: .cough)
-        try container.encode(effectFx, forKey: .effectFX)
+        try container.encode(effectFx, forKey: .effectFx)
         try container.encode(effectHardTune, forKey: .effectHardTune)
         try container.encode(effectMegaphone, forKey: .effectMegaphone)
         try container.encode(effectRobot, forKey: .effectRobot)
@@ -124,7 +127,7 @@ public class ButtonsLightning: Codable, ObservableObject {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         bleep = try container.decode(ButtonStyle.self, forKey: .bleep)
         cough = try container.decode(ButtonStyle.self, forKey: .cough)
-        effectFx = try container.decodeIfPresent(ButtonStyle.self, forKey: .effectFX)
+        effectFx = try container.decodeIfPresent(ButtonStyle.self, forKey: .effectFx)
         effectHardTune = try container.decodeIfPresent(ButtonStyle.self, forKey: .effectHardTune)
         effectMegaphone = try container.decodeIfPresent(ButtonStyle.self, forKey: .effectMegaphone)
         effectRobot = try container.decodeIfPresent(ButtonStyle.self, forKey: .effectRobot)
@@ -138,15 +141,52 @@ public class ButtonsLightning: Codable, ObservableObject {
         fader2Mute = try container.decode(ButtonStyle.self, forKey: .fader2Mute)
         fader3Mute = try container.decode(ButtonStyle.self, forKey: .fader3Mute)
         fader4Mute = try container.decode(ButtonStyle.self, forKey: .fader4Mute)
+        
+        bleep.assign(.Bleep)
+        cough.assign(.Cough)
+        
+        if effectFx != nil {
+            effectFx?.assign(.EffectFx)
+            effectHardTune?.assign(.EffectHardTune)
+            effectMegaphone?.assign(.EffectMegaphone)
+            effectRobot?.assign(.EffectRobot)
+            effectSelect1?.assign(.EffectSelect1)
+            effectSelect2?.assign(.EffectSelect2)
+            effectSelect3?.assign(.EffectSelect3)
+            effectSelect4?.assign(.EffectSelect4)
+            effectSelect5?.assign(.EffectSelect5)
+            effectSelect6?.assign(.EffectSelect6)
+        }
+
+        fader1Mute.assign(.Fader1Mute)
+        fader2Mute.assign(.Fader2Mute)
+        fader3Mute.assign(.Fader3Mute)
+        fader4Mute.assign(.Fader4Mute)
+
     }
 }
 
 
 // MARK: - Button
-public struct ButtonStyle: Codable, Hashable {
+@Patchable
+public final class ButtonStyle: Codable, ObservableObject, GoXLRCommandConvertible {
+    public func command(for value: PartialKeyPath<ButtonStyle>, newValue: Any) -> GoXLRCommand? {
+        switch value {
+        case \.offStyle:
+            return .SetButtonOffStyle(button, newValue as! ButtonColourOffStyle)
+        default: return nil
+        }
+    }
     
-    public var offStyle: ButtonColourOffStyle
-    public var colours: Colours
+    @Published public var offStyle: ButtonColourOffStyle
+    @child @Published public var colours: Colours
+    
+    private var button: GoXlrButton = .Bleep
+    
+    func assign(_ button: GoXlrButton) {
+        self.button = button
+        self.colours.assign(button)
+    }
 
     enum CodingKeys: String, CodingKey {
         case offStyle = "off_style"
@@ -167,9 +207,25 @@ public struct ButtonStyle: Codable, Hashable {
 }
 
 // MARK: - Colours
-public struct Colours: Codable, Hashable {
-    public var colourOne: Color
-    public var colourTwo: Color
+@Patchable
+public final class Colours: Codable, GoXLRCommandConvertible {
+    public func command(for value: PartialKeyPath<Colours>, newValue: Any) -> GoXLRCommand? {
+//        switch value {
+//        case \.colourOne
+//            return .SetButtonColours(button, <#T##Color#>, <#T##Color?#>)
+//        default: return nil
+//        }
+        return nil
+    }
+    
+    @Published public var colourOne: Color
+    @Published public var colourTwo: Color
+    
+    private var button: GoXlrButton = .Bleep
+    
+    func assign(_ button: GoXlrButton) {
+        self.button = button
+    }
 
     enum CodingKeys: String, CodingKey {
         case colourOne = "colour_one"
@@ -189,11 +245,12 @@ public struct Colours: Codable, Hashable {
 }
 
 // MARK: - Encoders
+@Patchable
 public class Encoders: Codable, ObservableObject {
-    @Published public var reverb: GenderClass?
-    @Published public var echo: GenderClass?
-    @Published public var pitch: GenderClass?
-    @Published public var gender: GenderClass?
+    @child @Published public var reverb: GenderClass?
+    @child @Published public var echo: GenderClass?
+    @child @Published public var pitch: GenderClass?
+    @child @Published public var gender: GenderClass?
 
     enum CodingKeys: String, CodingKey {
         case reverb = "Reverb"
@@ -208,6 +265,13 @@ public class Encoders: Codable, ObservableObject {
         echo = try values.decode(GenderClass?.self, forKey: .echo)
         pitch = try values.decode(GenderClass?.self, forKey: .pitch)
         gender = try values.decode(GenderClass?.self, forKey: .gender)
+        
+        if reverb != nil {
+            reverb?.assign(.Reverb)
+            echo?.assign(.Echo)
+            pitch?.assign(.Pitch)
+            gender?.assign(.Gender)
+        }
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -220,11 +284,30 @@ public class Encoders: Codable, ObservableObject {
 }
 
 // MARK: - GenderClass
-public class GenderClass: Codable, ObservableObject {
+@Patchable
+public final class GenderClass: Codable, ObservableObject, GoXLRCommandConvertible {
+    public func command(for value: PartialKeyPath<GenderClass>, newValue: Any) -> GoXLRCommand? {
+        switch value {
+        case \.colourOne:
+            return .SetEncoderColour(encoder, newValue as! Color, colourTwo, colourThree)
+        case \.colourTwo:
+            return .SetEncoderColour(encoder, colourOne, newValue as! Color, colourThree)
+        case \.colourThree:
+            return .SetEncoderColour(encoder, colourOne, colourTwo, newValue as! Color)
+        default: return nil
+        }
+    }
+    
     
     @Published public var colourOne: Color
     @Published public var colourTwo: Color
     @Published public var colourThree: Color
+    
+    private var encoder: EncoderColourTargets = .Echo
+    
+    func assign(_ encoder: EncoderColourTargets) {
+        self.encoder = encoder
+    }
 
     enum CodingKeys: String, CodingKey {
         case colourOne = "colour_one"
@@ -248,22 +331,23 @@ public class GenderClass: Codable, ObservableObject {
 }
 
 // MARK: - Faders
+@Patchable
 public class FaderColors: Codable, ObservableObject {
-    @Published public var a: FaderColor { didSet { handleDidSet(a, .A, oldValue) } }
-    @Published public var b: FaderColor { didSet { handleDidSet(b, .B, oldValue) } }
-    @Published public var c: FaderColor { didSet { handleDidSet(c, .C, oldValue) } }
-    @Published public var d: FaderColor { didSet { handleDidSet(d, .D, oldValue) } }
+    @child @Published public var a: FaderColor
+    @child @Published public var b: FaderColor
+    @child @Published public var c: FaderColor
+    @child @Published public var d: FaderColor
     
-    private func handleDidSet(_ style: FaderColor, _ fader: FaderName, _ oldValue: FaderColor) {
-//        if ((style.colours.colourOne != oldValue.colours.colourOne) || (style.colours.colourTwo != oldValue.colours.colourTwo)) && liveUD {
-//            GoXlr.shared.command(.SetFaderColours(fader, style.colours.colourOne, style.colours.colourTwo))
-//        } else {
+//    private func handleDidSet(_ style: FaderColor, _ fader: FaderName, _ oldValue: FaderColor) {
+////        if ((style.colours.colourOne != oldValue.colours.colourOne) || (style.colours.colourTwo != oldValue.colours.colourTwo)) && liveUD {
+////            GoXlr.shared.command(.SetFaderColours(fader, style.colours.colourOne, style.colours.colourTwo))
+////        } else {
+////            GoXlr.shared.command(.SetFaderDisplayStyle(fader, style.style))
+////        }
+//        if style.style != oldValue.style {
 //            GoXlr.shared.command(.SetFaderDisplayStyle(fader, style.style))
 //        }
-        if style.style != oldValue.style {
-            GoXlr.shared.command(.SetFaderDisplayStyle(fader, style.style))
-        }
-    }
+//    }
 
     enum CodingKeys: String, CodingKey {
         case c = "C"
@@ -277,6 +361,10 @@ public class FaderColors: Codable, ObservableObject {
         b = (try values.decode(FaderColor.self, forKey: .b))
         c = try values.decode(FaderColor.self, forKey: .c)
         d = try values.decode(FaderColor.self, forKey: .d)
+        a.assign(.A)
+        b.assign(.B)
+        c.assign(.C)
+        d.assign(.D)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -289,9 +377,24 @@ public class FaderColors: Codable, ObservableObject {
 }
 
 // MARK: - FadersA
-public struct FaderColor: Codable, Hashable {
-    public var style: FaderDisplayStyle
-    public var colours: Colours
+@Patchable
+public final class FaderColor: Codable, ObservableObject, GoXLRCommandConvertible {
+    public func command(for value: PartialKeyPath<FaderColor>, newValue: Any) -> GoXLRCommand? {
+        switch value {
+        case \.style:
+            return .SetFaderDisplayStyle(fader, newValue as! FaderDisplayStyle)
+        default: return nil
+        }
+    }
+    
+    @Published public var style: FaderDisplayStyle
+    @Published public var colours: Colours
+    
+    private var fader: FaderName = .A
+    
+    func assign(_ fader: FaderName) {
+        self.fader = fader
+    }
 
     enum CodingKeys: String, CodingKey {
         case style
@@ -312,10 +415,11 @@ public struct FaderColor: Codable, Hashable {
 }
 
 // MARK: - LightingSampler
+@Patchable
 public class LightingSampler: Codable, ObservableObject {
-    @Published public var samplerSelectA: SamplerSelect?
-    @Published public var samplerSelectB: SamplerSelect?
-    @Published public var samplerSelectC: SamplerSelect?
+    @child @Published public var samplerSelectA: SamplerSelect?
+    @child @Published public var samplerSelectB: SamplerSelect?
+    @child @Published public var samplerSelectC: SamplerSelect?
 
     enum CodingKeys: String, CodingKey {
         case samplerSelectA = "SamplerSelectA"
@@ -338,9 +442,25 @@ public class LightingSampler: Codable, ObservableObject {
 }
 
 // MARK: - SamplerSelect
-public class SamplerSelect: Codable, ObservableObject {
+@Patchable
+public final class SamplerSelect: Codable, ObservableObject, GoXLRCommandConvertible {
+    public func command(for value: PartialKeyPath<SamplerSelect>, newValue: Any) -> GoXLRCommand? {
+        switch value {
+        case \.offStyle:
+            return .SetSampleOffStyle(sample, newValue as! ButtonColourOffStyle)
+        default: return nil
+        }
+    }
+    
     @Published public var offStyle: ButtonColourOffStyle
-    @Published public var colours: GenderClass
+    @child @Published public var colours: SamplerColors
+    
+    private var sample: SamplerColourTargets = .SamplerSelectA
+    
+    func assign(_ sample: SamplerColourTargets) {
+        self.sample = sample
+        self.colours.assign(sample)
+    }
 
     enum CodingKeys: String, CodingKey {
         case offStyle = "off_style"
@@ -349,7 +469,7 @@ public class SamplerSelect: Codable, ObservableObject {
     public required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         offStyle = try values.decode(ButtonColourOffStyle.self, forKey: .offStyle)
-        colours = try values.decode(GenderClass.self, forKey: .colours)
+        colours = try values.decode(SamplerColors.self, forKey: .colours)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -359,24 +479,70 @@ public class SamplerSelect: Codable, ObservableObject {
     }
 }
 
-// MARK: - Simple
-public class Simple: Codable, ObservableObject {
-    @Published public var scribble1: Accent? { didSet { handleDidSet(scribble1, .Scribble1, oldValue) } }
-    @Published public var scribble2: Accent? { didSet { handleDidSet(scribble2, .Scribble2, oldValue) } }
-    @Published public var scribble3: Accent? { didSet { handleDidSet(scribble3, .Scribble3, oldValue) } }
-    @Published public var scribble4: Accent? { didSet { handleDidSet(scribble4, .Scribble4, oldValue) } }
-    @Published public var global: Accent { didSet { handleDidSet(global, .Global, oldValue) } }
-    @Published public var accent: Accent { didSet { handleDidSet(accent, .Accent, oldValue) } }
-
-    private func handleDidSet(_ style: Accent?, _ simple: SimpleColourTargets, _ oldValue: Accent?) {
-//        guard style != nil && oldValue != nil else { return }
-//        
-//        if style!.colourOne != oldValue!.colourOne && liveUD {
-//            guard simple != .Global else { return }
-//            
-//            GoXlr.shared.command(.SetSimpleColour(simple, style!.colourOne))
-//        }
+@Patchable
+public final class SamplerColors: Codable, ObservableObject, GoXLRCommandConvertible {
+    public func command(for value: PartialKeyPath<SamplerColors>, newValue: Any) -> GoXLRCommand? {
+        switch value {
+        case \.colourOne:
+            return .SetSampleColour(sample, newValue as! Color, colourTwo, colourThree)
+        case \.colourTwo:
+            return .SetSampleColour(sample, colourOne, newValue as! Color, colourThree)
+        case \.colourThree:
+            return .SetSampleColour(sample, colourOne, colourTwo, newValue as! Color)
+        default: return nil
+        }
     }
+    
+    
+    @Published public var colourOne: Color
+    @Published public var colourTwo: Color
+    @Published public var colourThree: Color
+    
+    private var sample: SamplerColourTargets = .SamplerSelectA
+    
+    func assign(_ sample: SamplerColourTargets) {
+        self.sample = sample
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case colourOne = "colour_one"
+        case colourTwo = "colour_two"
+        case colourThree = "colour_three"
+    }
+    
+    public required init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        colourOne = try values.decode(Color.self, forKey: .colourOne)
+        colourTwo = try values.decode(Color.self, forKey: .colourTwo)
+        colourThree = try values.decode(Color.self, forKey: .colourThree)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(colourOne, forKey: .colourOne)
+        try container.encode(colourTwo, forKey: .colourTwo)
+        try container.encode(colourThree, forKey: .colourThree)
+    }
+}
+// MARK: - Simple
+@Patchable
+public class Simple: Codable, ObservableObject {
+    @child @Published public var scribble1: Accent?
+    @child @Published public var scribble2: Accent?
+    @child @Published public var scribble3: Accent?
+    @child @Published public var scribble4: Accent?
+    @child @Published public var global: Accent
+    @child @Published public var accent: Accent
+
+//    private func handleDidSet(_ style: Accent?, _ simple: SimpleColourTargets, _ oldValue: Accent?) {
+////        guard style != nil && oldValue != nil else { return }
+////        
+////        if style!.colourOne != oldValue!.colourOne && liveUD {
+////            guard simple != .Global else { return }
+////            
+////            GoXlr.shared.command(.SetSimpleColour(simple, style!.colourOne))
+////        }
+//    }
     
     enum CodingKeys: String, CodingKey {
         case scribble3 = "Scribble3"
@@ -402,6 +568,15 @@ public class Simple: Codable, ObservableObject {
         }
         global = try values.decode(Accent.self, forKey: .global)
         accent = try values.decode(Accent.self, forKey: .accent)
+        
+        global.assign(.Global)
+        accent.assign(.Accent)
+        if scribble1 != nil {
+            scribble1?.assign(.Scribble1)
+            scribble2?.assign(.Scribble2)
+            scribble3?.assign(.Scribble3)
+            scribble4?.assign(.Scribble4)
+        }
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -416,9 +591,20 @@ public class Simple: Codable, ObservableObject {
 }
 
 // MARK: - Accent
-public struct Accent: Codable, Hashable {
+@Patchable
+public final class Accent: Codable, ObservableObject, GoXLRCommandConvertible {
+    public func command(for value: PartialKeyPath<Accent>, newValue: Any) -> GoXLRCommand? {
+        return .SetSimpleColour(simple, newValue as! Color)
+    }
+    
     public var colourOne: Color
 
+    private var simple: SimpleColourTargets = .Global
+    
+    func assign(_ simple: SimpleColourTargets) {
+        self.simple = simple
+    }
+    
     enum CodingKeys: String, CodingKey {
         case colourOne = "colour_one"
     }

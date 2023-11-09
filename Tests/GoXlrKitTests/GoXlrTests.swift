@@ -1,11 +1,17 @@
+import SwiftSyntaxMacros
+import SwiftSyntaxMacrosTestSupport
 import XCTest
-@testable import GoXlr
-
+@testable import GoXlrKit
+//let testMacros: [String: Macro.Type] = [
+//    "GoXLRValue": GoXLRValueMacro.self,
+//]
 final class GoXlrTests: XCTestCase {
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-        XCTAssertEqual(GoXlr().text, "Hello, World!")
-    }
+    
+//    func testMacro() throws {
+//        assertMacroExpansion("""
+//#GoXLRValue(\\.test.yes, \\.otherTest)
+//""", expandedSource: """
+//@GoXLRValue(\\.test.yes, \\.otherTest, \\.$otherTest)
+//""", macros: testMacros)
+//    }
 }
