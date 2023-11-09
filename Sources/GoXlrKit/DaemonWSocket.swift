@@ -104,7 +104,7 @@ public class DaemonWSocket: WebSocketDelegate {
                     
                     do {
                         GoXlr.shared.status = try JSONDecoder().decode(Status.self, from: string.data(using: .utf8)!)
-                        GoXlr.shared.gotStatus = true
+                        GoXlr.shared.daemonConnected = true
                     } catch {
                         print(error)
                         Logger().error("\(error)")
@@ -175,9 +175,11 @@ public class DaemonWSocket: WebSocketDelegate {
             break
         case .cancelled:
             self.socketConnexionStatus = .disconnected
+            GoXlr.shared.daemonConnected = false
             Logger().error("Websocket cancelled")
         case .error(let error):
             self.socketConnexionStatus = .error
+            GoXlr.shared.daemonConnected = false
             Logger().critical("\(error)")
         }
     }

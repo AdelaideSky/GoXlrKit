@@ -33,7 +33,7 @@ public class GoXlr: ObservableObject {
     
     @Published public var logLevel: GoXlrLogLevel = .info
     
-    @Published public var gotStatus: Bool = false
+    @Published public var daemonConnected: Bool = false
     
     
     public var utils = GoXlrUtils()
