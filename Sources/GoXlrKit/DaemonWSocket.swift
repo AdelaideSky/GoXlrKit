@@ -104,10 +104,12 @@ public class DaemonWSocket: WebSocketDelegate {
                     
                     do {
                         GoXlr.shared.status = try JSONDecoder().decode(Status.self, from: string.data(using: .utf8)!)
+                        GoXlr.shared.gotStatus = true
                     } catch {
                         print(error)
                         Logger().error("\(error)")
                     }
+                    
                     GoXlr.shared.device = GoXlr.shared.status?.data.status.mixers.first?.key ?? ""
                     
                 } else {
