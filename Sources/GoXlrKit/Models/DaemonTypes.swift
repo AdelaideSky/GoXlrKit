@@ -98,6 +98,19 @@ extension InputDevice {
             return "speaker.wave.2.bubble.left"
         }
     }
+    
+    public var index: Int {
+        switch self {
+        case .Microphone: 0
+        case .Chat: 1
+        case .Music: 2
+        case .Game: 3
+        case .Console: 4
+        case .LineIn: 5
+        case .System: 6
+        case .Samples: 7
+        }
+    }
 }
 
 

@@ -41,6 +41,19 @@ public class Router: Codable, ObservableObject {
             Binding(get: { self.samples.headphones }, set: { self.samples.headphones = $0 }),
         ]
     }
+    @IgnorePatches public var everyHeadphonesPath: [KeyPath<Router, Parameter<Bool>>] {
+        return [
+            \.microphone.$headphones,
+             \.chat.$headphones,
+             \.music.$headphones,
+             \.game.$headphones,
+             \.console.$headphones,
+             \.lineIn.$headphones,
+             \.system.$headphones,
+             \.samples.$headphones,
+        ]
+    }
+    
     @IgnorePatches public var everyBroadcastMix: [Binding<Bool>] {
         return [
             Binding(get: { self.microphone.broadcastMix }, set: { self.microphone.broadcastMix = $0 }),
@@ -53,6 +66,19 @@ public class Router: Codable, ObservableObject {
             Binding(get: { self.samples.broadcastMix }, set: { self.samples.broadcastMix = $0 }),
         ]
     }
+    @IgnorePatches public var everyBroadcastMixPath: [KeyPath<Router, Parameter<Bool>>] {
+        return [
+            \.microphone.$broadcastMix,
+             \.chat.$broadcastMix,
+             \.music.$broadcastMix,
+             \.game.$broadcastMix,
+             \.console.$broadcastMix,
+             \.lineIn.$broadcastMix,
+             \.system.$broadcastMix,
+             \.samples.$broadcastMix,
+        ]
+    }
+    
     @IgnorePatches public var everyLineOut: [Binding<Bool>] {
         return [
             Binding(get: { self.microphone.lineOut }, set: { self.microphone.lineOut = $0 }),
@@ -65,6 +91,19 @@ public class Router: Codable, ObservableObject {
             Binding(get: { self.samples.lineOut }, set: { self.samples.lineOut = $0 }),
         ]
     }
+    @IgnorePatches public var everyLineOutPath: [KeyPath<Router, Parameter<Bool>>] {
+        return [
+            \.microphone.$lineOut,
+             \.chat.$lineOut,
+             \.music.$lineOut,
+             \.game.$lineOut,
+             \.console.$lineOut,
+             \.lineIn.$lineOut,
+             \.system.$lineOut,
+             \.samples.$lineOut,
+        ]
+    }
+    
     @IgnorePatches public var everyChatMic: [Binding<Bool>] {
         return [
             Binding(get: { self.microphone.chatMic }, set: { self.microphone.chatMic = $0 }),
@@ -75,6 +114,18 @@ public class Router: Codable, ObservableObject {
             Binding(get: { self.lineIn.chatMic }, set: { self.lineIn.chatMic = $0 }),
             Binding(get: { self.system.chatMic }, set: { self.system.chatMic = $0 }),
             Binding(get: { self.samples.chatMic }, set: { self.samples.chatMic = $0 }),
+        ]
+    }
+    @IgnorePatches public var everyChatMicPath: [KeyPath<Router, Parameter<Bool>>] {
+        return [
+            \.microphone.$chatMic,
+             \.chat.$chatMic,
+             \.music.$chatMic,
+             \.game.$chatMic,
+             \.console.$chatMic,
+             \.lineIn.$chatMic,
+             \.system.$chatMic,
+             \.samples.$chatMic,
         ]
     }
     
@@ -88,6 +139,18 @@ public class Router: Codable, ObservableObject {
             Binding(get: { self.lineIn.sampler }, set: { self.lineIn.sampler = $0 }),
             Binding(get: { self.system.sampler }, set: { self.system.sampler = $0 }),
             Binding(get: { self.samples.sampler }, set: { self.samples.sampler = $0 }),
+        ]
+    }
+    @IgnorePatches public var everySamplerPath: [KeyPath<Router, Parameter<Bool>>] {
+        return [
+            \.microphone.$sampler,
+             \.chat.$sampler,
+             \.music.$sampler,
+             \.game.$sampler,
+             \.console.$sampler,
+             \.lineIn.$sampler,
+             \.system.$sampler,
+             \.samples.$sampler,
         ]
     }
 
