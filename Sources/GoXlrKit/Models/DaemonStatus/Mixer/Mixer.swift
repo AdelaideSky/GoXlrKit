@@ -28,7 +28,7 @@ public final class Mixer: Codable, ObservableObject {
     
     @Parameter({
 //        guard $0 != micProfileName else { return nil }
-        return .LoadMicProfile($0, true)
+        return .LoadProfile($0, true)
     })
     public var profileName: String = ""
     
