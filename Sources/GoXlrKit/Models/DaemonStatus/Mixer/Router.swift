@@ -41,7 +41,7 @@ public class Router: Codable, ObservableObject {
             Binding(get: { self.samples.headphones }, set: { self.samples.headphones = $0 }),
         ]
     }
-    @IgnorePatches public var everyHeadphonesPath: [KeyPath<Router, Parameter<Bool>>] {
+    @IgnorePatches public static var everyHeadphonesPath: [KeyPath<Router, Parameter<Bool>>] {
         return [
             \.microphone.$headphones,
              \.chat.$headphones,
@@ -66,7 +66,7 @@ public class Router: Codable, ObservableObject {
             Binding(get: { self.samples.broadcastMix }, set: { self.samples.broadcastMix = $0 }),
         ]
     }
-    @IgnorePatches public var everyBroadcastMixPath: [KeyPath<Router, Parameter<Bool>>] {
+    @IgnorePatches public static var everyBroadcastMixPath: [KeyPath<Router, Parameter<Bool>>] {
         return [
             \.microphone.$broadcastMix,
              \.chat.$broadcastMix,
@@ -91,7 +91,7 @@ public class Router: Codable, ObservableObject {
             Binding(get: { self.samples.lineOut }, set: { self.samples.lineOut = $0 }),
         ]
     }
-    @IgnorePatches public var everyLineOutPath: [KeyPath<Router, Parameter<Bool>>] {
+    @IgnorePatches public static var everyLineOutPath: [KeyPath<Router, Parameter<Bool>>] {
         return [
             \.microphone.$lineOut,
              \.chat.$lineOut,
@@ -116,7 +116,7 @@ public class Router: Codable, ObservableObject {
             Binding(get: { self.samples.chatMic }, set: { self.samples.chatMic = $0 }),
         ]
     }
-    @IgnorePatches public var everyChatMicPath: [KeyPath<Router, Parameter<Bool>>] {
+    @IgnorePatches public static var everyChatMicPath: [KeyPath<Router, Parameter<Bool>>] {
         return [
             \.microphone.$chatMic,
              \.chat.$chatMic,
@@ -141,7 +141,7 @@ public class Router: Codable, ObservableObject {
             Binding(get: { self.samples.sampler }, set: { self.samples.sampler = $0 }),
         ]
     }
-    @IgnorePatches public var everySamplerPath: [KeyPath<Router, Parameter<Bool>>] {
+    @IgnorePatches public static var everySamplerPath: [KeyPath<Router, Parameter<Bool>>] {
         return [
             \.microphone.$sampler,
              \.chat.$sampler,
