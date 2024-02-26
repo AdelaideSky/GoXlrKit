@@ -232,3 +232,5 @@ public class GoXlr: ObservableObject {
         case debug
     }
 }
+public protocol Command: Codable { }
+

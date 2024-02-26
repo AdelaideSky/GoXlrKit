@@ -10,16 +10,8 @@ import Patchable
 
 // MARK: - MicStatus
 @Patchable
-public final class MicStatus: Codable, ObservableObject, GoXLRCommandConvertible {
-    public func command(for value: PartialKeyPath<MicStatus>, newValue: Any) -> GoXLRCommand? {
-        switch value {
-        case \.micType:
-            return .SetMicrophoneType(newValue as! MicrophoneType)
-        default: return nil
-        }
-    }
-    
-    @Published public var micType: MicrophoneType
+public final class MicStatus: Codable, ObservableObject {
+    @Parameter({ .SetMicrophoneType($0) }) public var micType: MicrophoneType = .Condenser
     @child @Published public var micGains: MicGains
     @child @Published public var equaliser: Equaliser
     @child @Published public var equaliserMini: EqualiserMini
@@ -58,28 +50,12 @@ public final class MicStatus: Codable, ObservableObject, GoXLRCommandConvertible
 
 // MARK: - Compressor
 @Patchable
-public final class Compressor: Codable, ObservableObject, GoXLRCommandConvertible {
-    public func command(for value: PartialKeyPath<Compressor>, newValue: Any) -> GoXLRCommand? {
-        switch value {
-        case \.threshold:
-            return .SetCompressorThreshold(Int(newValue as! Float))
-        case \.ratio:
-            return .SetCompressorRatio(.init(rawValue: Int(newValue as! Float))!)
-        case \.attack:
-            return .SetCompressorAttack(.init(rawValue: Int(newValue as! Float))!)
-        case \.release:
-            return .SetCompressorReleaseTime(.init(rawValue: Int(newValue as! Float))!)
-        case \.makeupGain:
-            return .SetCompressorMakeupGain(Int(newValue as! Float))
-        default: return nil
-        }
-    }
-    
-    @Published public var threshold: Float
-    @Published public var ratio: Float
-    @Published public var attack: Float
-    @Published public var release: Float
-    @Published public var makeupGain: Float
+public final class Compressor: Codable, ObservableObject {
+    @Parameter({ .SetCompressorThreshold(Int($0)) }) public var threshold: Float = 0
+    @Parameter({ .SetCompressorRatio(.init(rawValue: Int($0)) ?? .Ratio1_0) }) public var ratio: Float = 0
+    @Parameter({ .SetCompressorAttack(.init(rawValue: Int($0)) ?? .Comp0ms) }) public var attack: Float = 0
+    @Parameter({ .SetCompressorReleaseTime(.init(rawValue: Int($0)) ?? .Comp0ms) }) public var release: Float = 0
+    @Parameter({ .SetCompressorMakeupGain(Int($0)) }) public var makeupGain: Float = 0
 
     enum CodingKeys: String, CodingKey {
         case threshold, ratio, attack, release
@@ -107,28 +83,26 @@ public final class Compressor: Codable, ObservableObject, GoXLRCommandConvertibl
 
 // MARK: - Equaliser
 @Patchable
-public final class Equaliser: Codable, ObservableObject, GoXLRCommandConvertible {
-    public func command(for value: PartialKeyPath<Equaliser>, newValue: Any) -> GoXLRCommand? {
-        switch value {
-        case \.gain:
-            for (key, value) in newValue as! [String: Float] {
-                if gain[key] != value {
-                    return .SetEqGain(.init(rawValue: key)!, Int(value))
-                }
+public final class Equaliser: Codable, ObservableObject {
+    @Parameter({ oldValue, newValue in
+        for (key, value) in newValue {
+            if oldValue[key] != value {
+                return .SetEqGain(.init(rawValue: key) ?? .Equalizer1KHz, Int(value))
             }
-        case \.frequency:
-            for (key, value) in newValue as! [String: Float] {
-                if gain[key] != value {
-                    return .SetEqGain(.init(rawValue: key)!, Int(value))
-                }
-            }
-        default: return nil
         }
         return nil
-    }
+    })
+    public var gain: [String: Float] = [:]
     
-    @Published public var gain: [String: Float]
-    @Published public var frequency: [String: Float]
+    @Parameter({ oldValue, newValue in
+        for (key, value) in newValue {
+            if oldValue[key] != value {
+                return .SetEqFreq(.init(rawValue: key) ?? .Equalizer1KHz, value)
+            }
+        }
+        return nil
+    })
+    public var frequency: [String: Float] = [:]
     
     enum CodingKeys: String, CodingKey {
         case gain, frequency
@@ -147,6 +121,7 @@ public final class Equaliser: Codable, ObservableObject, GoXLRCommandConvertible
 }
 
 // MARK: - EqualiserMini
+//TODO: why is that different from full eq??
 @Patchable
 public class EqualiserMini: Codable, ObservableObject {
     @child @Published public var gain: Gain
@@ -169,31 +144,13 @@ public class EqualiserMini: Codable, ObservableObject {
 }
 
 @Patchable
-public final class Gain: Codable, ObservableObject, GoXLRCommandConvertible {
-    public func command(for value: PartialKeyPath<Gain>, newValue: Any) -> GoXLRCommand? {
-        switch value {
-        case \.equalizer250Hz:
-            return .SetEqMiniGain(.Equalizer250Hz, Int(newValue as! Float))
-        case \.equalizer1KHz:
-            return .SetEqMiniGain(.Equalizer1KHz, Int(newValue as! Float))
-        case \.equalizer500Hz:
-            return .SetEqMiniGain(.Equalizer500Hz, Int(newValue as! Float))
-        case \.equalizer8KHz:
-            return .SetEqMiniGain(.Equalizer8KHz, Int(newValue as! Float))
-        case \.equalizer90Hz:
-            return .SetEqMiniGain(.Equalizer90Hz, Int(newValue as! Float))
-        case \.equalizer3KHz:
-            return .SetEqMiniGain(.Equalizer3KHz, Int(newValue as! Float))
-        default: return nil
-        }
-    }
-    
-    @Published public var equalizer250Hz: Float
-    @Published public var equalizer1KHz: Float
-    @Published public var equalizer500Hz: Float
-    @Published public var equalizer8KHz: Float
-    @Published public var equalizer90Hz: Float
-    @Published public var equalizer3KHz: Float
+public final class Gain: Codable, ObservableObject {
+    @Parameter({ .SetEqMiniGain(.Equalizer250Hz, Int($0)) }) public var equalizer250Hz: Float = 0
+    @Parameter({ .SetEqMiniGain(.Equalizer1KHz, Int($0)) }) public var equalizer1KHz: Float = 0
+    @Parameter({ .SetEqMiniGain(.Equalizer500Hz, Int($0)) }) public var equalizer500Hz: Float = 0
+    @Parameter({ .SetEqMiniGain(.Equalizer8KHz, Int($0)) }) public var equalizer8KHz: Float = 0
+    @Parameter({ .SetEqMiniGain(.Equalizer90Hz, Int($0)) }) public var equalizer90Hz: Float = 0
+    @Parameter({ .SetEqMiniGain(.Equalizer3KHz, Int($0)) }) public var equalizer3KHz: Float = 0
 
     enum CodingKeys: String, CodingKey {
         case equalizer250Hz = "Equalizer250Hz"
@@ -227,31 +184,13 @@ public final class Gain: Codable, ObservableObject, GoXLRCommandConvertible {
 
 // MARK: - Frequency
 @Patchable
-public final class Frequency: Codable, ObservableObject, GoXLRCommandConvertible {
-    public func command(for value: PartialKeyPath<Frequency>, newValue: Any) -> GoXLRCommand? {
-        switch value {
-        case \.equalizer250Hz:
-            return .SetEqMiniFreq(.Equalizer250Hz, newValue as! Float)
-        case \.equalizer1KHz:
-            return .SetEqMiniFreq(.Equalizer1KHz, newValue as! Float)
-        case \.equalizer500Hz:
-            return .SetEqMiniFreq(.Equalizer500Hz, newValue as! Float)
-        case \.equalizer8KHz:
-            return .SetEqMiniFreq(.Equalizer8KHz, newValue as! Float)
-        case \.equalizer90Hz:
-            return .SetEqMiniFreq(.Equalizer90Hz, newValue as! Float)
-        case \.equalizer3KHz:
-            return .SetEqMiniFreq(.Equalizer3KHz, newValue as! Float)
-        default: return nil
-        }
-    }
-    
-    @Published public var equalizer250Hz: Float
-    @Published public var equalizer1KHz: Float
-    @Published public var equalizer500Hz: Float
-    @Published public var equalizer8KHz: Float
-    @Published public var equalizer90Hz: Float
-    @Published public var equalizer3KHz: Float
+public final class Frequency: Codable, ObservableObject {
+    @Parameter({ .SetEqMiniFreq(.Equalizer250Hz, $0) }) public var equalizer250Hz: Float = 0
+    @Parameter({ .SetEqMiniFreq(.Equalizer1KHz, $0) }) public var equalizer1KHz: Float = 0
+    @Parameter({ .SetEqMiniFreq(.Equalizer500Hz, $0) }) public var equalizer500Hz: Float = 0
+    @Parameter({ .SetEqMiniFreq(.Equalizer8KHz, $0) }) public var equalizer8KHz: Float = 0
+    @Parameter({ .SetEqMiniFreq(.Equalizer90Hz, $0) }) public var equalizer90Hz: Float = 0
+    @Parameter({ .SetEqMiniFreq(.Equalizer3KHz, $0) }) public var equalizer3KHz: Float = 0
 
     enum CodingKeys: String, CodingKey {
         case equalizer250Hz = "Equalizer250Hz"
@@ -285,23 +224,10 @@ public final class Frequency: Codable, ObservableObject, GoXLRCommandConvertible
 
 // MARK: - MicGains
 @Patchable
-public final class MicGains: Codable, ObservableObject, GoXLRCommandConvertible {
-    public func command(for value: PartialKeyPath<MicGains>, newValue: Any) -> GoXLRCommand? {
-        switch value {
-        case \.dynamic:
-            return .SetMicrophoneGain(.Dynamic, Int(newValue as! Float))
-        case \.condenser:
-            return .SetMicrophoneGain(.Condenser, Int(newValue as! Float))
-        case \.jack:
-            return .SetMicrophoneGain(.Jack, Int(newValue as! Float))
-        default: return nil
-        }
-    }
-    
-    
-    @Published public var dynamic: Float
-    @Published public var condenser: Float
-    @Published public var jack: Float
+public final class MicGains: Codable, ObservableObject {
+    @Parameter({ .SetMicrophoneGain(.Dynamic, Int($0)) }) public var dynamic: Float = 0
+    @Parameter({ .SetMicrophoneGain(.Condenser, Int($0)) }) public var condenser: Float = 0
+    @Parameter({ .SetMicrophoneGain(.Jack, Int($0)) }) public var jack: Float = 0
 
     enum CodingKeys: String, CodingKey {
         case dynamic = "Dynamic"
@@ -326,29 +252,12 @@ public final class MicGains: Codable, ObservableObject, GoXLRCommandConvertible 
 
 // MARK: - NoiseGate
 @Patchable
-public final class NoiseGate: Codable, ObservableObject, GoXLRCommandConvertible {
-    public func command(for value: PartialKeyPath<NoiseGate>, newValue: Any) -> GoXLRCommand? {
-        switch value {
-        case \.threshold:
-            return .SetGateThreshold(Int(min(0, max(-59, newValue as! Float))))
-        case \.attack:
-            return .SetGateAttack(.init(rawValue: Int(min(44, max(0, newValue as! Float))))!)
-        case \.release:
-            return .SetGateRelease(.init(rawValue: Int(min(44, max(0, newValue as! Float))))!)
-        case \.enabled:
-            return .SetGateActive(newValue as! Bool)
-        case \.attenuation:
-            return .SetGateAttenuation(Int(min(100, max(0, newValue as! Float))))
-        default: return nil
-        }
-    }
-    
-    
-    @Published public var threshold: Float
-    @Published public var attack: Float
-    @Published public var release: Float
-    @Published public var enabled: Bool
-    @Published public var attenuation: Float
+public final class NoiseGate: Codable, ObservableObject {
+    @Parameter({ .SetGateThreshold(Int(min(0, max(-59, $0)))) }) public var threshold: Float = 0
+    @Parameter({ .SetGateAttack(.init(rawValue: Int(min(44, max(0, $0)))) ?? .Gate10ms) }) public var attack: Float = 0
+    @Parameter({ .SetGateRelease(.init(rawValue: Int(min(44, max(0, $0)))) ?? .Gate10ms) }) public var release: Float = 0
+    @Parameter({ .SetGateActive($0) }) public var enabled: Bool = false
+    @Parameter({ .SetGateAttenuation(Int(min(100, max(0, $0)))) }) public var attenuation: Float = 0
     
     enum CodingKeys: String, CodingKey {
         case threshold, attack, release, enabled, attenuation

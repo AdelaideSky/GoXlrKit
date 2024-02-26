@@ -11,7 +11,7 @@ import SwiftUI
 /**
  GoXlr command type, with corresponding parameters.
  */
-public enum GoXLRCommand: Codable, Hashable {
+public enum GoXLRCommand: Codable, Hashable, Command {
     case SetFader(FaderName, ChannelName)
     case SetFaderMuteFunction(FaderName, MuteFunction)
 
@@ -207,7 +207,7 @@ extension GoXLRCommand {
 /**
  Daemon command type, with corresponding parameters.
  */
-public enum DaemonCommand: Codable {
+public enum DaemonCommand: Codable, Command {
     case Ping
     case OpenUi
     case GetStatus

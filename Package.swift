@@ -25,6 +25,7 @@ let package = Package(
         .package(url: "https://github.com/rnine/SimplyCoreAudio", branch: "develop"),
         .package(url: "https://github.com/AdelaideSky/SkyKit", branch: "main"),
         .package(url: "https://github.com/AdelaideSky/PatchableMacro", branch: "main"),
+//        .package(url: "https://github.com/boraseoksoon/Throttler", branch: "master"),
 //        .package(url: "https://github.com/apple/swift-syntax.git", from: "509.0.0-swift-5.9-DEVELOPMENT-SNAPSHOT-2023-04-25-b")
     ],
     targets: [

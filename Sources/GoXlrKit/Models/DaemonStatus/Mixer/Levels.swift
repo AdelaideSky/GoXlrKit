@@ -10,21 +10,11 @@ import Patchable
 
 // MARK: - Levels
 @Patchable
-public final class Levels: Codable, ObservableObject, GoXLRCommandConvertible {
-    public func command(for value: PartialKeyPath<Levels>, newValue: Any) -> GoXLRCommand? {
-        switch value {
-        case \.bleep:
-            return .SetSwearButtonVolume(Int(newValue as! Float))
-        case \.deess:
-            return .SetDeeser(Int(newValue as! Float))
-        default: return nil
-        }
-    }
-    
+public final class Levels: Codable, ObservableObject {
     @Published public var submixSupported: Bool
     @child @Published public var volumes: Volumes
-    @Published public var bleep: Float
-    @Published public var deess: Float
+    @Parameter({ .SetSwearButtonVolume(Int($0)) }) public var bleep: Float = 0
+    @Parameter({ .SetDeeser(Int($0)) }) public var deess: Float = 0
     @child @Published public var submix: Submix?
     
     enum CodingKeys: String, CodingKey {
@@ -56,46 +46,18 @@ public final class Levels: Codable, ObservableObject, GoXLRCommandConvertible {
 
 // MARK: - Volumes
 @Patchable
-public final class Volumes: Codable, ObservableObject, GoXLRCommandConvertible {
-    public func command(for value: PartialKeyPath<Volumes>, newValue: Any) -> GoXLRCommand? {
-        switch value {
-        case \.system:
-            return .SetVolume(.System, Int(newValue as! Float))
-        case \.mic:
-            return .SetVolume(.Mic, Int(newValue as! Float))
-        case \.lineIn:
-            return .SetVolume(.LineIn, Int(newValue as! Float))
-        case \.console:
-            return .SetVolume(.Console, Int(newValue as! Float))
-        case \.game:
-            return .SetVolume(.Game, Int(newValue as! Float))
-        case \.chat:
-            return .SetVolume(.Chat, Int(newValue as! Float))
-        case \.sample:
-            return .SetVolume(.Sample, Int(newValue as! Float))
-        case \.music:
-            return .SetVolume(.Music, Int(newValue as! Float))
-        case \.headphones:
-            return .SetVolume(.Headphones, Int(newValue as! Float))
-        case \.micMonitor:
-            return .SetVolume(.MicMonitor, Int(newValue as! Float))
-        case \.lineOut:
-            return .SetVolume(.LineOut, Int(newValue as! Float))
-        default: return nil
-        }
-    }
-    
-    @Published public var system: Float
-    @Published public var mic: Float
-    @Published public var lineIn: Float
-    @Published public var console: Float
-    @Published public var game: Float
-    @Published public var chat: Float
-    @Published public var sample: Float
-    @Published public var music: Float
-    @Published public var headphones: Float
-    @Published public var micMonitor: Float
-    @Published public var lineOut: Float
+public final class Volumes: Codable, ObservableObject {
+    @Parameter({ .SetVolume(.System, Int($0)) }) public var system: Float = 0
+    @Parameter({ .SetVolume(.Mic, Int($0)) }) public var mic: Float = 0
+    @Parameter({ .SetVolume(.LineIn, Int($0)) }) public var lineIn: Float = 0
+    @Parameter({ .SetVolume(.Console, Int($0)) }) public var console: Float = 0
+    @Parameter({ .SetVolume(.Game, Int($0)) }) public var game: Float = 0
+    @Parameter({ .SetVolume(.Chat, Int($0)) }) public var chat: Float = 0
+    @Parameter({ .SetVolume(.Sample, Int($0)) }) public var sample: Float = 0
+    @Parameter({ .SetVolume(.Music, Int($0)) }) public var music: Float = 0
+    @Parameter({ .SetVolume(.Headphones, Int($0)) }) public var headphones: Float = 0
+    @Parameter({ .SetVolume(.MicMonitor, Int($0)) }) public var micMonitor: Float = 0
+    @Parameter({ .SetVolume(.LineOut, Int($0)) }) public var lineOut: Float = 0
     
     enum CodingKeys: String, CodingKey {
         case mic = "Mic"
@@ -223,25 +185,18 @@ public class Inputs: Codable, ObservableObject {
 
 // MARK: - Chat
 @Patchable
-public final class SubmixesInputs: Codable, ObservableObject, GoXLRCommandConvertible {
-    public func command(for value: PartialKeyPath<SubmixesInputs>, newValue: Any) -> GoXLRCommand? {
-        switch value {
-        case \.volume:
-            return .SetSubMixVolume(channel, Int(newValue as! Float))
-        case \.linked:
-            return .SetSubMixLinked(channel, newValue as! Bool)
-        default: return nil
-        }
-    }
-    
-    @Published public var volume: Float
-    @Published public var linked: Bool
+public final class SubmixesInputs: Codable, ObservableObject {
+    @Parameter public var volume: Float = 0
+    @Parameter public var linked: Bool = false
     @Published public var ratio: Double
     
     private var channel: ChannelName = .System
     
     func assign(_ channel: ChannelName) {
         self.channel = channel
+        
+        self._volume.setCommand({ .SetSubMixVolume(channel, Int($0)) })
+        self._linked.setCommand({ .SetSubMixLinked(channel, $0) })
     }
     
     enum CodingKeys: String, CodingKey {
@@ -267,28 +222,12 @@ public final class SubmixesInputs: Codable, ObservableObject, GoXLRCommandConver
 
 // MARK: - Outputs
 @Patchable
-public final class SubmixesOutputs: Codable, ObservableObject, GoXLRCommandConvertible {
-    public func command(for value: PartialKeyPath<SubmixesOutputs>, newValue: Any) -> GoXLRCommand? {
-        switch value {
-        case \.headphones:
-            return .SetSubMixOutputMix(.Headphones, newValue as! SubmixAssignation)
-        case \.broadcastMix:
-            return .SetSubMixOutputMix(.BroadcastMix, newValue as! SubmixAssignation)
-        case \.chatMic:
-            return .SetSubMixOutputMix(.ChatMic, newValue as! SubmixAssignation)
-        case \.sampler:
-            return .SetSubMixOutputMix(.Sampler, newValue as! SubmixAssignation)
-        case \.lineOut:
-            return .SetSubMixOutputMix(.LineOut, newValue as! SubmixAssignation)
-        default: return nil
-        }
-    }
-    
-    @Published public var headphones: SubmixAssignation
-    @Published public var broadcastMix: SubmixAssignation
-    @Published public var chatMic: SubmixAssignation
-    @Published public var sampler: SubmixAssignation
-    @Published public var lineOut: SubmixAssignation
+public final class SubmixesOutputs: Codable, ObservableObject {
+    @Parameter({ .SetSubMixOutputMix(.Headphones, $0) }) public var headphones: SubmixAssignation = .A
+    @Parameter({ .SetSubMixOutputMix(.BroadcastMix, $0) }) public var broadcastMix: SubmixAssignation = .A
+    @Parameter({ .SetSubMixOutputMix(.ChatMic, $0) }) public var chatMic: SubmixAssignation = .A
+    @Parameter({ .SetSubMixOutputMix(.Sampler, $0) }) public var sampler: SubmixAssignation = .A
+    @Parameter({ .SetSubMixOutputMix(.LineOut, $0) }) public var lineOut: SubmixAssignation = .A
     
     enum CodingKeys: String, CodingKey {
         case headphones = "Headphones"

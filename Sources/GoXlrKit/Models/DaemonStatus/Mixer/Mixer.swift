@@ -12,23 +12,7 @@ import Patchable
 
 // MARK: - Mixer
 @Patchable
-public final class Mixer: Codable, ObservableObject, GoXLRCommandConvertible {
-    public func command(for value: PartialKeyPath<Mixer>, newValue: Any) -> GoXLRCommand? {
-        switch value {
-        case \.profileName:
-            if let newValue = newValue as? String {
-                guard newValue != profileName else { return nil }
-                return .LoadProfile(newValue, true)
-            }
-        case \.micProfileName:
-            if let newValue = newValue as? String {
-                guard newValue != micProfileName else { return nil }
-                return .LoadMicProfile(newValue, true)
-            }
-        default: return nil
-        }
-        return nil
-    }
+public final class Mixer: Codable, ObservableObject {
     
     @child @Published public var hardware: Hardware
     @child @Published public var faderStatus: FadersStatus
@@ -42,8 +26,17 @@ public final class Mixer: Codable, ObservableObject, GoXLRCommandConvertible {
     @child @Published public var settings: Settings
     @child @Published public var button_down: ButtonDown
     
-    @Published public var profileName: String = ""
-    @Published public var micProfileName: String = ""
+    @Parameter({
+//        guard $0 != micProfileName else { return nil }
+        return .LoadMicProfile($0, true)
+    })
+    public var profileName: String = ""
+    
+    @Parameter({
+//        guard $0 != micProfileName else { return nil }
+        return .LoadMicProfile($0, true)
+    })
+    public var micProfileName: String = ""
     
     enum CodingKeys: String, CodingKey {
         case hardware
@@ -198,10 +191,10 @@ public class ButtonDown: Codable, ObservableObject {
 
 // MARK: - CoughButton
 @Patchable
-public final class CoughButton: Codable, ObservableObject, GoXLRCommandConvertible {
-    @Published public var isToggle: Bool
-    @Published public var muteType: MuteFunction
-    @Published public var state: MuteState
+public final class CoughButton: Codable, ObservableObject {
+    @Parameter({ .SetCoughIsHold(!$0) }) public var isToggle: Bool = false
+    @Parameter({ .SetCoughMuteFunction($0) }) public var muteType: MuteFunction = .All
+    @Parameter({ .SetCoughMuteState($0) }) public var state: MuteState = .Unmuted
 
     enum CodingKeys: String, CodingKey {
         case isToggle = "is_toggle"
@@ -221,17 +214,6 @@ public final class CoughButton: Codable, ObservableObject, GoXLRCommandConvertib
         try container.encode(isToggle, forKey: .isToggle)
         try container.encode(muteType, forKey: .muteType)
         try container.encode(state, forKey: .state)
-    }
-    public func command(for value: PartialKeyPath<CoughButton>, newValue: Any) -> GoXLRCommand? {
-        switch value {
-        case \.isToggle:
-            return .SetCoughIsHold(!(newValue as! Bool))
-        case \.muteType:
-            return .SetCoughMuteFunction(newValue as! MuteFunction)
-        case \.state:
-            return .SetCoughMuteState(newValue as! MuteState)
-        default: return nil
-        }
     }
 }
 
@@ -341,13 +323,13 @@ public class Versions: Codable, ObservableObject {
 
 // MARK: - S210401735CQKSampler
 @Patchable
-public final class Sampler: Codable, ObservableObject, GoXLRCommandConvertible {
+public final class Sampler: Codable, ObservableObject {
     
-    @Published public var activeBank: SampleBank
+    @Parameter({ .SetActiveSamplerBank($0) }) public var activeBank: SampleBank = .A
     @child @Published public var banks: Banks
     @Published public var clearActive: Bool
     @child @Published public var processingState: SamplerProcessingState
-    @Published public var recordBuffer: Int
+    @Parameter({ .SetSamplerPreBufferDuration($0) }) public var recordBuffer: Int = 0
 
     enum CodingKeys: String, CodingKey {
         case banks
@@ -373,17 +355,6 @@ public final class Sampler: Codable, ObservableObject, GoXLRCommandConvertible {
         try container.encode(clearActive, forKey: .clearActive)
         try container.encode(processingState, forKey: .processingState)
         try container.encode(recordBuffer, forKey: .recordBuffer)
-    }
-    
-    public func command(for value: PartialKeyPath<Sampler>, newValue: Any) -> GoXLRCommand? {
-        switch value {
-        case \.activeBank:
-                return .SetActiveSamplerBank(newValue as! SampleBank)
-        case \.recordBuffer:
-            return .SetSamplerPreBufferDuration(newValue as! Int)
-        default:
-            return nil
-        }
     }
 }
 
@@ -497,9 +468,9 @@ public class Bank: Codable, ObservableObject {
 
 // MARK: - BottomLeft
 @Patchable
-public final class SamplerButton: Codable, ObservableObject, GoXLRCommandConvertible {
-    @Published public var function: SamplePlaybackMode
-    @Published public var order: SamplePlayOrder
+public final class SamplerButton: Codable, ObservableObject {
+    @Parameter public var function: SamplePlaybackMode = .PlayNext
+    @Parameter public var order: SamplePlayOrder = .Sequential
     @child @Published public var samples: [Sample]
     @Published public var isPlaying: Bool
 
@@ -507,8 +478,10 @@ public final class SamplerButton: Codable, ObservableObject, GoXLRCommandConvert
     fileprivate var button: SampleButtons = .TopLeft
     
     enum CodingKeys: String, CodingKey {
-        case function, order, samples
-        case is_playing = "is_playing"
+        case function = "function"
+        case order = "order"
+        case samples = "samples"
+        case isPlaying = "is_playing"
     }
     
     public required init(from decoder: Decoder) throws {
@@ -516,12 +489,16 @@ public final class SamplerButton: Codable, ObservableObject, GoXLRCommandConvert
         self.function = try container.decode(SamplePlaybackMode.self, forKey: .function)
         self.order = try container.decode(SamplePlayOrder.self, forKey: .order)
         self.samples = try container.decode([Sample].self, forKey: .samples)
-        self.isPlaying = try container.decode(Bool.self, forKey: .is_playing)
+        self.isPlaying = try container.decode(Bool.self, forKey: .isPlaying)
     }
     
     fileprivate func assignSubValues(_ bank: SampleBank, button: SampleButtons) {
         self.bank = bank
         self.button = button
+        
+        self._function.setCommand { .SetSamplerFunction(bank, button, $0) }
+        self._order.setCommand { .SetSamplerOrder(bank, button, $0) }
+        
         if !self.samples.isEmpty {
             for index in 0...self.samples.count {
                 guard index < self.samples.count else { break }
@@ -537,17 +514,7 @@ public final class SamplerButton: Codable, ObservableObject, GoXLRCommandConvert
         try container.encode(self.function, forKey: .function)
         try container.encode(self.order, forKey: .order)
         try container.encode(self.samples, forKey: .samples)
-        try container.encode(self.isPlaying, forKey: .is_playing)
-    }
-    public func command(for value: PartialKeyPath<SamplerButton>, newValue: Any) -> GoXLRCommand? {
-        switch value {
-        case \.function:
-                return .SetSamplerFunction(bank, button, newValue as! SamplePlaybackMode)
-        case \.order:
-                return .SetSamplerOrder(bank, button, newValue as! SamplePlayOrder)
-        default:
-            return nil
-        }
+        try container.encode(self.isPlaying, forKey: .isPlaying)
     }
 }
 
@@ -597,11 +564,11 @@ public class Sample: Codable, ObservableObject, Equatable {
 
 // MARK: - Settings
 @Patchable
-public final class Settings: Codable, ObservableObject, GoXLRCommandConvertible {
+public final class Settings: Codable, ObservableObject {
     
-    @Published public var display: Display
-    @Published public var muteHoldDuration: Int
-    @Published public var vcMuteAlsoMuteCM: Bool
+    @child @Published public var display: Display
+    @Parameter({ .SetMuteHoldDuration($0) }) public var muteHoldDuration: Int = 0
+    @Parameter({ .SetVCMuteAlsoMuteCM($0) }) public var vcMuteAlsoMuteCM: Bool = false
 
     enum CodingKeys: String, CodingKey {
         case display

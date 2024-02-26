@@ -94,7 +94,6 @@ public class DaemonWSocket: WebSocketDelegate {
             
         case .text(let string):
             DispatchQueue(label: "WebSocketManager").sync {
-                
                 if string.contains("Status") {
                     if GoXlr.shared.logLevel == .debug {
                         Logger().debug("Recived status: \(string)")
@@ -122,27 +121,14 @@ public class DaemonWSocket: WebSocketDelegate {
                         
                         for patch in json["data"]["Patch"].arrayValue {
                             let path = Array(patch["path"].stringValue.components(separatedBy: "/").dropFirst())
-//                            print(path)
+                            //                            print(path)
                             if patch["op"].stringValue == "replace" {
-                                do {
-                                    try GoXlr.shared.status!.data.status.patch(path, with: try JSONSerialization.data(withJSONObject: patch["value"].rawValue, options: .fragmentsAllowed))
-                                } catch {
-                                    print(error)
-                                }
-//                                if patch["path"].stringValue.starts(with: "/mixers/") && path.count > 2 {
-//                                    if GoXlr.shared.logLevel == .debug {
-//                                        Logger().debug("Updates are not hold, status isn't nil, decoding as mixer replace patch...")
-//                                    }
-//                                    
-//                                    let device = patch["path"].stringValue.components(separatedBy: "/")[2]
-//                                    handleMixerPatch(mixer: &GoXlr.shared.status!.data.status.mixers[device]!, path: Array(path.dropFirst(2)), value: patch["value"])
-//                                    
-//                                } else {
-//                                    if GoXlr.shared.logLevel == .debug {
-//                                        Logger().debug("Updates are not hold, status isn't nil, decoding as status replace patch...")
-//                                    }
-//                                    
-//                                    handleStatusPatch(status: &GoXlr.shared.status!.data.status, path: path, value: patch["value"])
+//                                throttle(.seconds(0.02), by: .mainActor) {
+                                    do {
+                                        try GoXlr.shared.status!.data.status.patch(path, with: try JSONSerialization.data(withJSONObject: patch["value"].rawValue, options: .fragmentsAllowed))
+                                    } catch {
+                                        print(error)
+                                    }
 //                                }
                                 
                             } else if patch["op"].stringValue == "add" {
@@ -181,6 +167,8 @@ public class DaemonWSocket: WebSocketDelegate {
             self.socketConnexionStatus = .error
             GoXlr.shared.daemonConnected = false
             Logger().critical("\(error)")
+            
+        default: break
         }
     }
 }

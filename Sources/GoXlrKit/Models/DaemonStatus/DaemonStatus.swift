@@ -88,27 +88,14 @@ public class StatusClass: Codable, ObservableObject {
 
 // MARK: - Config
 @Patchable
-public final class Config: Codable, ObservableObject, DaemonCommandConvertible {
-    public func command(for value: PartialKeyPath<Config>, newValue: Any) -> DaemonCommand? {
-        switch value {
-        case \.allowNetworkAccess:
-            return .SetAllowNetworkAccess(newValue as! Bool)
-        case \.logLevel:
-            return .SetLogLevel(newValue as! Daemon.logLevels)
-        case \.showTrayIcon:
-            return .SetShowTrayIcon(newValue as! Bool)
-        case \.ttsEnabled:
-            return .SetTTSEnabled(newValue as! Bool)
-        default: return nil
-        }
-    }
+public final class Config: Codable, ObservableObject {
     
-    @Published public var allowNetworkAccess: Bool
+    @Parameter({.SetAllowNetworkAccess($0) }) public var allowNetworkAccess: Bool = false
     @Published public var autostartEnabled: Bool
     @Published public var daemonVersion: String
-    @Published public var logLevel: Daemon.logLevels
-    @Published public var showTrayIcon: Bool
-    @Published public var ttsEnabled: Bool
+    @Parameter({.SetLogLevel($0) }) public var logLevel: Daemon.logLevels = .info
+    @Parameter({.SetShowTrayIcon($0) }) public var showTrayIcon: Bool = false
+    @Parameter({.SetTTSEnabled($0) }) public var ttsEnabled: Bool = false
     
     @child @Published public var httpSettings: HttpConfig
 

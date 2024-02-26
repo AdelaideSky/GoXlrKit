@@ -169,16 +169,8 @@ public class ButtonsLightning: Codable, ObservableObject {
 
 // MARK: - Button
 @Patchable
-public final class ButtonStyle: Codable, ObservableObject, GoXLRCommandConvertible {
-    public func command(for value: PartialKeyPath<ButtonStyle>, newValue: Any) -> GoXLRCommand? {
-        switch value {
-        case \.offStyle:
-            return .SetButtonOffStyle(button, newValue as! ButtonColourOffStyle)
-        default: return nil
-        }
-    }
-    
-    @Published public var offStyle: ButtonColourOffStyle
+public final class ButtonStyle: Codable, ObservableObject {
+    @Parameter public var offStyle: ButtonColourOffStyle = .Dimmed
     @child @Published public var colours: Colours
     
     private var button: GoXlrButton = .Bleep
@@ -186,6 +178,7 @@ public final class ButtonStyle: Codable, ObservableObject, GoXLRCommandConvertib
     func assign(_ button: GoXlrButton) {
         self.button = button
         self.colours.assign(button)
+        self._offStyle.setCommand({ .SetButtonOffStyle(button, $0) })
     }
 
     enum CodingKeys: String, CodingKey {
@@ -208,29 +201,24 @@ public final class ButtonStyle: Codable, ObservableObject, GoXLRCommandConvertib
 
 // MARK: - Colours
 @Patchable
-public final class Colours: Codable, GoXLRCommandConvertible {
-    public func command(for value: PartialKeyPath<Colours>, newValue: Any) -> GoXLRCommand? {
-//        switch value {
-//        case \.colourOne
-//            return .SetButtonColours(button, <#T##Color#>, <#T##Color?#>)
-//        default: return nil
-//        }
-        return nil
-    }
-    
-    @Published public var colourOne: Color
-    @Published public var colourTwo: Color
+public final class Colours: Codable {
+    @Parameter public var colourOne: Color = .black
+    @Parameter public var colourTwo: Color = .black
     
     private var button: GoXlrButton = .Bleep
     
     func assign(_ button: GoXlrButton) {
         self.button = button
+        
+        self._colourOne.setCommand({ .SetButtonColours(button, $0, self.colourTwo)})
+        self._colourTwo.setCommand({ .SetButtonColours(button, self.colourOne, $0)})
     }
 
     enum CodingKeys: String, CodingKey {
         case colourOne = "colour_one"
         case colourTwo = "colour_two"
     }
+    
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         colourOne = try values.decode(Color.self, forKey: .colourOne)
@@ -285,28 +273,19 @@ public class Encoders: Codable, ObservableObject {
 
 // MARK: - GenderClass
 @Patchable
-public final class GenderClass: Codable, ObservableObject, GoXLRCommandConvertible {
-    public func command(for value: PartialKeyPath<GenderClass>, newValue: Any) -> GoXLRCommand? {
-        switch value {
-        case \.colourOne:
-            return .SetEncoderColour(encoder, newValue as! Color, colourTwo, colourThree)
-        case \.colourTwo:
-            return .SetEncoderColour(encoder, colourOne, newValue as! Color, colourThree)
-        case \.colourThree:
-            return .SetEncoderColour(encoder, colourOne, colourTwo, newValue as! Color)
-        default: return nil
-        }
-    }
-    
-    
-    @Published public var colourOne: Color
-    @Published public var colourTwo: Color
-    @Published public var colourThree: Color
+public final class GenderClass: Codable, ObservableObject {
+    @Parameter public var colourOne: Color = .black
+    @Parameter public var colourTwo: Color = .black
+    @Parameter public var colourThree: Color = .black
     
     private var encoder: EncoderColourTargets = .Echo
     
     func assign(_ encoder: EncoderColourTargets) {
         self.encoder = encoder
+        
+        self._colourOne.setCommand({ .SetEncoderColour(encoder, $0, self.colourTwo, self.colourThree) })
+        self._colourTwo.setCommand({ .SetEncoderColour(encoder, self.colourOne, $0, self.colourThree) })
+        self._colourThree.setCommand({ .SetEncoderColour(encoder, self.colourOne, self.colourTwo, $0) })
     }
 
     enum CodingKeys: String, CodingKey {
@@ -378,22 +357,16 @@ public class FaderColors: Codable, ObservableObject {
 
 // MARK: - FadersA
 @Patchable
-public final class FaderColor: Codable, ObservableObject, GoXLRCommandConvertible {
-    public func command(for value: PartialKeyPath<FaderColor>, newValue: Any) -> GoXLRCommand? {
-        switch value {
-        case \.style:
-            return .SetFaderDisplayStyle(fader, newValue as! FaderDisplayStyle)
-        default: return nil
-        }
-    }
-    
-    @Published public var style: FaderDisplayStyle
+public final class FaderColor: Codable, ObservableObject {
+    @Parameter public var style: FaderDisplayStyle = .TwoColour
     @Published public var colours: Colours
     
     private var fader: FaderName = .A
     
     func assign(_ fader: FaderName) {
         self.fader = fader
+        
+        self._style.setCommand({ .SetFaderDisplayStyle(fader, $0) })
     }
 
     enum CodingKeys: String, CodingKey {
@@ -443,16 +416,8 @@ public class LightingSampler: Codable, ObservableObject {
 
 // MARK: - SamplerSelect
 @Patchable
-public final class SamplerSelect: Codable, ObservableObject, GoXLRCommandConvertible {
-    public func command(for value: PartialKeyPath<SamplerSelect>, newValue: Any) -> GoXLRCommand? {
-        switch value {
-        case \.offStyle:
-            return .SetSampleOffStyle(sample, newValue as! ButtonColourOffStyle)
-        default: return nil
-        }
-    }
-    
-    @Published public var offStyle: ButtonColourOffStyle
+public final class SamplerSelect: Codable, ObservableObject {
+    @Parameter public var offStyle: ButtonColourOffStyle = .Dimmed
     @child @Published public var colours: SamplerColors
     
     private var sample: SamplerColourTargets = .SamplerSelectA
@@ -460,6 +425,8 @@ public final class SamplerSelect: Codable, ObservableObject, GoXLRCommandConvert
     func assign(_ sample: SamplerColourTargets) {
         self.sample = sample
         self.colours.assign(sample)
+        
+        self._offStyle.setCommand({ .SetSampleOffStyle(sample, $0) })
     }
 
     enum CodingKeys: String, CodingKey {
@@ -480,28 +447,19 @@ public final class SamplerSelect: Codable, ObservableObject, GoXLRCommandConvert
 }
 
 @Patchable
-public final class SamplerColors: Codable, ObservableObject, GoXLRCommandConvertible {
-    public func command(for value: PartialKeyPath<SamplerColors>, newValue: Any) -> GoXLRCommand? {
-        switch value {
-        case \.colourOne:
-            return .SetSampleColour(sample, newValue as! Color, colourTwo, colourThree)
-        case \.colourTwo:
-            return .SetSampleColour(sample, colourOne, newValue as! Color, colourThree)
-        case \.colourThree:
-            return .SetSampleColour(sample, colourOne, colourTwo, newValue as! Color)
-        default: return nil
-        }
-    }
-    
-    
-    @Published public var colourOne: Color
-    @Published public var colourTwo: Color
-    @Published public var colourThree: Color
+public final class SamplerColors: Codable, ObservableObject {
+    @Parameter public var colourOne: Color = .black
+    @Parameter public var colourTwo: Color = .black
+    @Parameter public var colourThree: Color = .black
     
     private var sample: SamplerColourTargets = .SamplerSelectA
     
     func assign(_ sample: SamplerColourTargets) {
         self.sample = sample
+        
+        self._colourOne.setCommand({ .SetSampleColour(sample, $0, self.colourTwo, self.colourThree) })
+        self._colourTwo.setCommand({ .SetSampleColour(sample, self.colourOne, $0, self.colourThree) })
+        self._colourThree.setCommand({ .SetSampleColour(sample, self.colourOne, self.colourTwo, $0) })
     }
 
     enum CodingKeys: String, CodingKey {
@@ -592,17 +550,19 @@ public class Simple: Codable, ObservableObject {
 
 // MARK: - Accent
 @Patchable
-public final class Accent: Codable, ObservableObject, GoXLRCommandConvertible {
+public final class Accent: Codable, ObservableObject {
     public func command(for value: PartialKeyPath<Accent>, newValue: Any) -> GoXLRCommand? {
         return .SetSimpleColour(simple, newValue as! Color)
     }
     
-    public var colourOne: Color
+    @Parameter public var colourOne: Color = .black
 
     private var simple: SimpleColourTargets = .Global
     
     func assign(_ simple: SimpleColourTargets) {
         self.simple = simple
+        
+        self._colourOne.setCommand({ .SetSimpleColour(simple, $0) })
     }
     
     enum CodingKeys: String, CodingKey {
