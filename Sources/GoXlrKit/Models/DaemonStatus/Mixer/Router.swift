@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 import Patchable
 
-protocol RouterInputs {
+public protocol RouterInputs {
     var headphones: Bool { get set }
     var broadcastMix: Bool { get set }
     var lineOut: Bool  { get set }
